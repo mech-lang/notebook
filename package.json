@@ -1,0 +1,23 @@
+{
+  "name": "mech-notebook",
+  "version": "0.0.1",
+  "description": "A notebook interface for Mech",
+  "homepage": "http://mechlang.net",
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.com/cmontella/mech-notebook"
+  },
+  "scripts": {
+    "build": "",
+    "watch": "",
+    "postinstall": "",
+    "test": ""
+  },
+  "author": "Corey Montella",
+  "license": "Apache 2.0",
+  "dependencies": {
+    "codemirror": "^5.28.0",
+  },
+  "devDependencies": {
+  }
+}
