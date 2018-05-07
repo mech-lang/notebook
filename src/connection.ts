@@ -45,16 +45,18 @@ export interface Message {
     protected _opened() {
       console.log("Opened");
       this.connected = true;
+      let diff = {adds: [1, 2, 3], removes: [4, 5]};
+      this.send("Transaction", diff);
       this._trySend();
     }
   
-    protected _closed = (code:number, reason:string) => {
+    protected _closed = (code: number, reason: string) => {
       this.connected = false;
       console.warn("Connection closed.", code, reason);
     }
   
-    protected _messaged = (payload:string) => {
-      console.log("Message");
+    protected _messaged = (payload: string) => {
+      console.log(payload);
     }
   }
   
