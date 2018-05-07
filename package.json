@@ -8,16 +8,30 @@
     "url": "https://gitlab.com/cmontella/mech-notebook"
   },
   "scripts": {
-    "build": "",
-    "watch": "",
-    "postinstall": "",
+    "build": "rollup -c",
+    "watch": "rollup -c -w",
+    "postinstall": "postinstall-build build",
     "test": ""
   },
   "author": "Corey Montella",
   "license": "Apache-2.0",
   "dependencies": {
-    "codemirror": "^5.28.0"
+    "codemirror": "^5.28.0",
+    "postinstall-build": "^5.0.1"
   },
   "devDependencies": {
+    "@types/codemirror": "0.0.41",
+    "autoprefixer": "^7.1.2",
+    "postcss-color-function": "^4.0.0",
+    "postcss-custom-properties": "^6.1.0",
+    "rollup": "^0.45.2",
+    "rollup-plugin-commonjs": "8.0.2",
+    "rollup-plugin-json": "^2.3.0",
+    "rollup-plugin-multi-entry": "2.0.0",
+    "rollup-plugin-node-resolve": "3.0.0",
+    "rollup-plugin-postcss": "^0.5.4",
+    "rollup-plugin-typescript2": "^0.4.6",
+    "rollup-watch": "^4.3.1",
+    "typescript": "^2.4.1"
   }
 }
