@@ -57,6 +57,8 @@ export interface Message {
   
     protected _messaged = (payload: string) => {
       console.log(payload);
+      let deserialized = JSON.parse(payload);
+      console.log(deserialized);
     }
   }
   
