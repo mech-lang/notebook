@@ -45,7 +45,7 @@ export interface Message {
     protected _opened() {
       console.log("Opened");
       this.connected = true;
-      let diff = {adds: [1, 2, 3], removes: [4, 5]};
+      let diff = {adds: [[1, 3, 1, 10], [1, 3, 2, 15]], removes: []};
       this.send("Transaction", diff);
       this._trySend();
     }
