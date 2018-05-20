@@ -43,10 +43,10 @@ export interface Message {
     }
   
     protected _opened() {
-      console.log("Opened");
+      console.log("Connection opened.");
       this.connected = true;
-      let diff = {adds: [[1, 3, 1, 10], [1, 3, 2, 15]], removes: []};
-      this.send("Transaction", diff);
+      //let diff = {adds: [[1, 3, 1, 10], [1, 3, 2, 15]], removes: []};
+      //this.send("Transaction", diff);
       this._trySend();
     }
   
@@ -56,9 +56,22 @@ export interface Message {
     }
   
     protected _messaged = (payload: string) => {
-      console.log(payload);
-      let deserialized = JSON.parse(payload);
-      console.log(deserialized);
+      let parsed:Message;
+      try {
+        parsed = JSON.parse(payload);
+      } catch(err) {
+        console.error("Received malformed WS message: '" + payload + "'.");
+        return;
+      }
+
+      if(this.handlers[parsed.type]) {
+        console.group(`Received ${parsed.type} from ${parsed.client}`);
+        this.handlers[parsed.type](parsed);
+        console.groupEnd();
+      } else {
+        console.warn(`Received unhandled message of type: '${parsed.type}'.`, parsed);
+      }
+
     }
   }
   
