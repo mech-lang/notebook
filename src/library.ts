@@ -1,6 +1,6 @@
 // Raw values.
 export type RawValue = number|string;
-export type RawTuple = RawValue[];
+export type RawTuple = number[];
 export type RawEAV = [RawValue, RawValue, RawValue];
 export interface RawMap<V> {[key:string]: V, [key:number]: V};
 export type RawRecord = RawMap<RawValue|RawValue[]>;
