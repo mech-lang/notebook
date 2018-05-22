@@ -65,9 +65,9 @@ export interface Message {
       }
 
       if(this.handlers[parsed.type]) {
-        console.group(`Received ${parsed.type} from ${parsed.client}`);
+        //console.group(`Received ${parsed.type} from ${parsed.client}`);
         this.handlers[parsed.type](parsed);
-        console.groupEnd();
+        //console.groupEnd();
       } else {
         console.warn(`Received unhandled message of type: '${parsed.type}'.`, parsed);
       }
