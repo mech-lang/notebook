@@ -44,7 +44,6 @@ class MultiplexedConnection extends Connection {
       if(this.programs[client]) throw new Error(`Unable to initialize existing program: '${client}'.`);
       let program = this.programs[client] = new RemoteProgram(client, (type: string, diff: any) => this.send(type, diff, client));
       let html = program.attach("html") as libraries.HTML;
-      console.log("INIT!!!");
     },
     "diff": (diff:DiffMessage) => {
       let program = this.programs[diff.client];
