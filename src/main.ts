@@ -21,12 +21,11 @@ class RemoteProgram implements Program {
   }
 
   constructor(public name = "Remote Client", public send:(type: string, diff: any) => void) {}
-  /*
-  inputEAVs(eavs:RawEAV[]) {
-    let diff:Diff<RawEAV[]> = {adds: eavs, removes: []};
-    this.send("Transaction", diff);
+
+  send_transaction(transaction: RawEAV[]) {
+    this.send("Transaction", {adds: transaction, removes: []});
     return this;
-  }*/
+  }
 
   handleDiff(diff: any) {
     for(let type in this.handlers) {
