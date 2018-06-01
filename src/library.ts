@@ -1,7 +1,7 @@
 // Raw values.
 export type RawValue = number|string;
 export type RawTuple = number[];
-export type RawEAV = [RawValue, RawValue, RawValue];
+export type RawEAV = [RawValue, RawValue, RawValue, RawValue];
 export interface RawMap<V> {[key:string]: V, [key:number]: V};
 export type RawRecord = RawMap<RawValue|RawValue[]>;
 
@@ -19,7 +19,7 @@ export interface Program {
   name:string;
   libraries:{[id:string]: Library};
 
-  //inputEAVs(eavs:RawEAV[]):this;
+  send_transaction(transaction:RawEAV[]):this;
   attach(libraryId:string):Library;
   attached(libraryId:string, library:Library):void;
 }
