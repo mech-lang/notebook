@@ -34,22 +34,25 @@ export class HTML extends Library {
     this._container.setAttribute("program", this.program.name);
     document.body.appendChild(this._container);
     let canvas = this._canvas = document.createElement("canvas");
-    canvas.setAttribute("width","1000");
-    canvas.setAttribute("height","1000");
+    canvas.setAttribute("width", "500");
+    canvas.setAttribute("height", "500");
+    canvas.style.backgroundColor = 'rgb(226, 79, 94)';
     this._container.appendChild(canvas);
+
+    window.addEventListener("click", this._mouseEventHandler("click"));
 
     var context = canvas.getContext('2d');
     if (context !== null) {
       var centerX = canvas.width / 2;
       var centerY = canvas.height / 2;
-      var radius = 10;
+      var radius = 5;
 
       context.beginPath();
-      context.arc(centerX, centerY, radius, 0, 2 *  Math.PI, false);
-      context.fillStyle = 'green';
+      context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+      context.fillStyle = 'black';
       context.fill();
-      context.lineWidth = 1;
-      context.strokeStyle = '#003300';
+      context.lineWidth = 0;
+      context.strokeStyle = '#000000';
       context.stroke();
     }
 
@@ -104,16 +107,16 @@ export class HTML extends Library {
     let canvas = this._canvas;
     let context = canvas.getContext("2d")!;
     context.clearRect(0, 0, canvas.width, canvas.height);
-    let radius = 6;
+    let radius = 5;
     for (let path of this._paths) {
       let centerX = path[0] / 10;
       let centerY = path[1] / 10;
       context.beginPath();
-      context.arc(centerX, centerY, radius, 0, 2 *  Math.PI, false);
-      context.fillStyle = 'green';
+      context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+      context.fillStyle = 'black';
       context.fill();
       context.lineWidth = 1;
-      context.strokeStyle = '#003300';
+      context.strokeStyle = '#000000';
       context.stroke();
     }
   }
@@ -141,6 +144,19 @@ export class HTML extends Library {
       }
     })
   };
+
+  protected _sendEvent(eavs:RawEAV[]) {
+    this.program.send_transaction(eavs);
+  }
+
+  _mouseEventHandler(tagname:string) {
+    let table_id = 6987102065;
+    return (event:MouseEvent) => {
+      console.log(event);
+      this._sendEvent([[table_id,1,1,event.x],
+                       [table_id,1,2,event.y]]);
+    };
+  }
 
 };
 
