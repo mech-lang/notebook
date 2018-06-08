@@ -139,7 +139,7 @@ export class HTML extends Library {
       for(let remove of removes || EMPTY) {
         //this.removeInstance(instanceId);
       }
-      for(let [handler, table, row, column, value] of adds || EMPTY) {
+      for(let [table, row, column, value] of adds || EMPTY) {
         this.addInstance(table, row, column, value);
       }
     })
