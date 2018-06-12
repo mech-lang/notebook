@@ -2,10 +2,10 @@
   "name": "mech-notebook",
   "version": "0.0.1",
   "description": "A notebook interface for Mech",
-  "homepage": "http://mechlang.net",
+  "homepage": "https://mechlang.net",
   "repository": {
     "type": "git",
-    "url": "https://gitlab.com/cmontella/mech-notebook"
+    "url": "https://gitlab.com/mech-lang/notebook"
   },
   "scripts": {
     "build": "rollup -c",
