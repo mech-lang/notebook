@@ -33,6 +33,17 @@ export class HTML extends Library {
     this._container = document.createElement("div");
     this._container.setAttribute("program", this.program.name);
     document.body.appendChild(this._container);
+
+
+    let editor = document.createElement("div");
+    editor.setAttribute("class", "editor");
+    this._container.appendChild(editor);
+
+    let textarea = document.createElement("textarea");
+    textarea.setAttribute("id", "editor-text-area");
+    editor.appendChild(textarea);
+
+
     let canvas = this._canvas = document.createElement("canvas");
     canvas.setAttribute("width", "500");
     canvas.setAttribute("height", "500");
@@ -40,6 +51,10 @@ export class HTML extends Library {
     this._container.appendChild(canvas);
 
     window.addEventListener("click", this._mouseEventHandler("click"));
+    //window.addEventListener("change", this._changeEventHandler("change"));
+    //window.addEventListener("input", this._inputEventHandler("change"));
+    window.addEventListener("keyup", this._keyEventHandler("key-up"));
+    //window.addEventListener("keyup", this._keyEventHandler("key-up"));
 
     var context = canvas.getContext('2d');
     if (context !== null) {
@@ -145,17 +160,49 @@ export class HTML extends Library {
     })
   };
 
-  protected _sendEvent(eavs:RawEAV[]) {
-    this.program.send_transaction(eavs);
+  protected _sendEvent(change:RawEAV[]) {
+    console.log(change);
+    this.program.send_transaction(change);
   }
+  // ----------------------
+  // BROWSER EVENT HANDLERS
+  // ----------------------
 
   _mouseEventHandler(tagname:string) {
     let table_id = 6987102065;
     return (event:MouseEvent) => {
-      console.log(event);
       this._sendEvent([[table_id,1,1,event.x],
                        [table_id,1,2,event.y]]);
     };
+  }
+
+  _keyEventHandler(tagname:string) {
+    return (event:KeyboardEvent) => {
+      if(event.repeat) return;
+      let target:any|null = event.target as Element;
+
+      let code = event.keyCode;
+      let key = this._keyMap[code];
+      let value = target.value;
+      if (value != undefined) {
+        this._sendEvent([[1, 1, 1, value]]);
+      }
+    };
+  }
+
+  _keyMap:{[key:number]: string|undefined} = { // Overrides to provide sane names for common control codes.
+    9: "tab",
+    13: "enter",
+    16: "shift",
+    17: "control",
+    18: "alt",
+    27: "escape",
+    32: "space",
+    37: "left",
+    38: "up",
+    39: "right",
+    40: "down",
+    91: "meta"
   }
 
 };
