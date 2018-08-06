@@ -83,7 +83,7 @@ export class HTML extends Library {
     return e;
   }
 
-  protected addInstance(table: number, row: number, column: number, value: number) {
+  protected addInstance(row: number, column: number, value: number) {
     row = row - 1;
     column = column - 1; 
     //if(id === null || id === "null") throw new Error(`Cannot create instance with null id for element '${elemId}'.`);
@@ -155,7 +155,15 @@ export class HTML extends Library {
         //this.removeInstance(instanceId);
       }
       for(let [table, row, column, value] of adds || EMPTY) {
-        this.addInstance(table, row, column, value);
+        if (table == 1819042146 ) {
+          if (column == 120) {
+            column = 1;
+          }
+          if (column == 121) {
+            column = 2;
+          }
+          this.addInstance(row, column, value);
+        }
       }
     })
   };
