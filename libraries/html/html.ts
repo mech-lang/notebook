@@ -177,10 +177,10 @@ export class HTML extends Library {
   // ----------------------
 
   _mouseEventHandler(tagname:string) {
-    let table_id = 6987102065;
+    let table_id = 0x1a076b771;
     return (event:MouseEvent) => {
-      this._sendEvent([[table_id,1,1,event.x],
-                       [table_id,1,2,event.y]]);
+      this._sendEvent([[table_id,1,120,event.x],
+                       [table_id,1,121,event.y]]);
     };
   }
 
