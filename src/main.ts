@@ -9,6 +9,7 @@ export interface ErrorMessage extends Message { type:"error"; error:string }
 class RemoteProgram implements Program {
   libraries = {};
   handlers:{[id:string]: (diff:Diff<RawTuple[]>) => void} = {};
+  database = {};
 
   attach(libraryId:string):Library {
     return Library.attach(this, libraryId);
@@ -46,7 +47,7 @@ class MultiplexedConnection extends Connection {
     },
     "diff": (diff:DiffMessage) => {
       let program = this.programs[diff.client];
-      if(!program) throw new Error(`Unable to handle diff for unitialized program: '${diff.client}'.`);
+      if(!program) throw new Error(`Unable to handle diff for program: '${diff.client}'.`);
       program.handleDiff(diff);
     }
   };
