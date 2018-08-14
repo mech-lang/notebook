@@ -1,14 +1,14 @@
 // Raw values.
 export type RawValue = number|string;
 export type RawTuple = number[];
-export type RawEAV = [number, number, number, RawValue];
+export type RawChange = [number, number, number, RawValue];
 export interface RawMap<V> {[key:string]: V, [key:number]: V};
 export type RawRecord = RawMap<RawValue|RawValue[]>;
 
 // Diffs.
 export type Diff<T> = {adds?: T, removes?: T};
 export type DiffHandler = (diff:Diff<RawTuple[]>) => void
-export type EAVDiffHandler = (diff:Diff<RawEAV[]>) => void
+export type EAVDiffHandler = (diff:Diff<RawChange[]>) => void
 export type RecordDiffHandler<T extends RawRecord> = (diff:Diff<RawMap<T>>) => void
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -19,7 +19,7 @@ export interface Program {
   name:string;
   libraries:{[id:string]: Library};
 
-  send_transaction(transaction:RawEAV[]):this;
+  send_transaction(transaction:RawChange[]):this;
   attach(libraryId:string):Library;
   attached(libraryId:string, library:Library):void;
 }
@@ -92,7 +92,7 @@ export function handleEAVs(handler:EAVDiffHandler): DiffHandler {
       if(sample.length < 3) throw new Error(`Unable to parse EAV from tuple with < 3 fields. ${JSON.stringify(sample)}`);
       if(sample.length > 3) console.warn(`Expected 3 values to parse EAV from tuple, got: ${sample.length}`);
     }
-    handler(diffs as Diff<RawEAV[]>);
+    handler(diffs as Diff<RawChange[]>);
   };
 }
 
@@ -159,6 +159,6 @@ export function recordToTuples(attributes: string[], record:RawRecord, id:RawVal
   throw new Error("@TODO: Implement me!");
 }
 
-export function recordToEAVs(record:RawRecord, id:RawValue, eavs:RawEAV[] = []):RawEAV[] {
+export function recordToEAVs(record:RawRecord, id:RawValue, eavs:RawChange[] = []):RawChange[] {
   throw new Error("@TODO: Implement me!");
 }

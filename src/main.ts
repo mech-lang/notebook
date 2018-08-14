@@ -1,4 +1,4 @@
-import {Program, Library, Diff, RawEAV, RawTuple, libraries} from ".";
+import {Program, Library, Diff, RawChange, RawTuple, libraries} from ".";
 import {Connection, Message} from "./connection";
 
 export interface DiffMessage extends Message { type: "diff"; adds?:number[]; removes?:number[]; }
@@ -22,7 +22,7 @@ class RemoteProgram implements Program {
 
   constructor(public name = "Remote Client", public send:(type: string, diff: any) => void) {}
 
-  send_transaction(transaction: RawEAV[]) {
+  send_transaction(transaction: RawChange[]) {
     this.send("Transaction", {adds: transaction, removes: []});
     return this;
   }

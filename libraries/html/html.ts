@@ -1,5 +1,5 @@
 import "setimmediate";
-import {Program, Library, createId, RawValue, RawEAV, RawMap, handleTuples} from "../../src";
+import {Program, Library, createId, RawValue, RawChange, RawMap, handleTuples} from "../../src";
 
 const EMPTY:never[] = [];
 
@@ -168,7 +168,7 @@ export class HTML extends Library {
     })
   };
 
-  protected _sendEvent(change:RawEAV[]) {
+  protected _sendEvent(change:RawChange[]) {
     console.log(change);
     this.program.send_transaction(change);
   }
