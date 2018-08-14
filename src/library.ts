@@ -1,19 +1,23 @@
-// Raw values.
+// # Library
+
+// ## Type Definitions
+
+// Raw values
+
 export type RawValue = number|string;
 export type RawTuple = number[];
 export type RawChange = [number, number, number, RawValue];
 export interface RawMap<V> {[key:string]: V, [key:number]: V};
 export type RawRecord = RawMap<RawValue|RawValue[]>;
 
-// Diffs.
+// Diffs
+
 export type Diff<T> = {adds?: T, removes?: T};
 export type DiffHandler = (diff:Diff<RawTuple[]>) => void
 export type EAVDiffHandler = (diff:Diff<RawChange[]>) => void
 export type RecordDiffHandler<T extends RawRecord> = (diff:Diff<RawMap<T>>) => void
 
-////////////////////////////////////////////////////////////////////////////////
-// Program
-////////////////////////////////////////////////////////////////////////////////
+// ## Program
 
 export interface Program {
   name:string;
@@ -24,10 +28,7 @@ export interface Program {
   attached(libraryId:string, library:Library):void;
 }
 
-
-////////////////////////////////////////////////////////////////////////////////
-// Library
-////////////////////////////////////////////////////////////////////////////////
+// ## Library
 
 export class Library {
   protected static _registry:{[id:string]: typeof Library} = {};
@@ -76,9 +77,7 @@ export class Library {
   setup() {}
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// Handlers
-////////////////////////////////////////////////////////////////////////////////
+// ## Handlers
 
 // Just a convenience fn for type hinting.
 export function handleTuples(handler:DiffHandler): DiffHandler {
@@ -117,9 +116,7 @@ export function handleRecords<T extends RawRecord>(attributes: string[], handler
   };
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// Helpers
-////////////////////////////////////////////////////////////////////////////////
+// ## Helpers
 
 export function asValue(value:RawValue|undefined) {
   if(typeof value == "string") {
