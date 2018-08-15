@@ -1,7 +1,7 @@
 import {Program, Library, Diff, RawChange, RawTuple, libraries} from ".";
 import {Connection, Message} from "./connection";
 
-export interface DiffMessage extends Message { type: "diff"; adds?:number[]; removes?:number[]; }
+export interface DiffMessage extends Message { type: "diff"; adds: number[]; removes: number[]; }
 export interface LoadBundleMessage extends Message { type: "load-bundle"; bundle: string }
 export interface ErrorMessage extends Message { type:"error"; error:string }
 
@@ -22,8 +22,9 @@ class Table {
 
 class RemoteProgram implements Program {
   libraries = {};
-  handlers:{[id:string]: (diff:Diff<RawTuple[]>) => void} = {};
   database: any = {};
+  handlers:{[id:string]: (diff:Diff<RawTuple[]>) => void} = {};
+  history: Number[][] = [];
 
   attach(libraryId:string):Library {
     return Library.attach(this, libraryId);
@@ -45,10 +46,12 @@ class RemoteProgram implements Program {
   handleDiff(diff: any) {
     // Populate the database
     for(let add of diff.adds) {
+      
       let table_id = add[0];
       let row = add[1];
       let column = add[2];
       let value = add[3];
+      this.history.push([table_id, row, column, value]);
       let table = this.database[`${table_id}`];
       if (this.database[`${table_id}`] === undefined) {
         this.database[`${table_id}`] = new Table();
@@ -65,6 +68,7 @@ class RemoteProgram implements Program {
     for(let type in this.handlers) {
       this.handlers[type](diff);
     }
+    
   }
 }
 
