@@ -2,6 +2,8 @@
 
 // ## Type Definitions
 
+import {DiffMessage} from "./main";
+
 // Raw values
 
 export type RawValue = number|string;
@@ -22,6 +24,8 @@ export type RecordDiffHandler<T extends RawRecord> = (diff: Diff<RawMap<T>>) => 
 export interface Program {
   name: string;
   libraries: {[id: string]:  Library};
+  database: {[id: string]: Number[]};
+  history: Number[][];
 
   send_transaction(transaction: RawChange[]): this;
   attach(libraryId: string): Library;
