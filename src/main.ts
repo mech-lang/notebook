@@ -43,6 +43,7 @@ class RemoteProgram implements Program {
   }
 
   handleDiff(diff: any) {
+    // Populate the database
     for(let add of diff.adds) {
       let table_id = add[0];
       let row = add[1];
@@ -52,13 +53,15 @@ class RemoteProgram implements Program {
       if (this.database[`${table_id}`] === undefined) {
         this.database[`${table_id}`] = new Table();
       } else {
-        console.log(column);
-        table.data[row - 1][0] = value;
-      }
-      console.log(this.database);
-      
+        if (table.data[row - 1] === undefined) {
+          table.data[row - 1] = [];
+          for(var j: number = 0; j< 10; j++) {
+            table.data[row - 1][j] = 0;
+          }
+        }
+        table.data[row - 1][column - 1] = value;
+      }      
     }
-    console.log(this.database);
     for(let type in this.handlers) {
       this.handlers[type](diff);
     }
