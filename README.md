@@ -8,6 +8,12 @@ Read about progress on our [blog](https://mechlang.net/blog/), follow us on Twit
 
 A graphical interface for Mech using a notebook metaphor. Mech notebook presents the world as a grid of cells, into which you can log data, write queries over that data, collect and write notes, draw interfaces, and design visualizations.
 
+## Building
+
+```
+> npm install
+```
+
 ## License
 
 Apache 2.0
