@@ -169,7 +169,7 @@ export class HTML extends Library {
   };
 
   protected _sendEvent(change:RawChange[]) {
-    console.log(change);
+    console.log(this.program.history);
     this.program.send_transaction(change);
   }
   // ----------------------
