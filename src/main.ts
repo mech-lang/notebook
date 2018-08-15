@@ -6,10 +6,24 @@ export interface LoadBundleMessage extends Message { type: "load-bundle"; bundle
 export interface ErrorMessage extends Message { type:"error"; error:string }
 
 
+class Table {
+  public data: Number[][];
+
+  constructor() {
+      this.data = [];
+      for(var i: number = 0; i < 10; i++) {
+          this.data[i] = [];
+          for(var j: number = 0; j< 10; j++) {
+              this.data[i][j] = 0;
+          }
+      }
+  }
+}
+
 class RemoteProgram implements Program {
   libraries = {};
   handlers:{[id:string]: (diff:Diff<RawTuple[]>) => void} = {};
-  database = {};
+  database: any = {};
 
   attach(libraryId:string):Library {
     return Library.attach(this, libraryId);
@@ -29,6 +43,22 @@ class RemoteProgram implements Program {
   }
 
   handleDiff(diff: any) {
+    for(let add of diff.adds) {
+      let table_id = add[0];
+      let row = add[1];
+      let column = add[2];
+      let value = add[3];
+      let table = this.database[`${table_id}`];
+      if (this.database[`${table_id}`] === undefined) {
+        this.database[`${table_id}`] = new Table();
+      } else {
+        console.log(column);
+        table.data[row - 1][0] = value;
+      }
+      console.log(this.database);
+      
+    }
+    console.log(this.database);
     for(let type in this.handlers) {
       this.handlers[type](diff);
     }
