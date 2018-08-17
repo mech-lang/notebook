@@ -39,10 +39,35 @@ export class HTML extends Library {
     editor.setAttribute("class", "editor");
     this._container.appendChild(editor);
 
-    let textarea = document.createElement("textarea");
-    textarea.setAttribute("id", "editor-text-area");
-    editor.appendChild(textarea);
+    let reset = document.createElement("button");
+    reset.setAttribute("id", "editor-reset");
+    reset.innerHTML =  "Reset";
+    editor.appendChild(reset);
 
+    let stop = document.createElement("button");
+    stop.setAttribute("id", "editor-stop");
+    stop.innerHTML =  "Stop";
+    editor.appendChild(stop);
+
+    let step_back = document.createElement("button");
+    step_back.setAttribute("id", "editor-step-back");
+    step_back.innerHTML =  "Step Back";
+    editor.appendChild(step_back);    
+
+    let step_forward = document.createElement("button");
+    step_forward.setAttribute("id", "editor-step-forward");
+    step_forward.innerHTML =  "Step Forward";
+    editor.appendChild(step_forward);    
+
+    let pause = document.createElement("button");
+    pause.setAttribute("id", "editor-pause");
+    pause.innerHTML =  "Pause";
+    editor.appendChild(pause);
+
+    let resume = document.createElement("button");
+    resume.setAttribute("id", "editor-resume");
+    resume.innerHTML =  "Resume";
+    editor.appendChild(resume);
 
     let canvas = this._canvas = document.createElement("canvas");
     canvas.setAttribute("width", "500");
@@ -169,7 +194,7 @@ export class HTML extends Library {
   };
 
   protected _sendEvent(change:RawChange[]) {
-    console.log(this.program.history);
+    //console.log(this.program.history);
     this.program.send_transaction(change);
   }
   // ----------------------
@@ -179,8 +204,19 @@ export class HTML extends Library {
   _mouseEventHandler(tagname:string) {
     let table_id = 0x1a076b771;
     return (event:MouseEvent) => {
-      this._sendEvent([[table_id,1,120,event.x],
-                       [table_id,1,121,event.y]]);
+      if (event.target !== null) {
+        let target: any = event.target;
+        switch (target.id) {
+          case "editor-reset": console.log("Resume"); break;
+          case "editor-stop": console.log("stop"); break;
+          case "editor-step-back": console.log("stop"); break;
+          case "editor-step-forward": console.log("stop"); break;
+          case "editor-pause": console.log("Resume"); break;
+          case "editor-resume": console.log("Resume"); break;
+          default: this._sendEvent([[table_id,1,120,event.x],
+                                   [table_id,1,121,event.y]]);
+        }
+      }
     };
   }
 
