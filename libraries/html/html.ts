@@ -69,6 +69,11 @@ export class HTML extends Library {
     resume.innerHTML =  "Resume";
     editor.appendChild(resume);
 
+    let clean = document.createElement("button");
+    clean.setAttribute("id", "editor-clean");
+    clean.innerHTML =  "Clean";
+    editor.appendChild(clean);
+
     let canvas = this._canvas = document.createElement("canvas");
     canvas.setAttribute("width", "500");
     canvas.setAttribute("height", "500");
@@ -213,6 +218,7 @@ export class HTML extends Library {
           case "editor-step-forward": this.program.send_control(4); break;
           case "editor-pause": this.program.send_control(5); break;
           case "editor-resume": this.program.send_control(6); break;
+          case "editor-clean": this.program.send_control(7); break;
           default: this._sendEvent([[table_id,1,120,event.x],
                                     [table_id,1,121,event.y]]);
         }
