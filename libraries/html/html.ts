@@ -207,14 +207,14 @@ export class HTML extends Library {
       if (event.target !== null) {
         let target: any = event.target;
         switch (target.id) {
-          case "editor-reset": console.log("Resume"); break;
-          case "editor-stop": console.log("stop"); break;
-          case "editor-step-back": console.log("stop"); break;
-          case "editor-step-forward": console.log("stop"); break;
-          case "editor-pause": console.log("Resume"); break;
-          case "editor-resume": console.log("Resume"); break;
+          case "editor-reset": this.program.send_control(1); break;
+          case "editor-stop": this.program.send_control(2); break;
+          case "editor-step-back": this.program.send_control(3); break;
+          case "editor-step-forward": this.program.send_control(4); break;
+          case "editor-pause": this.program.send_control(5); break;
+          case "editor-resume": this.program.send_control(6); break;
           default: this._sendEvent([[table_id,1,120,event.x],
-                                   [table_id,1,121,event.y]]);
+                                    [table_id,1,121,event.y]]);
         }
       }
     };
