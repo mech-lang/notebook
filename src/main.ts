@@ -43,6 +43,11 @@ class RemoteProgram implements Program {
     return this;
   }
 
+  send_control(kind: number) {
+    this.send("Control", {kind});
+    return this;
+  }
+
   handleDiff(diff: any) {
     // Populate the database
     for(let add of diff.adds) {
