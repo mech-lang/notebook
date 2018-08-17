@@ -28,6 +28,7 @@ export interface Program {
   history: Number[][];
 
   send_transaction(transaction: RawChange[]): this;
+  send_control(kind: number): this;
   attach(libraryId: string): Library;
   attached(libraryId: string, library: Library): void;
 }
