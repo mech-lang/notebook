@@ -46,7 +46,7 @@ export class HTML extends Library {
 
 
     let reset = document.createElement("button");
-    reset.setAttribute("id", "editor-reset");
+    reset.setAttribute("id", "controls-reset");
     reset.innerHTML =  "Reset";
     controls.appendChild(reset);
 
@@ -97,9 +97,9 @@ export class HTML extends Library {
     link2.style.transformOrigin = "center bottom";
     link2.style.zIndex = "1";
 
-    editor.appendChild(link2);
-    editor.appendChild(link1);
-    editor.appendChild(link0);
+    //editor.appendChild(link2);
+    //editor.appendChild(link1);
+    //editor.appendChild(link0);
     
     
 
