@@ -35,50 +35,81 @@ export class HTML extends Library {
     document.body.appendChild(this._container);
 
 
+    let controls = document.createElement("div");
+    controls.setAttribute("class", "controls");
+    this._container.appendChild(controls);
+
     let editor = document.createElement("div");
     editor.setAttribute("class", "editor");
     this._container.appendChild(editor);
 
+
+
     let reset = document.createElement("button");
     reset.setAttribute("id", "editor-reset");
     reset.innerHTML =  "Reset";
-    editor.appendChild(reset);
+    controls.appendChild(reset);
 
     let stop = document.createElement("button");
-    stop.setAttribute("id", "editor-stop");
+    stop.setAttribute("id", "controls-stop");
     stop.innerHTML =  "Stop";
-    editor.appendChild(stop);
+    controls.appendChild(stop);
 
     let step_back = document.createElement("button");
-    step_back.setAttribute("id", "editor-step-back");
+    step_back.setAttribute("id", "controls-step-back");
     step_back.innerHTML =  "Step Back";
-    editor.appendChild(step_back);    
+    controls.appendChild(step_back);    
 
     let step_forward = document.createElement("button");
-    step_forward.setAttribute("id", "editor-step-forward");
+    step_forward.setAttribute("id", "controls-step-forward");
     step_forward.innerHTML =  "Step Forward";
-    editor.appendChild(step_forward);    
+    controls.appendChild(step_forward);    
 
     let pause = document.createElement("button");
-    pause.setAttribute("id", "editor-pause");
+    pause.setAttribute("id", "controls-pause");
     pause.innerHTML =  "Pause";
-    editor.appendChild(pause);
+    controls.appendChild(pause);
 
     let resume = document.createElement("button");
-    resume.setAttribute("id", "editor-resume");
+    resume.setAttribute("id", "controls-resume");
     resume.innerHTML =  "Resume";
-    editor.appendChild(resume);
+    controls.appendChild(resume);
 
     let clean = document.createElement("button");
-    clean.setAttribute("id", "editor-clean");
+    clean.setAttribute("id", "controls-clean");
     clean.innerHTML =  "Clean";
-    editor.appendChild(clean);
+    controls.appendChild(clean);
+
+    let link0 = new Image();
+    link0.src = '/images/robotarm/link0.png';
+    link0.style.transform = "translate(-250px, 100px) scale(0.5, 0.5)";
+    link0.style.zIndex = "3";
+    
+
+    let link1 = new Image();
+    link1.src = '/images/robotarm/link1.png';
+    link1.style.transform = "translate(-30px, -100px) scale(0.5, 0.5) rotate(0deg)";
+    link1.style.transformOrigin = "center bottom";
+    link1.style.zIndex = "2";
+    
+
+    let link2 = new Image();
+    link2.src = '/images/robotarm/link2.png';
+    link2.style.transform = "translate(107px, -250px) scale(0.5, 0.5) rotate(120deg)";
+    link2.style.transformOrigin = "center bottom";
+    link2.style.zIndex = "1";
+
+    editor.appendChild(link2);
+    editor.appendChild(link1);
+    editor.appendChild(link0);
+    
+    
 
     let canvas = this._canvas = document.createElement("canvas");
     canvas.setAttribute("width", "500");
     canvas.setAttribute("height", "500");
     canvas.style.backgroundColor = 'rgb(226, 79, 94)';
-    this._container.appendChild(canvas);
+    //this._container.appendChild(canvas);
 
     window.addEventListener("click", this._mouseEventHandler("click"));
     //window.addEventListener("change", this._changeEventHandler("change"));
@@ -149,9 +180,28 @@ export class HTML extends Library {
   }
 
   rerender() {
+    /*
     let canvas = this._canvas;
     let context = canvas.getContext("2d")!;
     context.clearRect(0, 0, canvas.width, canvas.height);
+
+    let x1 = this._paths[0][0];
+    let y1 = this._paths[0][1];
+
+    let link0 = new Image();
+    link0.onload = function() { context.drawImage(link0, 50, 50); };
+    link0.src = '/images/robotarm/link0.png';
+    let link1 = new Image();
+    //link1.onload = function() { context.drawImage(link1, 69, 50); };
+    link1.src = '/images/robotarm/link1.png';
+    let link2 = new Image();
+    //link2.onload = function() { context.drawImage(link2, 69, 50); };
+    link2.src = '/images/robotarm/link2.png';
+    let gripper = new Image();
+    //gripper.onload = function() { context.drawImage(gripper, 69, 50); };
+    gripper.src = '/images/robotarm/gripper.png';
+
+    
     let radius = 5;
     for (let path of this._paths) {
       let centerX = path[0] / 10;
@@ -163,7 +213,7 @@ export class HTML extends Library {
       context.lineWidth = 1;
       context.strokeStyle = '#000000';
       context.stroke();
-    }
+    }*/
   }
 
   _isChanging = false;
@@ -202,9 +252,8 @@ export class HTML extends Library {
     //console.log(this.program.history);
     this.program.send_transaction(change);
   }
-  // ----------------------
-  // BROWSER EVENT HANDLERS
-  // ----------------------
+
+  // ## Browser Event Handlers 
 
   _mouseEventHandler(tagname:string) {
     let table_id = 0x1a076b771;
@@ -212,13 +261,13 @@ export class HTML extends Library {
       if (event.target !== null) {
         let target: any = event.target;
         switch (target.id) {
-          case "editor-reset": this.program.send_control(1); break;
-          case "editor-stop": this.program.send_control(2); break;
-          case "editor-step-back": this.program.send_control(3); break;
-          case "editor-step-forward": this.program.send_control(4); break;
-          case "editor-pause": this.program.send_control(5); break;
-          case "editor-resume": this.program.send_control(6); break;
-          case "editor-clean": this.program.send_control(7); break;
+          case "controls-reset": this.program.send_control(1); break;
+          case "controls-stop": this.program.send_control(2); break;
+          case "controls-step-back": this.program.send_control(3); break;
+          case "controls-step-forward": this.program.send_control(4); break;
+          case "controls-pause": this.program.send_control(5); break;
+          case "controls-resume": this.program.send_control(6); break;
+          case "controls-clean": this.program.send_control(7); break;
           default: this._sendEvent([[table_id,1,120,event.x],
                                     [table_id,1,121,event.y]]);
         }
