@@ -85,14 +85,12 @@ export class HTML extends Library {
     link0.style.transform = "translate(-250px, 100px) scale(0.5, 0.5)";
     link0.style.zIndex = "3";
     
-
     let link1 = new Image();
     link1.src = '/images/robotarm/link1.png';
     link1.style.transform = "translate(-30px, -100px) scale(0.5, 0.5) rotate(0deg)";
     link1.style.transformOrigin = "center bottom";
     link1.style.zIndex = "2";
     
-
     let link2 = new Image();
     link2.src = '/images/robotarm/link2.png';
     link2.style.transform = "translate(107px, -250px) scale(0.5, 0.5) rotate(120deg)";
@@ -109,7 +107,7 @@ export class HTML extends Library {
     canvas.setAttribute("width", "500");
     canvas.setAttribute("height", "500");
     canvas.style.backgroundColor = 'rgb(226, 79, 94)';
-    //this._container.appendChild(canvas);
+    this._container.appendChild(canvas);
 
     window.addEventListener("click", this._mouseEventHandler("click"));
     //window.addEventListener("change", this._changeEventHandler("change"));
@@ -180,28 +178,11 @@ export class HTML extends Library {
   }
 
   rerender() {
-    /*
+    
     let canvas = this._canvas;
     let context = canvas.getContext("2d")!;
     context.clearRect(0, 0, canvas.width, canvas.height);
-
-    let x1 = this._paths[0][0];
-    let y1 = this._paths[0][1];
-
-    let link0 = new Image();
-    link0.onload = function() { context.drawImage(link0, 50, 50); };
-    link0.src = '/images/robotarm/link0.png';
-    let link1 = new Image();
-    //link1.onload = function() { context.drawImage(link1, 69, 50); };
-    link1.src = '/images/robotarm/link1.png';
-    let link2 = new Image();
-    //link2.onload = function() { context.drawImage(link2, 69, 50); };
-    link2.src = '/images/robotarm/link2.png';
-    let gripper = new Image();
-    //gripper.onload = function() { context.drawImage(gripper, 69, 50); };
-    gripper.src = '/images/robotarm/gripper.png';
-
-    
+   
     let radius = 5;
     for (let path of this._paths) {
       let centerX = path[0] / 10;
@@ -213,7 +194,7 @@ export class HTML extends Library {
       context.lineWidth = 1;
       context.strokeStyle = '#000000';
       context.stroke();
-    }*/
+    }
   }
 
   _isChanging = false;
