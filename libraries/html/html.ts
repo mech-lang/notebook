@@ -22,6 +22,8 @@ export class HTML extends Library {
   /** Instances are the physical DOM elements representing table elements. */
   _instances: Instance[][] = [];
   _paths: number[][] = []; 
+  control: Boolean;
+  enter: Boolean;
 
   setup() {
     // If we're not in a browser environment, this library does nothing
@@ -30,25 +32,33 @@ export class HTML extends Library {
       return;
     }
 
+    this.control = false;
+    this.enter = false;
+
+    let spacer = document.createElement("div");
+    spacer.setAttribute("class","spacer");
+
+    let header = document.createElement("div");
+    header.setAttribute("class","header");
+
+    let code = document.createElement("textarea");
+    code.setAttribute("class","code");
+    document.addEventListener('dblclick', function(e){ e.preventDefault(); }, false);
+
     this._container = document.createElement("div");
     this._container.setAttribute("program", this.program.name);
+    this._container.setAttribute("class","container");
     document.body.appendChild(this._container);
-
 
     let controls = document.createElement("div");
     controls.setAttribute("class", "controls");
-    this._container.appendChild(controls);
 
     let editor = document.createElement("div");
     editor.setAttribute("class", "editor");
-    this._container.appendChild(editor);
-
-
 
     let reset = document.createElement("button");
     reset.setAttribute("id", "controls-reset");
-    reset.innerHTML =  "Reset";
-    controls.appendChild(reset);
+    reset.innerHTML =  "Runtime";
 
     let stop = document.createElement("button");
     stop.setAttribute("id", "controls-stop");
@@ -80,6 +90,18 @@ export class HTML extends Library {
     clean.innerHTML =  "Clean";
     controls.appendChild(clean);
 
+    let database = document.createElement("button");
+    database.setAttribute("id", "controls-database");
+    database.innerHTML =  "Data";
+    controls.appendChild(database);
+
+    let history = document.createElement("button");
+    history.setAttribute("id", "controls-history");
+    history.innerHTML =  "History";
+    controls.appendChild(history);
+
+    controls.appendChild(reset);
+
     let link0 = new Image();
     link0.src = '/images/robotarm/link0.png';
     link0.style.transform = "translate(-250px, 100px) scale(0.5, 0.5)";
@@ -101,36 +123,30 @@ export class HTML extends Library {
     //editor.appendChild(link1);
     //editor.appendChild(link0);
     
+    let logo = new Image();
+    logo.src = '/images/logo.png';
+    logo.setAttribute("class", "logo");
+    header.appendChild(logo);
     
-
     let canvas = this._canvas = document.createElement("canvas");
+    canvas.setAttribute("class", "canvas");
     canvas.setAttribute("width", "500");
-    canvas.setAttribute("height", "500");
+    canvas.setAttribute("height", "900");
     canvas.style.backgroundColor = 'rgb(226, 79, 94)';
-    this._container.appendChild(canvas);
+    editor.appendChild(code);
+    editor.appendChild(canvas);
 
-    window.addEventListener("click", this._mouseEventHandler("click"));
+    this._container.appendChild(logo);
+    this._container.appendChild(controls);
+    this._container.appendChild(editor);
+
+
+    canvas.addEventListener("click", this._mouseEventHandler("click"));
+    controls.addEventListener("click", this._mouseEventHandler("click"));
     //window.addEventListener("change", this._changeEventHandler("change"));
     //window.addEventListener("input", this._inputEventHandler("change"));
+    window.addEventListener("keydown", this._keyEventHandler("key-down"));
     window.addEventListener("keyup", this._keyEventHandler("key-up"));
-    //window.addEventListener("keyup", this._keyEventHandler("key-up"));
-
-    var context = canvas.getContext('2d');
-    if (context !== null) {
-      var centerX = canvas.width / 2;
-      var centerY = canvas.height / 2;
-      var radius = 5;
-
-      context.beginPath();
-      context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
-      context.fillStyle = 'black';
-      context.fill();
-      context.lineWidth = 0;
-      context.strokeStyle = '#000000';
-      context.stroke();
-    }
-
-
   }
 
   protected decorate(elem:Element, value: RawValue): Instance {
@@ -182,8 +198,8 @@ export class HTML extends Library {
     let canvas = this._canvas;
     let context = canvas.getContext("2d")!;
     context.clearRect(0, 0, canvas.width, canvas.height);
-   
-    let radius = 5;
+
+    let radius = 10;
     for (let path of this._paths) {
       let centerX = path[0] / 10;
       let centerY = path[1] / 10;
@@ -248,7 +264,14 @@ export class HTML extends Library {
           case "controls-step-forward": this.program.send_control(4); break;
           case "controls-pause": this.program.send_control(5); break;
           case "controls-resume": this.program.send_control(6); break;
-          case "controls-clean": this.program.send_control(7); break;
+          case "controls-database": this.program.send_control(8); break;
+          case "controls-history": this.program.send_control(9); break;
+          case "controls-clean": {
+            this._paths = [];
+            this.rerender();
+            this.program.send_control(7); 
+            break;
+          };
           default: this._sendEvent([[table_id,1,120,event.x],
                                     [table_id,1,121,event.y]]);
         }
@@ -256,17 +279,33 @@ export class HTML extends Library {
     };
   }
 
+  
+
   _keyEventHandler(tagname:string) {
     return (event:KeyboardEvent) => {
       if(event.repeat) return;
-      let target:any|null = event.target as Element;
-
+      switch (tagname) {
+        case "key-down": {
+          if (event.keyCode == 17) {
+            this.control = true;
+          }
+          if (event.keyCode == 13 && this.control) {
+            let target:any|null = event.target as Element;
+            let value = target.value;
+            this.program.send_code(value);
+          }
+         break; 
+        }
+        case "key-up": {
+          if (event.keyCode == 17) {
+            this.control = false;
+          }
+          break;
+        }
+        default: {}
+      }
       let code = event.keyCode;
       let key = this._keyMap[code];
-      let value = target.value;
-      if (value != undefined) {
-        this._sendEvent([[1, 1, 1, value]]);
-      }
     };
   }
 
