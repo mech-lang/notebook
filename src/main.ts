@@ -48,6 +48,11 @@ class RemoteProgram implements Program {
     return this;
   }
 
+  send_code(code: string) {
+    this.send("Code", {code});
+    return this;
+  }
+
   handleDiff(diff: any) {
     // Populate the database
     for(let add of diff.adds) {
