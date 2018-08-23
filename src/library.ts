@@ -7,8 +7,8 @@ import {DiffMessage} from "./main";
 // Raw values
 
 export type RawValue = number|string;
-export type RawTuple = number[];
-export type RawChange = [number, number, number, RawValue];
+export type RawTuple = RawValue[];
+export type RawChange = [RawValue, RawValue, RawValue, RawValue];
 export interface RawMap<V> {[key: string]:  V, [key: number]:  V};
 export type RawRecord = RawMap<RawValue|RawValue[]>;
 
