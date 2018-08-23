@@ -1,5 +1,5 @@
 import "setimmediate";
-import {Program, Library, createId, RawValue, RawChange, RawMap, handleTuples} from "../../src";
+import {Program, Library, createId, RawValue, RawChange, RawMap, handleTuples, handleRecords} from "../../src";
 
 const EMPTY:never[] = [];
 
@@ -19,9 +19,10 @@ export class HTML extends Library {
   /** Topmost element containing root elements. */
     _container:HTMLElement;
     _canvas: HTMLCanvasElement;
+    _editor: HTMLTextAreaElement;
   /** Instances are the physical DOM elements representing table elements. */
   _instances: Instance[][] = [];
-  _paths: number[][] = []; 
+  _paths: any[][] = []; 
   control: Boolean;
   enter: Boolean;
 
@@ -42,6 +43,7 @@ export class HTML extends Library {
     header.setAttribute("class","header");
 
     let code = document.createElement("textarea");
+    this._editor = code;
     code.setAttribute("class","code");
     document.addEventListener('dblclick', function(e){ e.preventDefault(); }, false);
 
@@ -158,7 +160,7 @@ export class HTML extends Library {
     return e;
   }
 
-  protected addInstance(row: number, column: number, value: number) {
+  protected addInstance(row: any, column: any, value: RawValue) {
     row = row - 1;
     column = column - 1; 
     //if(id === null || id === "null") throw new Error(`Cannot create instance with null id for element '${elemId}'.`);
@@ -232,6 +234,7 @@ export class HTML extends Library {
         //this.removeInstance(instanceId);
       }
       for(let [table, row, column, value] of adds || EMPTY) {
+        let v: any = value;
         if (table == 1819042146 ) {
           if (column == 120) {
             column = 1;
@@ -239,10 +242,12 @@ export class HTML extends Library {
           if (column == 121) {
             column = 2;
           }
-          this.addInstance(row, column, value);
+          this.addInstance(row, column, v.Number);
+        } else if (table == 3436366081) {
+          this._editor.value = v.String;
         }
       }
-    })
+    }),
   };
 
   protected _sendEvent(change:RawChange[]) {
