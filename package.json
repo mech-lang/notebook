@@ -2,7 +2,7 @@
   "name": "mech-notebook",
   "version": "0.0.1",
   "description": "A notebook interface for Mech",
-  "homepage": "http://mech-lang.org",
+  "homepage": "https://mech-lang.org",
   "repository": {
     "type": "git",
     "url": "https://gitlab.com/mech-lang/notebook"
