@@ -1,38 +1,37 @@
 {
   "name": "mech-notebook",
   "version": "0.0.1",
-  "description": "A notebook interface for Mech",
-  "homepage": "https://mech-lang.org",
-  "repository": {
-    "type": "git",
-    "url": "https://gitlab.com/mech-lang/notebook"
+  "description": "An notebook interface for Mech",
+  "main": "index.js",
+  "bin": {
+    "create-wasm-app": ".bin/create-wasm-app.js"
   },
   "scripts": {
-    "build": "rollup -c",
-    "watch": "rollup -c -w",
-    "postinstall": "postinstall-build build",
-    "test": ""
+    "build": "webpack --config webpack.config.js",
+    "start": "webpack-dev-server"
   },
-  "author": "Corey Montella",
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/mech-lang/notebook.git"
+  },
+  "keywords": [
+    "mech",
+    "wasm",
+    "rust",
+    "webpack"
+  ],
+  "author": "Corey Montella <corey@mech-lang.org>",
   "license": "Apache-2.0",
-  "dependencies": {
-    "codemirror": "^5.28.0",
-    "postinstall-build": "^5.0.1",
-    "setimmediate": "^1.0.5"
+  "bugs": {
+    "url": "https://gitlab.com/mech-lang/notebook/issues"
   },
+  "homepage": "https://mech-lang.org",
   "devDependencies": {
-    "@types/codemirror": "0.0.41",
-    "autoprefixer": "^7.1.2",
-    "postcss-color-function": "^4.0.0",
-    "postcss-custom-properties": "^6.1.0",
-    "rollup": "^0.45.2",
-    "rollup-plugin-commonjs": "8.0.2",
-    "rollup-plugin-json": "^2.3.0",
-    "rollup-plugin-multi-entry": "2.0.0",
-    "rollup-plugin-node-resolve": "3.0.0",
-    "rollup-plugin-postcss": "^0.5.4",
-    "rollup-plugin-typescript2": "^0.4.6",
-    "rollup-watch": "^4.3.1",
-    "typescript": "^2.4.1"
+    "copy-webpack-plugin": "^4.5.2",
+    "hello-wasm-pack": "^0.1.0",
+    "mech-wasm": "^0.0.1",
+    "webpack": "^4.29.4",
+    "webpack-cli": "^3.1.0",
+    "webpack-dev-server": "^3.1.5"
   }
 }
