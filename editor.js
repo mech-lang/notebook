@@ -144,7 +144,7 @@ Draw to screen
   #app/main = [direction: "column" contains: [container]]`;
 */
 
-code.innerHTML =  `# Mech Website
+/*code.innerHTML =  `# Mech Website
 
 This is where the main website structure is defined
   wrapper = [|type  class         contains|
@@ -199,10 +199,9 @@ Animation controls
 
 Compose animation and controls
   composed-drawing = [#slider1; #slider2; #slider3; #drawing]
-  #robot-animation = [type: "div" class: _ contains: [composed-drawing]]`;
+  #robot-animation = [type: "div" class: _ contains: [composed-drawing]]`;*/
 
-  /*
- code.innerHTML =  `# Clock
+code.innerHTML = `# Clock
 
 Create a timer that ticks every second. This is the time source.
   #system/timer = [resolution: 1000, tick: 0, hours: 2, minutes: 32, seconds: 47]
@@ -237,7 +236,47 @@ Set up clock drawing elements
 Do the draw 
   clock-canvas = [type: "canvas" class: _ contains: [#clock] parameters: [width: 300 height: 300]]
   #app/main = [root: "drawing" direction: "column" contains: [clock-canvas]]`;
-*/
+
+/*
+code.innerHTML =  `# Bouncing Balls
+
+Define the environment
+  #ball = [|x   y   vx vy|
+            10  10  20  0]
+  #system/timer = [resolution: 15, tick: 0, hours: 0, minutes: 0, seconds: 0]
+  #gravity = 1
+  #boundary = [width: 500 height: 500]
+
+## Update condition
+
+Update the block positions on each tick of the timer
+  ~ #system/timer.tick
+  #ball.x := #ball.x + #ball.vx
+  #ball.y := #ball.y + #ball.vy
+  #ball.vy := #ball.vy + #gravity
+
+## Boundary Condition
+
+Keep the balls within the boundary height
+  ~ #ball.y
+  iy = #ball.y > #boundary.height
+  #ball.y{iy} := #boundary.height
+  #ball.vy{iy} := -#ball.vy * 0.80
+
+Keep the balls within the boundary width
+  ~ #ball.x
+  ix = #ball.x > #boundary.width
+  ixx = #ball.x < 0
+  #ball.x{ix} := #boundary.width
+  #ball.x{ixx} := 0
+  #ball.vx{ix | ixx} := -#ball.vx * 0.80
+
+## Drawing
+
+Set up clock drawing elements
+  ball = [shape: "circle" parameters: [cx: #ball.x cy: #ball.y radius: 10 fill: "#000000"]]
+  canvas = [type: "canvas" class: _ contains: [ball] parameters: [width: #boundary.width height: #boundary.height]]
+  #app/main = [root: "drawing" direction: "column" contains: [canvas]]`;*/
 
 let drawing_area = document.createElement("div")
 drawing_area.setAttribute("id", "drawing");
