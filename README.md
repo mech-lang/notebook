@@ -10,11 +10,31 @@ Read about progress on our [blog](https://mech-lang.org/blog/), follow us on Twi
 
 A graphical interface for Mech using a notebook metaphor. Mech notebook presents the world as a grid of cells, into which you can log data, write queries over that data, collect and write notes, draw interfaces, and design visualizations.
 
-## Building
+## Building and Running
 
-```
+Download and install [NodeJS](https://nodejs.org) and then run
+
+```bash
 > npm install
 ```
+
+You can start a file server that will host the editor with
+
+```bash
+> npm start
+```
+
+Then navigate a browser to `localhost:8080`. A packaged version can be built with
+
+```bash
+> npm run build
+```
+
+## Project Status
+
+Mech is currently in the **alpha** stage of development. This means that while some features work and are tested, programs are still likely to crash and produce incorrect results. We've implemented some language features, but many are not yet implemented.
+
+Feel free to use the language for your own satisfaction, but please don't use it for anything important.
 
 ## License
 
