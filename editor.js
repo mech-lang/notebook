@@ -1,5 +1,9 @@
 import {Core} from "mech-wasm";
 
+let host = location.hostname == "" ? "localhost" : location.hostname;
+let connection =new WebSocket(`ws://${host}:3012`);
+console.log(connection)
+
 let mech_core = Core.new();
 
 let time = 1;
