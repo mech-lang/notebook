@@ -1,8 +1,38 @@
 import {Core} from "mech-wasm";
 
+// ## Websocket 
+
 let host = location.hostname == "" ? "localhost" : location.hostname;
-let connection =new WebSocket(`ws://${host}:3012`);
-console.log(connection)
+let ws = new WebSocket(`ws://${host}:3012`);
+
+ws.addEventListener("open", () => opened());
+ws.addEventListener("close", (event) => closed(event.code, event.reason));
+ws.addEventListener("message", (event) => messaged(event.data));
+
+function opened() {
+  console.log(ws);
+  // Get code
+  ws.send("{\"Table\":3436366081}");
+}
+
+function closed(code, reason) {
+  console.log(code, reason);
+}
+
+function messaged(data) {
+  var obj = JSON.parse(data);
+  let code = obj[0][0].String;
+  let code_editor = document.getElementById("code");
+  code_editor.innerHTML = code;
+
+  // Compile the code
+  mech_core.compile_code(code);
+  mech_core.add_application();
+
+  // Start the timer if there is one
+  let column = mech_core.get_column("system/timer", 1);
+  interval = setInterval(system_timer, column[0]);
+}
 
 let mech_core = Core.new();
 
@@ -32,11 +62,6 @@ let clear_core = document.createElement("button");
 clear_core.setAttribute("id", "clear core");
 clear_core.innerHTML =  "Clear Core";
 controls.appendChild(clear_core);
-
-let start_timer = document.createElement("button");
-start_timer.setAttribute("id", "start timer");
-start_timer.innerHTML =  "Start Timer";
-controls.appendChild(start_timer);
 
 let txn = document.createElement("button");
 txn.setAttribute("id", "txn");
@@ -148,7 +173,8 @@ Draw to screen
   #app/main = [direction: "column" contains: [container]]`;
 */
 
-/*code.innerHTML =  `# Mech Website
+/*
+code.innerHTML =  `# Mech Website
 
 This is where the main website structure is defined
   wrapper = [|type  class         contains|
@@ -205,7 +231,8 @@ Compose animation and controls
   composed-drawing = [#slider1; #slider2; #slider3; #drawing]
   #robot-animation = [type: "div" class: _ contains: [composed-drawing]]`;*/
 
-code.innerHTML = `# Clock
+  /*
+ code.innerHTML =  `# Clock
 
 Create a timer that ticks every second. This is the time source.
   #system/timer = [resolution: 1000, tick: 0, hours: 2, minutes: 32, seconds: 47]
@@ -240,47 +267,7 @@ Set up clock drawing elements
 Do the draw 
   clock-canvas = [type: "canvas" class: _ contains: [#clock] parameters: [width: 300 height: 300]]
   #app/main = [root: "drawing" direction: "column" contains: [clock-canvas]]`;
-
-/*
-code.innerHTML =  `# Bouncing Balls
-
-Define the environment
-  #ball = [|x   y   vx vy|
-            10  10  20  0]
-  #system/timer = [resolution: 15, tick: 0, hours: 0, minutes: 0, seconds: 0]
-  #gravity = 1
-  #boundary = [width: 500 height: 500]
-
-## Update condition
-
-Update the block positions on each tick of the timer
-  ~ #system/timer.tick
-  #ball.x := #ball.x + #ball.vx
-  #ball.y := #ball.y + #ball.vy
-  #ball.vy := #ball.vy + #gravity
-
-## Boundary Condition
-
-Keep the balls within the boundary height
-  ~ #ball.y
-  iy = #ball.y > #boundary.height
-  #ball.y{iy} := #boundary.height
-  #ball.vy{iy} := -#ball.vy * 0.80
-
-Keep the balls within the boundary width
-  ~ #ball.x
-  ix = #ball.x > #boundary.width
-  ixx = #ball.x < 0
-  #ball.x{ix} := #boundary.width
-  #ball.x{ixx} := 0
-  #ball.vx{ix | ixx} := -#ball.vx * 0.80
-
-## Drawing
-
-Set up clock drawing elements
-  ball = [shape: "circle" parameters: [cx: #ball.x cy: #ball.y radius: 10 fill: "#000000"]]
-  canvas = [type: "canvas" class: _ contains: [ball] parameters: [width: #boundary.width height: #boundary.height]]
-  #app/main = [root: "drawing" direction: "column" contains: [canvas]]`;*/
+*/
 
 let drawing_area = document.createElement("div")
 drawing_area.setAttribute("id", "drawing");
@@ -332,21 +319,18 @@ function render() {
   mech_core.render();
 }
 
+var interval;
 document.getElementById("compile").addEventListener("click", function(click) {
-  console.log(click);
+  mech_core.clear();
+  clearInterval(interval);
+
   let code = document.getElementById("code");
   mech_core.compile_code(code.value);
   mech_core.add_application();
-  /*
-  mech_core.add_canvas();
-  document.getElementById("drawing canvas").addEventListener("click", function(click) {
-    console.log(click.layerX, click.layerY);
-    mech_core.queue_change("html/event/click",1,1,click.layerX);
-    mech_core.queue_change("html/event/click",1,2,click.layerY);
-    mech_core.process_transaction();
-    render();
-  });*/
-  //render();
+
+  // Start the timer if there is one
+  let column = mech_core.get_column("system/timer", 1);
+  interval = setInterval(system_timer, column[0]);
 });
 
 document.getElementById("view core").addEventListener("click", function() {
@@ -360,12 +344,8 @@ document.getElementById("view runtime").addEventListener("click", function() {
 
 document.getElementById("clear core").addEventListener("click", function() {
   mech_core.clear();
+  clearInterval(interval);
   //render();
-});
-
-document.getElementById("start timer").addEventListener("click", function() {
-  let column = mech_core.get_column("system/timer", 1);
-  setInterval(system_timer, column[0]);
 });
 
 /*document.getElementById("txn").addEventListener("click", function() {
