@@ -10,6 +10,6 @@ module.exports = {
   },
   mode: "development",
   plugins: [
-    new CopyWebpackPlugin(['index.html','./css/editor.css'])
+    new CopyWebpackPlugin([])
   ],
 };
