@@ -102,14 +102,7 @@ let last_slider_value = 100;
 time_slider.oninput = function() {
   pause();
   let current_value = this.value;
-  // Time travel forward
-  if (current_value > last_slider_value) {
-    mech_core.step_forward_one();
-  // Time travel backward
-  } else if (current_value < last_slider_value) {
-    mech_core.step_back_one();
-  }
-  last_slider_value = current_value;
+  mech_core.set_time(100 - current_value);
   render();
 }
 
