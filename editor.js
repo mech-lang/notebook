@@ -2,6 +2,7 @@ import {Core} from "mech-wasm";
 
 // ## Websocket 
 
+/*
 let host = location.hostname == "" ? "localhost" : location.hostname;
 let ws = new WebSocket(`ws://${host}:3012`);
 
@@ -32,7 +33,7 @@ function messaged(data) {
   // Start the timer if there is one
   let column = mech_core.get_column("system/timer", 1);
   interval = setInterval(system_timer, column[0]);
-}
+}*/
 
 let mech_core = Core.new();
 
@@ -220,7 +221,9 @@ document.getElementById("compile").addEventListener("click", function(click) {
 
   // Start the timer if there is one
   let column = mech_core.get_column("system/timer", 1);
-  interval = setInterval(system_timer, column[0]);
+  if (column[0] != undefined) {
+    interval = setInterval(system_timer, column[0]);
+  }
 });
 
 document.getElementById("view core").addEventListener("click", function() {
@@ -238,6 +241,59 @@ document.getElementById("clear core").addEventListener("click", function() {
   //render();
 });
 
-/*document.getElementById("txn").addEventListener("click", function() {
-  mech_core.process_transaction("test",1,1,3);
-});*/
+let program = `# Robot Arm Drawing
+
+This is where the main website structure is defined
+  #app/main = [|root      direction containts|
+                "drawing" "column"  [#robot-controls]
+                "drawing" "column"  [#robot-animation]]
+                
+## Drawing
+
+Set up the robot arm linkages
+  angle1 = #slider1{1,4}{1,3}
+  angle2 = #slider2{1,4}{1,3}
+  angle3 = #slider3{1,4}{1,3}
+  x0 = 400
+  y0 = 550
+  h1 = 53
+  h2 = 100
+  h3 = 85
+  y1 = (y0 - 50) - h1 * math/cos(degrees: angle1)
+  x1 = x0 + h1 * math/sin(degrees: angle1)
+  y2 = y1 - h1 * math/cos(degrees: angle1)
+  x2 = x1 + h1 * math/sin(degrees: angle1)
+  y3 = y2 - h2 * math/cos(degrees: angle2)
+  x3 = x2 + h2 * math/sin(degrees: angle2)
+  y4 = y3 - h2 * math/cos(degrees: angle2)
+  x4 = x3 + h2 * math/sin(degrees: angle2)
+  y5 = y4 - h3 * math/cos(degrees: angle3)
+  x5 = x4 + h3 * math/sin(degrees: angle3)
+  #robot-arm = [|shape   parameters|
+                 "image" [x: x3 y: y3 rotation: angle2 image: "http://mech-lang.org/img/robotarm/link2.png"]
+                 "image" [x: x1 y: y1 rotation: angle1 image: "http://mech-lang.org/img/robotarm/link1.png"]
+                 "image" [x: x0 y: y0 rotation: 0 image: "http://mech-lang.org/img/robotarm/link0.png"]
+                 "image" [x: x5 y: y5 rotation: angle3 image: "http://mech-lang.org/img/robotarm/gripper.png"]]
+
+Do the draw 
+  #drawing = [type: "canvas" class: _ contains: [#robot-arm] parameters: [width: 800 height: 650]]
+  
+Animation controls  
+  #slider1 = [type: "slider" class: _ contains: _ parameters: [min: -120 max: 120 value: -45]]
+  #slider2 = [type: "slider" class: _ contains: _ parameters: [min: -120 max: 120 value: 60]]
+  #slider3 = [type: "slider" class: _ contains: _ parameters: [min: -90 max: 200 value: 170]]
+
+Compose animation and controls
+  #robot-controls = [type: "div" class: _ containts: [#slider1; #slider2; #slider3]]
+  #robot-animation = [type: "div" class: _ contains: [#drawing]]`;
+
+  code.innerHTML = program;
+  mech_core.compile_code(code.value);
+  mech_core.add_application();
+
+  // Start the timer if there is one
+  let column = mech_core.get_column("system/timer", 1);
+  if (column[0] != undefined) {
+    interval = setInterval(system_timer, column[0]);
+  }
+  
