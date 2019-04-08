@@ -1,0 +1,23 @@
+# Mech Tutorial for Programmers
+
+Welcome to the Mech programming language. This tutorial is intended for developers who are familiar with imperative programming languages like C, Javascript, or Python. Mech follows a different paradigm, known as dataflow, so we will point out the differences and similarities between the familiar and unfamiliar throught this tutorial.
+
+## Introduction to Mech
+
+Here, we define a table representing a group of students
+
+  #students = [|name     age major       gpa|
+                "Harold" 18  "Chemistry" 2.8
+                "Yang"   19  "Physics"   3.2
+                "Lisa"   19  "Comp Sci"  3.9]
+
+For example, we we can find the average GPA of the students
+
+  count = stat/sum(column: (#students.gpa * 0 + 1))
+  #average-gpa = stat/sum(column: #students.gpa) / count
+
+This block counts the number of students, sums their GPA, and then computes the average GPA. Within a block, expressions are computed in the order they are written, as with the imperative model. But blocks themselves execute in an order determined by the data on which they depend. For example, let's say we change the GPA of Lisa with the set operator `:=`, which updates a value after it's been defined already:
+
+  #students.gpa := 3.8
+
+Since th GPA changed, every block that depends on this GPA will update as well. This is the essence of a dataflow language; although we cannot specify control flow as in an imperative language, we can specify the data, and this in turn causes execution to happen as defined by the data dependencies of blocks.
