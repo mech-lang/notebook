@@ -30,3 +30,12 @@ If the input is a column the sine function is applied to each element. In the ou
 
   angles = [0; 90; 270]
   block/view = math/sin(degrees: angles)
+
+## Used In
+
+clock.mec
+robot-drawing.mec
+
+## See Also
+
+math/cos
