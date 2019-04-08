@@ -188,10 +188,21 @@ app.appendChild(editor_container);*/
 
 let app = document.createElement("div");
 app.innerHTML = `
+<h1># Documentation</h1>
+<h2>Introduction</h2>
 <ul>
   <li><a href="/#/docs/tutorial.mec">tutorial</a></li>
+</ul>
+<h2>Math</h2>
+<ul>
   <li><a href="/#/docs/math/sin.mec">math/sin</a></li>
   <li><a href="/#/docs/math/cos.mec">math/cos</a></li>
+</ul>
+<h2>Examples</h2>
+<ul>
+  <li><a href="/#/examples/breakout.mec">breakout.mec</a></li>
+  <li><a href="/#/examples/clock.mec">clock.mec</a></li>
+  <li><a href="/#/examples/robot-drawing.mec">robot-drawing.mec</a></li>
 </ul>
 `;
 
@@ -265,7 +276,7 @@ window.onhashchange = function(event) {
       console.log(program);
       //code.innerHTML = program;
       mech_core.compile_code(program);
-  
+      mceh_core.add_application();
       // Start the timer if there is one
       let column = mech_core.get_column("system/timer", 1);
       if (column[0] != undefined) {
@@ -285,6 +296,12 @@ if (extension == "mec") {
   xhr.send();
   let program = xhr.responseText;
   mech_core.compile_code(program);
+  mech_core.add_application();
+  // Start the timer if there is one
+  let column = mech_core.get_column("system/timer", 1);
+  if (column[0] != undefined) {
+    interval = setInterval(system_timer, column[0]);
+  }
 } else if (url == "") {
   document.body.appendChild(app);
 } else {
