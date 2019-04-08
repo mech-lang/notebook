@@ -35,7 +35,8 @@ function messaged(data) {
   interval = setInterval(system_timer, column[0]);
 }*/
 
-let mech_core = Core.new();
+let mech_core = Core.new(100000, 100);
+var interval;
 
 let time = 1;
 
@@ -178,14 +179,21 @@ nav.setAttribute("class","navigation");
 
 // ## Bring it all together
 
-let app = document.createElement("div");
+/*let app = document.createElement("div");
 app.setAttribute("id","app");
 app.setAttribute("class","app");
 app.appendChild(nav);
 app.appendChild(code);
-app.appendChild(editor_container);
+app.appendChild(editor_container);*/
 
-document.body.appendChild(app);
+let app = document.createElement("div");
+app.innerHTML = `
+<ul>
+  <li><a href="/#/docs/tutorial.mec">tutorial</a></li>
+  <li><a href="/#/docs/math/sin.mec">math/sin</a></li>
+  <li><a href="/#/docs/math/cos.mec">math/cos</a></li>
+</ul>
+`;
 
 // ## Event handlers
 function system_timer() {
@@ -202,8 +210,7 @@ function system_timer() {
 function render() {
   mech_core.render();
 }
-
-var interval;
+/*
 document.getElementById("compile").addEventListener("click", function(click) {
   mech_core.clear();
   clearInterval(interval);
@@ -232,61 +239,54 @@ document.getElementById("clear core").addEventListener("click", function() {
   mech_core.clear();
   clearInterval(interval);
   //render();
-});
+});*/
 
-let program = `# Robot Arm Drawing
-
-This is where the main website structure is defined
-  #app/main = [|root      direction containts|
-                "drawing" "column"  [#robot-controls]
-                "drawing" "column"  [#robot-animation]]
-                
-## Drawing
-
-Set up the robot arm linkages
-  angle1 = #slider1{1,4}{1,3}
-  angle2 = #slider2{1,4}{1,3}
-  angle3 = #slider3{1,4}{1,3}
-  x0 = 400
-  y0 = 550
-  h1 = 53
-  h2 = 100
-  h3 = 85
-  y1 = (y0 - 50) - h1 * math/cos(degrees: angle1)
-  x1 = x0 + h1 * math/sin(degrees: angle1)
-  y2 = y1 - h1 * math/cos(degrees: angle1)
-  x2 = x1 + h1 * math/sin(degrees: angle1)
-  y3 = y2 - h2 * math/cos(degrees: angle2)
-  x3 = x2 + h2 * math/sin(degrees: angle2)
-  y4 = y3 - h2 * math/cos(degrees: angle2)
-  x4 = x3 + h2 * math/sin(degrees: angle2)
-  y5 = y4 - h3 * math/cos(degrees: angle3)
-  x5 = x4 + h3 * math/sin(degrees: angle3)
-  #robot-arm = [|shape   parameters|
-                 "image" [x: x3 y: y3 rotation: angle2 image: "http://mech-lang.org/img/robotarm/link2.png"]
-                 "image" [x: x1 y: y1 rotation: angle1 image: "http://mech-lang.org/img/robotarm/link1.png"]
-                 "image" [x: x0 y: y0 rotation: 0 image: "http://mech-lang.org/img/robotarm/link0.png"]
-                 "image" [x: x5 y: y5 rotation: angle3 image: "http://mech-lang.org/img/robotarm/gripper.png"]]
-
-Do the draw 
-  #drawing = [type: "canvas" class: _ contains: [#robot-arm] parameters: [width: 800 height: 650]]
+window.onhashchange = function(event) {
+  document.body.innerHTML = "";
+  console.log();
+  let extension = location.hash.substring(location.hash.length - 3);
+  var url = location.hash.substring(1);
+  if (extension == "mec") {
+    var xhr = new XMLHttpRequest();
+    console.log(url);
+    xhr.open('GET', url, true);
+    xhr.send();
   
-Animation controls  
-  #slider1 = [type: "slider" class: _ contains: _ parameters: [min: -120 max: 120 value: -45]]
-  #slider2 = [type: "slider" class: _ contains: _ parameters: [min: -120 max: 120 value: 60]]
-  #slider3 = [type: "slider" class: _ contains: _ parameters: [min: -90 max: 200 value: 170]]
-
-Compose animation and controls
-  #robot-controls = [type: "div" class: _ containts: [#slider1; #slider2; #slider3]]
-  #robot-animation = [type: "div" class: _ contains: [#drawing]]`;
-
-  code.innerHTML = program;
-  mech_core.compile_code(code.value);
-  mech_core.add_application();
-
-  // Start the timer if there is one
-  let column = mech_core.get_column("system/timer", 1);
-  if (column[0] != undefined) {
-    interval = setInterval(system_timer, column[0]);
+    xhr.onreadystatechange = processRequest;
+  } else if (url == "") {
+    document.body.appendChild(app);
+  } else {
+    window.location = event.newURL;
   }
+
+  function processRequest(e) {
+    if (xhr.readyState == 4 && xhr.status == 200) {
+      let program = xhr.responseText;
+      console.log(program);
+      //code.innerHTML = program;
+      mech_core.compile_code(program);
   
+      // Start the timer if there is one
+      let column = mech_core.get_column("system/timer", 1);
+      if (column[0] != undefined) {
+        interval = setInterval(system_timer, column[0]);
+      }
+    }
+  }
+
+}
+
+let extension = location.hash.substring(location.hash.length - 3);
+var url = location.hash.substring(1);
+if (extension == "mec") {
+  var xhr = new XMLHttpRequest();
+  var url = location.hash.substring(1);
+  xhr.open('GET', url, false);
+  xhr.send();
+  let program = xhr.responseText;
+  mech_core.compile_code(program);
+} else if (url == "") {
+  document.body.appendChild(app);
+} else {
+  window.location = event.newURL;
+}
