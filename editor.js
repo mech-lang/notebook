@@ -308,7 +308,7 @@ if (extension == "mec") {
     interval = setInterval(system_timer, column[0]);
   }
 } else if (url == "") {
-  document.body.appendChild(app);
+  window.location = "/#/docs/index.mec";
 } else {
   window.location = event.newURL;
 }
