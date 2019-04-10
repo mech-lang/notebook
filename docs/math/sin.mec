@@ -33,9 +33,9 @@ If the input is a column the sine function is applied to each element. In the ou
 
 ## Used In
 
-clock.mec
-robot-drawing.mec
+o <a href="/#/examples/clock.mec">clock.mec</a>
+o <a href="/#/examples/robot-drawing.mec">robot-drawing.mec</a>
 
 ## See Also
 
-math/cos
+o <a href="/#/docs/math/cos.mec">math/cos</a>
