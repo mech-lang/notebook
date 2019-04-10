@@ -19,9 +19,9 @@ This code creates a table called `students`, which is global in scope as denoted
 
 Mech programs are composed of "blocks" of code like the one above. A block is indented from normal text with (at least) two spaces, and continues until the next non-indented paragraph. Each block of code can do three things:
 
-a) Select zero or more columns from the global table store.
-b) Apply transformations to the selected columns in the local block scope.
-c) Write new or transformed columns to the global table store.
+- Select zero or more columns from the global table store.
+- Apply transformations to the selected columns in the local block scope.
+- Write new or transformed columns to the global table store.
 
 For example, we we can find use the previously defined student table to calculate their average GPA:
 
