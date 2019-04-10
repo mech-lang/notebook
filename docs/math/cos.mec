@@ -5,7 +5,7 @@
   y = math/cos(radians: angle)
   y = math/cos(degrees: angle)
 
-## Arguments  
+## Arguments
 
 - radians - a vector of angles in radians
 - degrees - a vector of angles in degrees

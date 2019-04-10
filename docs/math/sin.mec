@@ -5,7 +5,7 @@
   y = math/sin(radians: angle)
   y = math/sin(degrees: angle)
 
-## Arguments  
+## Arguments
 
 - radians - a vector of angles in radians
 - degrees - a vector of angles in degrees
