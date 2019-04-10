@@ -7,9 +7,8 @@
 
 ## Arguments  
 
-radians - a vector of angles in radians
-
-degrees - a vector of angles in degrees
+- radians - a vector of angles in radians
+- degrees - a vector of angles in degrees
 
 ## Description
 
@@ -26,11 +25,12 @@ Calculate sine of an angle in radians
   angle = 180 * 3.141519 / 180
   block/view = math/sin(radians: angle)
 
+
 ## Used In
 
-clock.mec
-robot-drawing.mec
+- <a href="/#/examples/clock.mec">clock.mec</a>
+- <a href="/#/examples/robot-drawing.mec">robot-drawing.mec</a>
 
 ## See Also
 
-math/sin
+- <a href="/#/docs/math/sin.mec">math/sin</a>
