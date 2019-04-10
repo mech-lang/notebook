@@ -138,9 +138,10 @@ button:hover {
 
 .mech-contents {
   width: 100px;
-  padding: 30px;
+  padding-bottom: 30px;
+  padding-right: 0px;
   padding-left: 40px;
-  padding-top: 90px;
+  padding-top: 115px;
 }
 
 .mech-contents-heading {
@@ -162,7 +163,7 @@ button:hover {
 .mech-program {
   flex-grow: 1;
   max-width: 750px;
-  padding: 20px;
+  padding: 40px;
   text-align: justify;
   overflow-y: scroll;
 }
