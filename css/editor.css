@@ -162,15 +162,16 @@ button:hover {
 }
 
 .mech-program {
+  flex-grow: 1;
+  max-width: 750px;
   padding: 20px;
   text-align: justify;
   overflow-y: scroll;
 }
 
 .mech-code {
-  flex-grow: 1;
-  max-width: 750px;
   border-radius: 5px;
+  outline: none;
   white-space: pre;
   overflow-wrap: normal;
   overflow-x: scroll;
@@ -186,6 +187,23 @@ button:hover {
   overflow-x: auto;
   background-color: rgb(16, 2, 24);
   color: rgb(250,250,250);
+}
+
+.mech-program::-webkit-scrollbar {
+  width: .25em;
+}
+
+.mech-program::-webkit-scrollbar-track {
+  
+}
+
+.mech-program::-webkit-scrollbar-thumb {
+background-color: darkgrey;
+outline: 1px solid slategrey;
+}
+
+.mech-code::-webkit-scrollbar {
+  
 }
 
 .mech-view {
