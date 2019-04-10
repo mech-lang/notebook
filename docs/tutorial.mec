@@ -2,7 +2,7 @@
 
 Welcome to the Mech programming language. This tutorial is intended for developers who are familiar with imperative programming languages like C, Javascript, or Python. Mech follows a different paradigm, known as dataflow, so we will point out the differences and similarities between the familiar and unfamiliar throught this tutorial.
 
-This tutorial will assume you've downloaded and installed Mech using the instructions found on the [main repository](https://github.com/mech-lang/mech).
+This tutorial will assume you've downloaded and installed Mech using the instructions found on the <a href="https://github.com/mech-lang/mech">main repository</a>.
 
 ## Introduction to Mech
 
@@ -17,7 +17,7 @@ Let's define a table representing a group of students
 
 This code creates a table called `students`, which is global in scope as denoted by the hashtag `#`. The table has three columns (`name`, `age`, and `gpa`) and three rows. Number values don't distinguish between integer and floating point representations, which can be mixed freely.
 
-Mech programs are composed of blocks of code like the one above. A block is indented from normal text with (at least) two spaces, and continues until the next non-indented paragraph. Each block of code can do three things:
+Mech programs are composed of "blocks" of code like the one above. A block is indented from normal text with (at least) two spaces, and continues until the next non-indented paragraph. Each block of code can do three things:
 
 a) Select zero or more columns from the global table store.
 b) Apply transformations to the selected columns in the local block scope.
