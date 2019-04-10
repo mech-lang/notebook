@@ -187,6 +187,10 @@ app.appendChild(code);
 app.appendChild(editor_container);*/
 
 let app = document.createElement("div");
+app.setAttribute("id","mech-app");
+app.onclick = function(event) {
+  console.log(event);
+}
 app.innerHTML = `
 <h1># Documentation</h1>
 <h2>Introduction</h2>
@@ -272,11 +276,12 @@ window.onhashchange = function(event) {
 
   function processRequest(e) {
     if (xhr.readyState == 4 && xhr.status == 200) {
+      clearInterval(interval);
       let program = xhr.responseText;
       console.log(program);
       //code.innerHTML = program;
       mech_core.compile_code(program);
-      mceh_core.add_application();
+      mech_core.add_application();
       // Start the timer if there is one
       let column = mech_core.get_column("system/timer", 1);
       if (column[0] != undefined) {
