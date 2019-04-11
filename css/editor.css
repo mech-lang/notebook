@@ -131,8 +131,32 @@ button:hover {
 }
 
 .mech-controls {
-  width: 75px;
+  width: 50px;
   background-color: rgb(33, 11, 46);
+  color: rgb(250,250,250);
+  font-size: 20px;
+}
+
+.mech-controls a {
+  color: rgba(250, 250, 250, 0.75);
+}
+
+.mech-control {
+  width: 35px;
+  height: 31px;
+  display: block;
+  text-align: center;
+  padding-top: 3px;
+  cursor: pointer; 
+  margin-left: 6px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border: 1px solid rgb(92, 53, 93);
+  border-radius: 3px;
+}
+
+.mech-control:hover {
+  background-color: rgb(92, 53, 93);
 }
 
 .mech-docs {
