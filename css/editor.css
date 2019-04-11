@@ -157,6 +157,10 @@ button:hover {
   cursor: pointer;
 }
 
+.mech-contents-sub-heading:hover {
+  color: rgb(243, 169, 16);
+}
+
 .mech-application {
   flex-grow: 2;
 }
@@ -212,7 +216,7 @@ outline: 1px solid slategrey;
 
 .mech-code::-webkit-scrollbar-thumb {
   background-color: rgb(164, 95, 167);
-  
+
 }
 
 .mech-view {
