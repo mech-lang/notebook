@@ -2,23 +2,39 @@
 
 ## Introduction
 
+- Installing Mech
+- Running Mech
 - <a href="/#/docs/tutorial.mec">Tutorial</a>
+- Getting Help
 
-## App
+## Mech Programs
 
-- <a href="/#/docs/app/main.mec">app/main</a> - A container for all root nodes of your application.
+- Programming Model
+- Blocks
+- Database
+- Literate Programming
 
-## Math
+## Core Language
 
-- <a href="/#/docs/math/sin.mec">math/sin</a> - compute the sine of a vector of angles.
-- <a href="/#/docs/math/cos.mec">math/cos</a> - compute the cosine a vector of angles.
+- Tables
+- Values
+- Indexing and Table Slicing
+- Inequality Expressions
+- Logic Expressions
 
-## Stat
+## Standard Library
 
-- <a href="/#/docs/stat/sum.mec">stat/sum</a> - compute the sum of a vector.
+- <a href="/#/docs/app/index.mec">App</a> - components for front-end application development.
+- <a href="/#/docs/math/index.mec">Math</a> - functions for arithmatic, trigonometric, logarithms, etc.
+- <a href="/#/docs/stat/index.mec">Stat</a> - functions for statistics computations.
 
-## Examples
+## Example Programs
 
 - <a href="/#/examples/breakout.mec">breakout.mec</a> - a bouncing ball game
 - <a href="/#/examples/clock.mec">clock.mec</a> - an analog clock
 - <a href="/#/examples/robot-drawing.mec">robot-drawing.mec</a> - a drawing of a robot arm that you can control with sliders
+
+## Appendix
+
+- Grammar
+- Common Mark and 

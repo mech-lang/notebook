@@ -16,14 +16,14 @@ Calculates the cosine of one or more angles in a vector. Operates element-wise o
 
 ## Examples
 
-Calculate sine of an angle in degrees
+Calculate cosine of an angle in degrees
 
   block/view = math/cos(degrees: 180)
 
-Calculate sine of an angle in radians
+Calculate cosine of an angle in radians
 
   angle = 180 * 3.141519 / 180
-  block/view = math/sin(radians: angle)
+  block/view = math/cos(radians: angle)
 
 
 ## Used In
