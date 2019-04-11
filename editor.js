@@ -186,30 +186,6 @@ app.appendChild(nav);
 app.appendChild(code);
 app.appendChild(editor_container);*/
 
-let app = document.createElement("div");
-app.setAttribute("id","mech-app");
-app.onclick = function(event) {
-  console.log(event);
-}
-app.innerHTML = `
-<h1># Documentation</h1>
-<h2>Introduction</h2>
-<ul>
-  <li><a href="/#/docs/tutorial.mec">tutorial</a></li>
-</ul>
-<h2>Math</h2>
-<ul>
-  <li><a href="/#/docs/math/sin.mec">math/sin</a></li>
-  <li><a href="/#/docs/math/cos.mec">math/cos</a></li>
-</ul>
-<h2>Examples</h2>
-<ul>
-  <li><a href="/#/examples/breakout.mec">breakout.mec</a></li>
-  <li><a href="/#/examples/clock.mec">clock.mec</a></li>
-  <li><a href="/#/examples/robot-drawing.mec">robot-drawing.mec</a></li>
-</ul>
-`;
-
 // ## Event handlers
 function system_timer() {
   var d = new Date();
@@ -258,7 +234,6 @@ document.getElementById("clear core").addEventListener("click", function() {
 
 window.onhashchange = function(event) {
   document.body.innerHTML = "";
-  console.log();
   let extension = location.hash.substring(location.hash.length - 3);
   var url = location.hash.substring(1);
   if (extension == "mec") {
@@ -269,7 +244,8 @@ window.onhashchange = function(event) {
   
     xhr.onreadystatechange = processRequest;
   } else if (url == "") {
-    document.body.appendChild(app);
+    clearInterval(interval);
+    window.location = "/#/docs/index.mec";
   } else {
     window.location = event.newURL;
   }
@@ -280,6 +256,7 @@ window.onhashchange = function(event) {
       let program = xhr.responseText;
       console.log(program);
       //code.innerHTML = program;
+      mech_core.clear();
       mech_core.compile_code(program);
       mech_core.add_application();
       // Start the timer if there is one
@@ -289,17 +266,18 @@ window.onhashchange = function(event) {
       }
     }
   }
-
 }
 
 let extension = location.hash.substring(location.hash.length - 3);
 var url = location.hash.substring(1);
 if (extension == "mec") {
+  clearInterval(interval);
   var xhr = new XMLHttpRequest();
   var url = location.hash.substring(1);
   xhr.open('GET', url, false);
   xhr.send();
   let program = xhr.responseText;
+  mech_core.clear();
   mech_core.compile_code(program);
   mech_core.add_application();
   // Start the timer if there is one
@@ -308,6 +286,7 @@ if (extension == "mec") {
     interval = setInterval(system_timer, column[0]);
   }
 } else if (url == "") {
+  clearInterval(interval);
   window.location = "/#/docs/index.mec";
 } else {
   window.location = event.newURL;
