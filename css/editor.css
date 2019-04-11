@@ -203,6 +203,15 @@ outline: 1px solid slategrey;
 }
 
 .mech-code::-webkit-scrollbar {
+  height: .3em;
+}
+
+.mech-code::-webkit-scrollbar-track {
+  
+}
+
+.mech-code::-webkit-scrollbar-thumb {
+  background-color: rgb(164, 95, 167);
   
 }
 
