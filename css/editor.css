@@ -223,6 +223,17 @@ button:hover {
   color: rgb(250,250,250);
 }
 
+li p {
+  margin: 0px;
+}
+
+.mech-inline-code {
+  font-family: 'Fira';
+  background-color: rgb(204, 202, 185);
+  padding: 1px 5px 1px 5px;
+  border-radius: 3px;
+}
+
 .mech-program::-webkit-scrollbar {
   width: .25em;
 }
