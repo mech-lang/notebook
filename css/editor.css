@@ -228,10 +228,27 @@ li p {
 }
 
 .mech-inline-code {
+  font-size: 14px;
   font-family: 'Fira';
   background-color: rgb(204, 202, 185);
   padding: 1px 5px 1px 5px;
   border-radius: 3px;
+}
+
+.mech-inline-mech-code {
+  font-size: 14px;
+  font-family: 'Fira';
+  background-color: rgb(16, 2, 24);;
+  padding: 1px 8px 1px 8px;
+  border-radius: 3px 0px 0px 3px;
+}
+
+.mech-inline-mech-view {
+  background-color: rgb(204, 202, 185);
+  font-size: 14px;
+  font-family: 'Fira';
+  padding: 1px 8px 1px 8px;
+  border-radius: 0px 3px 3px 0px;
 }
 
 .mech-program::-webkit-scrollbar {
