@@ -25,5 +25,3 @@ Count the number elements in a column
   block/view = stat/sum(column: (range * 0 + 1))
 
 ## See Also
-
-- stat/average
