@@ -243,6 +243,14 @@ li p {
   border-radius: 3px 0px 0px 3px;
 }
 
+.mech-code-block {
+  font-size: 14px;
+  font-family: 'Fira';
+  background-color: rgb(221, 220, 214);
+  padding: 10px;
+  line-height: 16px;
+}
+
 .mech-inline-mech-view {
   background-color: rgb(204, 202, 185);
   font-size: 14px;
