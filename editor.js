@@ -31,7 +31,7 @@ function messaged(data) {
   mech_core.add_application();
 
   // Start the timer if there is one
-  let column = mech_core.get_column("system/timer", 1);
+  let column = mech_core.get_column("time/timer", 1);
   interval = setInterval(system_timer, column[0]);
 }*/
 
@@ -189,10 +189,10 @@ app.appendChild(editor_container);*/
 // ## Event handlers
 function system_timer() {
   var d = new Date();
-  mech_core.queue_change("system/timer",1,2,time);
-  mech_core.queue_change("system/timer",1,3,d.getHours() % 12);
-  mech_core.queue_change("system/timer",1,4,d.getMinutes());
-  mech_core.queue_change("system/timer",1,5,d.getSeconds());
+  mech_core.queue_change("time/timer",1,2,time);
+  mech_core.queue_change("time/timer",1,3,d.getHours() % 12);
+  mech_core.queue_change("time/timer",1,4,d.getMinutes());
+  mech_core.queue_change("time/timer",1,5,d.getSeconds());
   mech_core.process_transaction();
   time = time + 1;
   render();
@@ -211,7 +211,7 @@ document.getElementById("compile").addEventListener("click", function(click) {
   mech_core.add_application();
 
   // Start the timer if there is one
-  let column = mech_core.get_column("system/timer", 1);
+  let column = mech_core.get_column("time/timer", 1);
   if (column[0] != undefined) {
     interval = setInterval(system_timer, column[0]);
   }
@@ -260,7 +260,7 @@ window.onhashchange = function(event) {
       mech_core.compile_code(program);
       mech_core.add_application();
       // Start the timer if there is one
-      let column = mech_core.get_column("system/timer", 1);
+      let column = mech_core.get_column("time/timer", 1);
       if (column[0] != undefined) {
         interval = setInterval(system_timer, column[0]);
       }
@@ -281,7 +281,7 @@ if (extension == "mec") {
   mech_core.compile_code(program);
   mech_core.add_application();
   // Start the timer if there is one
-  let column = mech_core.get_column("system/timer", 1);
+  let column = mech_core.get_column("time/timer", 1);
   if (column[0] != undefined) {
     interval = setInterval(system_timer, column[0]);
   }
