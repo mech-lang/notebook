@@ -1,0 +1,5 @@
+# Time
+
+## Basic Time
+
+- <a href="/#/docs/time/timer.mec">tim/timer</a> - Sets a timer that updates at the specified interval
