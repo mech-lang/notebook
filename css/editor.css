@@ -230,7 +230,7 @@ li p {
 .mech-inline-code {
   font-size: 14px;
   font-family: 'Fira';
-  background-color: rgb(204, 202, 185);
+  background-color: rgb(221, 220, 214);
   padding: 1px 5px 1px 5px;
   border-radius: 3px;
 }
@@ -249,10 +249,11 @@ li p {
   background-color: rgb(221, 220, 214);
   padding: 10px;
   line-height: 16px;
+  border-radius: 3px;
 }
 
 .mech-inline-mech-view {
-  background-color: rgb(204, 202, 185);
+  background-color: rgb(221, 220, 214);
   font-size: 14px;
   font-family: 'Fira';
   padding: 1px 8px 1px 8px;
@@ -295,7 +296,7 @@ outline: 1px solid slategrey;
   padding: 20px;
   line-height: 24px;
   font-size: 14px;
-  background-color: rgb(204, 202, 185);
+  background-color: rgb(221, 220, 214);
   color: rgb(49, 49, 49);
 }
 
