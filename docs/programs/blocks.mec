@@ -53,7 +53,7 @@ This reactivity applies to the entire block graph, meaning a block that depends 
 ## Appendix
 
 Create a timer
-  #time/timer = [resolution: 1000 ticks: 0 hours: 0 minutes: 0 seconds: 0]
+  #time/timer = [period: 1000 ticks: 0 hours: 0 minutes: 0 seconds: 0]
 
 Alias the tick
   #tick = #time/timer.ticks
