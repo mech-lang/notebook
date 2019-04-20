@@ -18,11 +18,9 @@
 ## Core Language
 
 - <a href="/#/docs/core/tables.mec">Tables</a>
-- Values
-- <a href="/#/docs/core/slicing.mec">Indexing and Table Slicing</a>
-- Math Expressions
-- Inequality Expressions
-- Logic Expressions
+- <a href="/#/docs/core/slicing.mec">Indexing and Slicing</a>
+- Expressions
+- Temporal Operators
 
 ## Standard Library
 
