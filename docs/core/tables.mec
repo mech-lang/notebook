@@ -1,0 +1,32 @@
+# Tables
+
+Create a table with a single cell
+
+  value = 1
+  name = "Alan Turing"
+
+Create an array
+
+  vector = [1 2 3]
+
+Create a column array
+
+  column = [1; 2; 3]
+
+Create a 2D table
+
+  two-by-three = [1 2 3
+                   4 5 6]
+Create a table with named columns
+
+  with-columns = [|name   age height|
+                    "Yan"  20  100
+                    "Seth" 23  102]
+
+Create an inline table
+
+  inline-table = [name: "Yan" age: 20 height: 100]
+
+Create a nested table
+
+  nested-table = [type: "div" parameters: [width: 100 height: 50]]
