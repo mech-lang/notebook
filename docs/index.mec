@@ -17,9 +17,10 @@
 
 ## Core Language
 
-- Tables
+- <a href="/#/docs/core/tables.mec">Tables</a>
 - Values
-- Indexing and Table Slicing
+- <a href="/#/docs/core/slicing.mec">Indexing and Table Slicing</a>
+- Math Expressions
 - Inequality Expressions
 - Logic Expressions
 
