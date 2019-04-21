@@ -223,6 +223,11 @@ button:hover {
   color: rgb(250,250,250);
 }
 
+.mech-code.pending {
+  border-left-color: rgb(246, 192, 78);
+  border-left-width: 10px;
+}
+
 li p {
   margin: 0px;
 }
