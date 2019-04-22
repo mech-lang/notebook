@@ -274,8 +274,8 @@ li p {
 }
 
 .mech-program::-webkit-scrollbar-thumb {
-background-color: darkgrey;
-outline: 1px solid slategrey;
+  background-color: darkgrey;
+  outline: 1px solid slategrey;
 }
 
 .mech-code::-webkit-scrollbar {
