@@ -42,6 +42,7 @@ let time = 1;
 
 // ## Controls
 
+/*
 let controls = document.createElement("div");
 controls.setAttribute("class", "controls");
 
@@ -159,32 +160,52 @@ drawing_area.setAttribute("id", "drawing");
 drawing_area.setAttribute("class", "drawing-area");
 
 editor.appendChild(drawing_area)
+*/
 
 // ## Editor Container
 
 let editor_container = document.createElement("div");
-editor_container.setAttribute("id","editor container");
-editor_container.setAttribute("class","editor-container");
+editor_container.setAttribute("id","mech-editor-container");
+editor_container.setAttribute("class","mech-editor-container");
 
-editor_container.appendChild(controls);
-editor_container.appendChild(editor);
-editor_container.appendChild(time_travel);
+//editor_container.appendChild(controls);
+//editor_container.appendChild(editor);
+//editor_container.appendChild(time_travel);
+
 
 // ## Navigation
 
-let nav = document.createElement("div");
-nav.setAttribute("id","navigation");
-nav.setAttribute("class","navigation");
+let controls = document.createElement("div");
+controls.setAttribute("id","mech-controls");
+controls.setAttribute("class","mech-controls");
 
+// Code
+let code_button = document.createElement("a");
+code_button.setAttribute("class", "mech-control ion-pound");
+code_button.setAttribute("href", "/#/docs/index.mec");
+controls.appendChild(code_button);
+
+// Tables
+let tables_button = document.createElement("a");
+tables_button.setAttribute("class", "mech-control ion-grid");
+tables_button.setAttribute("href", "/#/tables/index.mec");
+controls.appendChild(tables_button);
+
+// Documentation
+let docs_button = document.createElement("a");
+docs_button.setAttribute("class", "mech-control ion-ios-bookmarks");
+docs_button.setAttribute("href", "/#/docs/index.mec");
+controls.appendChild(docs_button);
 
 // ## Bring it all together
 
-/*let app = document.createElement("div");
-app.setAttribute("id","app");
-app.setAttribute("class","app");
-app.appendChild(nav);
-app.appendChild(code);
-app.appendChild(editor_container);*/
+let app = document.createElement("div");
+app.setAttribute("id","mech-app");
+app.setAttribute("class","mech-app");
+app.appendChild(controls);
+app.appendChild(editor_container);
+
+document.body.appendChild(app);
 
 // ## Event handlers
 function system_timer() {
@@ -232,8 +253,9 @@ document.getElementById("clear core").addEventListener("click", function() {
   //render();
 });*/
 
+
 window.onhashchange = function(event) {
-  document.body.innerHTML = "";
+  console.log("HASHCHANGE"); 
   let extension = location.hash.substring(location.hash.length - 3);
   var url = location.hash.substring(1);
   if (extension == "mec") {
@@ -252,9 +274,11 @@ window.onhashchange = function(event) {
 
   function processRequest(e) {
     if (xhr.readyState == 4 && xhr.status == 200) {
+      let editor = document.getElementById("mech-editor-container");  
+      editor.innerHTML = "";
       clearInterval(interval);
       let program = xhr.responseText;
-      console.log(program);
+      //console.log(program);
       //code.innerHTML = program;
       mech_core.clear();
       mech_core.compile_code(program);
@@ -266,6 +290,7 @@ window.onhashchange = function(event) {
       }
     }
   }
+  
 }
 
 let extension = location.hash.substring(location.hash.length - 3);
