@@ -389,7 +389,12 @@ p a {
   background: #d3d3d3;
 }
 
-#app {
+#mech-editor-container {
+  display: flex;
+  flex-direction: row;
+}
+
+#mech-app {
   height: 100%;
   display: flex;
   flex-direction: row;
