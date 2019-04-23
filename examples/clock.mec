@@ -3,8 +3,7 @@
 Create a timer that ticks every second. This is the time source.
   #time/timer = [period: 1000, tick: 0, hours: 0, minutes: 0, seconds: 0]
 
-Let's make sure the timer is working
-  block/view = #time/timer.seconds
+Let's make sure the timer is working: [[#time/timer.seconds]]
 
 Set up a clock hands table. Degrees is the deflection from noon.
   #clock-hands = [|degrees x y stroke|
