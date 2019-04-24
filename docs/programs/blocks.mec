@@ -23,6 +23,12 @@ Because `#z` is in the global scope, we can select it in another block and perfo
 
 ## Blocks are Composable
 
+The computational operation of a Mech program is defined by the composition of its constiutent blocks. 
+
+Blocks themselves are independent of other blocks, so you can think locally when writing a block.
+
+This means that when there's an error in one block, only the functionality of that block is affected; the rest of the program continues as normal.
+
 ## Blocks are Orderless
 
 The order in which you write blocks has no effect on the underlying computation. Mech figures out the correct ordering of blocks using the data on which they depend. For example, we can write a block that depends on the global variable `#first`:
