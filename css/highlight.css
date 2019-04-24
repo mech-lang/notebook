@@ -31,6 +31,21 @@
   color: rgb(250, 250, 250);
 }
 
+.highlight-local-variable {
+  cursor: pointer;
+  color: rgb(250, 250, 250);
+}
+
+.highlight-global-variable {
+  cursor: pointer;
+  color: rgb(250, 250, 250);
+}
+
+.highlight-function-name {
+  cursor: pointer;
+  color: rgb(145, 192, 214);
+}
+
 .highlight-identifier {
   cursor: pointer;
   color: rgb(250, 250, 250);
