@@ -1,0 +1,14 @@
+# Database
+
+Mech is tightly integrated with a built-in database that stores global tables. Having a database at the core of the language has several important benefits for tooling and program design.
+
+- Every modification to a table is recorded as a `Change` in a `Transaction`.
+- Time travel
+- Testing alternatives
+- Distribution
+- Recreating state
+- Sharing and collaboration programs
+- Integrity constraints
+- Checkpoints
+
+Up Next: <a href="/#/docs/programs/exposition.mec">Exploratory and Expository Programming</a>
