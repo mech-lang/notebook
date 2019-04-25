@@ -174,7 +174,7 @@ button:hover {
 }
 
 .mech-controls {
-  width: 50px;
+  min-width: 50px;
   background-color: rgb(33, 11, 46);
   color: rgb(250,250,250);
   font-size: 20px;
@@ -203,7 +203,7 @@ button:hover {
 }
 
 .mech-docs {
-  width: 100%;
+  width: 970px;
   height: 100%;
   display: flex;
   flex-direction: row;
@@ -435,6 +435,7 @@ p a {
 #mech-editor-container {
   display: flex;
   flex-direction: row;
+  overflow-y: auto;
 }
 
 #mech-app {
