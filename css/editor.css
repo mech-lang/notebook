@@ -56,6 +56,10 @@ h1,h2,h3,h4,h5,h6 {
   font-weight: 800;
 }
 
+h4 {
+  font-size: 16px;
+}
+
 h1 {
   color: rgb(91, 34, 127);
   margin-bottom: 40px;
@@ -119,7 +123,7 @@ button:hover {
   max-height: 400px;
   overflow-x: scroll;
   overflow-y: none;
-  padding: 20px;
+  padding: 0px 20px 20px 20px;
   position: absolute;
   float: left;
   background-color: rgba(0, 0, 0, 0.80);
