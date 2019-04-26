@@ -1,4 +1,4 @@
-# Mech Tutorial for Programmers
+# Mech Quickstart Tutorial
 
 Welcome to the Mech programming language. This tutorial is intended for developers who are familiar with imperative programming languages like C, Javascript, or Python. Mech follows a different paradigm, known as dataflow, so we will point out the differences and similarities between the familiar and unfamiliar throught this tutorial.
 
@@ -19,9 +19,9 @@ This code creates a table called `students`, which is global in scope as denoted
 
 Mech programs are composed of "blocks" of code like the one above. A block is indented from normal text with (at least) two spaces, and continues until the next non-indented paragraph. Each block of code can do three things:
 
-- Select zero or more columns from the global table store.
-- Apply transformations to the selected columns in the local block scope.
-- Write new or transformed columns to the global table store.
+- Select zero or more tables or slices of tables from the global table store.
+- Apply transformations to the selected tables in the local block scope.
+- Write zero or more transformed tables or slices of tables to the global table store.
 
 For example, we we can find use the previously defined student table to calculate their average GPA:
 
