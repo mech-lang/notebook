@@ -13,7 +13,7 @@ ws.addEventListener("message", (event) => messaged(event.data));
 function opened() {
   console.log(ws);
   // Get code
-  ws.send("{\"Table\":3436366081}");
+  ws.send("{\"Table\": 3436366081}");
 }
 
 function closed(code, reason) {
@@ -36,6 +36,7 @@ function messaged(data) {
 }*/
 
 let mech_core = Core.new(100000, 100);
+mech_core.connect_remote_core("ws://localhost:3012");
 var interval;
 
 let time = 1;
