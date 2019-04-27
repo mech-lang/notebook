@@ -454,6 +454,14 @@ p a {
   overflow-y: auto;
 }
 
+
+#mech-container {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
 #mech-app {
   height: 100%;
   display: flex;
