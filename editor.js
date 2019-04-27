@@ -1,40 +1,5 @@
 import {Core} from "mech-wasm";
 
-// ## Websocket 
-
-/*
-let host = location.hostname == "" ? "localhost" : location.hostname;
-let ws = new WebSocket(`ws://${host}:3012`);
-
-ws.addEventListener("open", () => opened());
-ws.addEventListener("close", (event) => closed(event.code, event.reason));
-ws.addEventListener("message", (event) => messaged(event.data));
-
-function opened() {
-  console.log(ws);
-  // Get code
-  ws.send("{\"Table\": 3436366081}");
-}
-
-function closed(code, reason) {
-  console.log(code, reason);
-}
-
-function messaged(data) {
-  var obj = JSON.parse(data);
-  let code = obj[0][0].String;
-  let code_editor = document.getElementById("code");
-  code_editor.innerHTML = code;
-
-  // Compile the code
-  mech_core.compile_code(code);
-  mech_core.add_application();
-
-  // Start the timer if there is one
-  let column = mech_core.get_column("time/timer", 1);
-  interval = setInterval(system_timer, column[0]);
-}*/
-
 let mech_core = Core.new(100000, 100);
 mech_core.connect_remote_core("ws://localhost:3012");
 var interval;
