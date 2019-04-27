@@ -7,7 +7,6 @@ var interval;
 let time = 1;
 
 // ## Controls
-
 /*
 let controls = document.createElement("div");
 controls.setAttribute("class", "controls");
@@ -34,7 +33,7 @@ controls.appendChild(clear_core);
 
 let txn = document.createElement("button");
 txn.setAttribute("id", "txn");
-txn.innerHTML =  "Add Txn";
+txn.innerHTML =  "Add Txn";*/
 
 // ## Time Travel
 
@@ -111,28 +110,18 @@ step_forward.onclick = function() {
 }
 time_travel.appendChild(step_forward);
 
-// ## Editor
-
-let editor = document.createElement("div");
-editor.setAttribute("class", "editor");
-
-let code = document.createElement("textarea");
-code.setAttribute("class", "code");
-code.setAttribute("id", "code");
-code.setAttribute("spellcheck", "false");
-
-let drawing_area = document.createElement("div")
-drawing_area.setAttribute("id", "drawing");
-drawing_area.setAttribute("class", "drawing-area");
-
-editor.appendChild(drawing_area)
-*/
-
 // ## Editor Container
+
+let container = document.createElement("div");
+container.setAttribute("id","mech-container");
+container.setAttribute("class","mech-container");
 
 let editor_container = document.createElement("div");
 editor_container.setAttribute("id","mech-editor-container");
 editor_container.setAttribute("class","mech-editor-container");
+
+container.appendChild(editor_container);
+container.appendChild(time_travel);
 
 //editor_container.appendChild(controls);
 //editor_container.appendChild(editor);
@@ -169,7 +158,7 @@ let app = document.createElement("div");
 app.setAttribute("id","mech-app");
 app.setAttribute("class","mech-app");
 app.appendChild(controls);
-app.appendChild(editor_container);
+app.appendChild(container);
 
 document.body.appendChild(app);
 
