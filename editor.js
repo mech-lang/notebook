@@ -123,11 +123,6 @@ editor_container.setAttribute("class","mech-editor-container");
 container.appendChild(editor_container);
 container.appendChild(time_travel);
 
-//editor_container.appendChild(controls);
-//editor_container.appendChild(editor);
-//editor_container.appendChild(time_travel);
-
-
 // ## Navigation
 
 let controls = document.createElement("div");
@@ -210,7 +205,6 @@ document.getElementById("clear core").addEventListener("click", function() {
 
 
 window.onhashchange = function(event) {
-  console.log("HASHCHANGE"); 
   let extension = location.hash.substring(location.hash.length - 3);
   var url = location.hash.substring(1);
   if (extension == "mec") {
