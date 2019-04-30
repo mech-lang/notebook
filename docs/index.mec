@@ -11,16 +11,26 @@
 ## Mech Programs
 
 - <a href="/#/docs/programs/model.mec">Programming Model</a>
+- <a href="/#/docs/programs/tables.mec">Tables</a>
 - <a href="/#/docs/programs/blocks.mec">Blocks</a>
 - <a href="/#/docs/programs/database.mec">Database</a>
 - <a href="/#/docs/programs/Exposition.mec">Exploratory and Expository Programming</a>
 
 ## Core Language
 
-- <a href="/#/docs/core/tables.mec">Tables</a>
 - <a href="/#/docs/core/slicing.mec">Indexing and Slicing</a>
 - Expressions
 - Temporal Operators
+- State Machines
+- Distribution
+
+## Editor
+
+- Text Editor and Drawing Area
+- Database Explorer
+- Time Travel
+- Block Views
+- Table Inspector
 
 ## Standard Library
 
