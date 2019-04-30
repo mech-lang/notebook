@@ -8,4 +8,8 @@ Or take a robot for example, which depends on streams of sensor input from devic
 
 In each of these examples, Mech performs computations only in the presence of data. Data arrives at the system, Mech reacts to its arrival by executing computations and updating state, and then the system awaits the arrival of new data to continue. This is the lifecycle of a Mech program.
 
-Up Next: <a href="/#/docs/programs/blocks.mec">Blocks</a>
+## Program Structure
+
+Mech programs are made up of "Tables" of data and "Blocks" of code. You build a Mech program by specifying your data in tables, and you perform computation on them through a series of code blocks. Blocks are orderless and data-driven.
+
+Up Next: <a href="/#/docs/programs/tables.mec">Tables</a>
