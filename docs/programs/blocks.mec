@@ -23,15 +23,29 @@ Because `#z` is in the global scope, we can select it in another block and perfo
 
 ## Blocks are Composable
 
-The computational operation of a Mech program is defined by the composition of its constiutent blocks. 
+Mech programs are made up of any number of blocks, which are compoased into a coherent program by virtue of their data dependencies and productions. We can demonstrate composition with the following three blocks:
 
-Blocks themselves are independent of other blocks, so you can think locally when writing a block.
+  #a = 1
 
-This means that when there's an error in one block, only the functionality of that block is affected; the rest of the program continues as normal.
+then
+
+  #b = 2
+
+and finally
+
+  #c = #a + #b
+
+A block performs its defined transformations/computations only when all of the dependent data are defined. These three blocks compose to define a data flow graph where the first two blocks create tables `#a` and `#b`, and the final block uses these tables to produce a third dependent table `#c`. The converse is true as well; a block will not run if any of its dependent data are missing. For example, consider the following block:
+
+  once-z = #z
+  twice-y = #y * 2
+  #x = once-z + twice-y
+
+This block will never produce a value for `#x` because the table `#y` is never defined in this document, (the table `#z` is defined in the previous section). But even though this block will never produce output, any other blocks whose data dependencies are satisfied will execute their defined data transformations independently. This also has implications for errors; if a block contains syntax errors, the functionality of that block alone is disabled while the rest of the program continues to run unaffected.
 
 ## Blocks are Orderless
 
-The order in which you write blocks has no effect on the underlying computation. Mech figures out the correct ordering of blocks using the data on which they depend. For example, we can write a block that depends on the global variable `#first`:
+The order in which you write blocks has no effect on the underlying computation. Mech figures out the correct ordering of blocks using the data on which they depend. For example, we can write a block that depends on the table `#first`:
 
   #second = #first * 10
 
@@ -39,7 +53,7 @@ And then we can actually assign a value to `#first`
 
   #first = 123
 
-Despite the fact we used `#first` before we assigned it, we can still report the value [[#second]].
+Despite the fact we used `#first` before we assigned it a value, we can see the result [[#second]].
 
 The orderlessness of blocks means you are free to write a Mech program however you see fit. Your program is never constrained by an arbitrary block order imposed by a compiler. This freedom opens up new possibilities for exploratory and expository programming, which we address more completely in <a href="/#/docs/programs/eploration.mec">a later section</a>.
 
