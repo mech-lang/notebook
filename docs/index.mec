@@ -19,7 +19,7 @@
 ## Core Language
 
 - <a href="/#/docs/core/slicing.mec">Indexing and Slicing</a>
-- Expressions
+- <a href="/#/docs/core/expressions.mec">Expressions</a>
 - Temporal Operators
 - State Machines
 - Distribution
