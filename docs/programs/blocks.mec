@@ -37,9 +37,7 @@ and finally
 
 A block performs its defined transformations/computations only when all of the dependent data are defined. These three blocks compose to define a data flow graph where the first two blocks create tables `#a` and `#b`, and the final block uses these tables to produce a third dependent table `#c`. The converse is true as well; a block will not run if any of its dependent data are missing. For example, consider the following block:
 
-  once-z = #z
-  twice-y = #y * 2
-  #x = once-z + twice-y
+  #x = #z + #y
 
 This block will never produce a value for `#x` because the table `#y` is never defined in this document, (the table `#z` is defined in the previous section). But even though this block will never produce output, any other blocks whose data dependencies are satisfied will execute their defined data transformations independently. This also has implications for errors; if a block contains syntax errors, the functionality of that block alone is disabled while the rest of the program continues to run unaffected.
 
