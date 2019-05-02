@@ -287,6 +287,11 @@ button:hover {
   border-left-width: 10px;
 }
 
+.mech-code.error {
+  border-left-color: rgb(175, 36, 45);
+  border-left-width: 10px;
+}
+
 li p {
   margin: 0px;
 }
@@ -362,6 +367,23 @@ li p {
   line-height: 24px;
   font-size: 14px;
   background-color: rgb(221, 220, 214);
+  color: rgb(49, 49, 49);
+}
+
+.mech-error-view {
+  font-family: 'Fira';
+  flex-grow: 1;
+  max-width: 750px;
+  margin-top: -5px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  padding: 20px;
+  line-height: 24px;
+  font-size: 14px;
+  background-color: rgb(219, 191, 191);
+  border: 0px #000 solid;
+  border-left-color: rgb(175, 36, 45);
+  border-left-width: 10px;
   color: rgb(49, 49, 49);
 }
 
