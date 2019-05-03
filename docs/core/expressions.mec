@@ -59,4 +59,11 @@ Logic expressions work with the logic operators (and `&`, along with or `|`). Th
   x = [1 2 3]
   block/view = x < 3 & x > 1
 
+We can do or operations as well
+
+
+  x = [1 2 3]
+  block/view = x < 3 | x > 1
+
+
 Up Next: <a href="/#/docs/core/temporal.mec">Temporal Operators</a>
