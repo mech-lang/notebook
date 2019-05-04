@@ -63,7 +63,7 @@ We can do or operations as well
 
 
   x = [1 2 3]
-  block/view = x < 3 | x > 1
+  block/view = x < 2 | x > 2
 
 
 Up Next: <a href="/#/docs/core/temporal.mec">Temporal Operators</a>
