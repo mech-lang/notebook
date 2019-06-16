@@ -1,7 +1,7 @@
 import {Core} from "mech-wasm";
 
 let mech_core = Core.new(100000, 100);
-mech_core.connect_remote_core("ws://localhost:3012");
+//mech_core.connect_remote_core("ws://localhost:3012");
 var interval;
 
 let time = 1;
@@ -227,7 +227,7 @@ window.onhashchange = function(event) {
       editor.innerHTML = "";
       clearInterval(interval);
       let program = xhr.responseText;
-      //console.log(program);
+      console.log(program);
       //code.innerHTML = program;
       mech_core.clear();
       mech_core.compile_code(program);
@@ -251,6 +251,8 @@ if (extension == "mec") {
   xhr.open('GET', url, false);
   xhr.send();
   let program = xhr.responseText;
+  console.log(program);
+  
   mech_core.clear();
   mech_core.compile_code(program);
   mech_core.add_application();
