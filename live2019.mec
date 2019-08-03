@@ -165,7 +165,7 @@ Then we concatenate `#paddle-control` a new table that defines the canvas and in
                    "canvas" _     [#game/elements] [width: 400 height: 400]]
 
 
-In the same way we attached the clock program to an arbitrary root, we attach the bouncing ball game below.
+In the same way we attached the clock program to an arbitrary root, we attach the bouncing ball game below. If you haven't already explored the time controls at the bottom of the window, take a moment now to pause program execution and adjust the slider to move back and forth through time. You'll see the ball reverse its position to its previous states as you step backward. You can continue to inspect table values while the program is paused. Clicking "Resume" will fast-forward the program to where it left off and resume block execution.
 
 <div id="game root"></a>
 
@@ -173,42 +173,20 @@ This game demonstrates several important features of the language. First, it sho
 
 ## 5. Related Work
 
-I first came up with the idea for Mech when I stumbled upon a book detailing the [Lucid dataflow language](http://worrydream.com/refs/Wadge%20-%20Lucid,%20the%20Dataflow%20Programming%20Language.pdf) by Wadge and Ashcroft. At the time I was building a robot aircraft running on MATLAB, and I appreciated how the dataflow programming paradigm seemed like a better fit for my application than MATLAB's semantics. I started with a goal of creating a dataflow MATLAB language, but have since broadened my influences to include Datalog, Smalltalk, Lustre and Excel.
+I first came up with the idea for Mech when I stumbled upon a book detailing the <a href="https://en.wikipedia.org/wiki/Lucid_(programming_language)">Lucid dataflow language</a> by Wadge and Ashcroft. At the time I was building a robot aircraft running on MATLAB, and I appreciated how the dataflow programming paradigm seemed like a better fit for my application than MATLAB's semantics. I started with a goal of creating a dataflow MATLAB language, but have since broadened my influences to include <a href="https://en.wikipedia.org/wiki/Datalog">Datalog</a>, which had the idea of programming using database queries; <a href="https://en.wikipedia.org/wiki/Smalltalk">Smalltalk</a>, which introduced the idea of a fully editable programming environment; <a href="https://en.wikipedia.org/wiki/Lustre_(programming_language)">Lustre</a>, which used streams of data for synchronous programming; and Excel, which is the most used programming language in the world thanks to its simple interface and programming model.
 
-
-
-- Tools
-- lighttable
-
-
-- Visual studio
-- LOGO
-- Smalltalk
-- Eve / Datalog Bloom 
-- Matlab 
-- Jupyter notebooks
-- Other reactive languages
-- Excel
-- Other dataflow languages
-- Lucid
-- Lustre
-- Languages for game development and animations
-- Click and Create
-- Flash / Actionscript
-- What's the one for Unity?
-- Starcraft/Warcraft
+The <a href="http://lighttable.com">Light Table editor</a> and the subsequent but now defunct language project <a href="http://witheve.com">Eve</a> are major influences on the design of the core language architecture. Eve had a goal of becoming a language for non-programmers to make applications they would otherwise make in Excel, whereas Mech aims to be a language for students to learn how to interact with sensors, timers, and other devices that represent physical quantitities like time and space.
 
 ## 6. Conclusions
 
-The current Mech release is v0.0.2-alpha, and is available in source and binary form on GitHub. The current version implements the breadth of the features discussed in this paper, but the implementations are buggy and incomplete (hence the alpha designation) Current work is focused on:
+The current Mech release is v0.0.2-alpha, and is available in source and binary form on <a href="https://github.com/mech-lang/mech">GitHub</a>, and can be tested online at <a href="http://docs.mech-lang.org">http://docs.mech-lang.org</a>. The current version implements the breadth of the features discussed in this paper, but the implementation is buggy and incomplete (hence the alpha designation). Current work is focused on:
 
-- Expanding the standard library. Currently only a handfull of functions are implements
+- Expanding the standard library. Currently only a handfull of functions are implemented
 - Handling errors. Currently only a few errors are caught and raised to the attention the user. The rest go unnoticed.
-- Making distribution more robust.
+- Making distribution more robust and flexible. Currently programs can communicate in a server-client relationship. For example, the pong game can be decomposed into a <a href="https://raw.githubusercontent.com/mech-lang/examples/master/pong-server.mec">server</a> that controls the logic behind updating the ball, and a <a href="https://raw.githubusercontent.com/mech-lang/examples/master/pong-client.mec">client</a> that listens for the ball position and renders it to the screen.
 - Writing documentation
-- Making tools
-- Adding units
-- Expanding temporal operators
+- Creating tools to support program development, like a REPL, a database explorer
+- Writing example programs, including control of various robots and even an <a href="https://gitlab.com/cmontella/hivemind">operating system</a>.
 
 ## Appendix
 
