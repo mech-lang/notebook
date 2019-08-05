@@ -1,6 +1,9 @@
 # Mech - A Programming Language for Data Driven, Reactive Systems
+
 <p class="abstract">Abstract - Mech is programming language and environment for developing data-driven, reactive systems like animations, games, IoT and robots. Mech is being developed to facilitate a nonprofit outreach program that teaches computational thinking to youths ages ten through twenty; and also for the administration of a course in programming language design taught to university-level sophomores and juniors. Mech is a dataflow language, where programmers define data dependencies between blocks of code and transformations on tables of data. Mech is best suited for systems that rely on streams of asynchronous input from a variety of sources, such as a game where a stream of button presses define player actions, or a robot that maintains balance through a stream of gyroscopic readings. As these data streams change, Mech programs update the relevant computations and propagate changes automatically. The dynamic, reactive nature of Mech makes it suitable as a live-programming environment, where the write-compile-run development loop is minimized to the point where the programmer can edit their program as it is running. In this paper I introduce the design and implementation of the Mech platform through a series of live examples. This paper is written in a Markdown dialect called "Mechdown", which extends the Markdown language with Mech-specific macros and allows Mech code to be embedded and executed within the document itself. We will demonstrate a simple clock, an interactive pong game, as well as discuss several other applications of the language.</p>
+
 ## 1. Introduction
+
 The first programming language I learned was QBasic. I remember within a few days of learning it I had written my first game, a text-based choose-your-own adventure game a la <a href="https://en.wikipedia.org/wiki/Zork">Zork</a>. My friends and I would create and share these games back and forth, picking up new tricks along the way by transcribing source code from programming magazines into our QBasic editors. As a child new to programming, I was thrilled to be able to create games which, at least to me, rivaled state-of-the-art commercial software. It was empowering. I bring up this anecdote because now as an educator of programming languages and techniques, I don't recognize the same empowerment in my students, who are typically university freshmen through juniors. 
 
 Last year I asked a group of 60 freshmen engineering students enrolled in a class on Javascript game development about their background in programming, their intended major, and why they were interested in programming. Over 90 percent of the students had prior experience programming in high school, with a majority reporting they had learned Java formally as part of their AP Computer Science curriculum. Interestingly, only a few students reported that their Java knowledge prepared them for Javascript game development. Through their answers, it was clear to me that students were excited to learn computer science and programming, but most were doing so for practical reasons their motivations seemed to be rooted in external forces pushing and pulling them rather, than internal desires and passions. Very few students seemed to be interested in programming as a path to satisfy their own curiosity and ambitions.
@@ -9,7 +12,7 @@ Notably, one student informed me although he knew how to program, he never even 
 
 I believe that is because the devices he uses, his smartphones, tablets, and gaming consoles, are presented as portals for consumption, rather than tools for creation. What if this student was invited by the games he played to change the rules? What if his computer offered him the ability change the rules of gravity, or the speed of his in-game character by opening the underlying code and modifying it? This is the motivation I bring to Mech, a programming language and platform for developing stream-based systems like games, animations, and robots. The language is intended as a learning environment for students to engage with the world around them through sensors, motors, actuators, timers, social media feeds and any other source of data. My intention is that when the language is complete, I will use it to facilitate a program focused on teaching students the fundamentals of computational thinking through interacting with robots and writing simple games.
 
-The rest of this papers is organized as follows. Section 2 provides an overview of the Mech programming language and programming platform. We then demonstrate various features of the platform through three examples: an analog clock in Section 3, and a bouncing ball game in Section 4. In Section 5 we review related work, and finally in Section 6 we draw conclusions and map out the future of the Mech programming language. You can navigate to any section using the table of contents on the left.
+The rest of this papers is organized as follows. Section 2 provides an overview of the Mech programming language and programming platform. We then demonstrate various features of the platform through two examples: an analog clock in Section 3, and a bouncing ball game in Section 4. In Section 5 we review related work, and finally in Section 6 we draw conclusions and map out the future of the Mech programming language. You can navigate to any section using the table of contents on the left.
 
 ## 2. Language Overview
 
@@ -29,11 +32,11 @@ In the coming sections, I will demonstrate various features of the Mech language
 
 ## 3. Analog Clock
 
-The "Hello World" for reactive languages in certainly an analog clock. This example demonstrates a complete Mech program starting from a data source (in this case a ticking clock), to transforming the ticks into angles, to finally displaying a visualization of the angles in the form of a clock face with hour, minute, and second hands. We'll start our clock by defining a table named `#time/timer` with the fields period, tick, hours, minutes, and seconds. 
+The "Hello World" for reactive languages in certainly an analog clock. This example demonstrates a complete Mech program starting from a data source (in this case a ticking clock), to transforming the ticks into angles, to finally displaying a visualization of the angles in the form of a clock face with hour, minute, and second hands. We'll start our clock by defining a table named `#time/timer` with the fields period, tick, hours, minutes, and seconds. We can report the current value of seconds and watch it update as time goes by: [[#time/timer.seconds]] 
 
   #time/timer = [period: 15, tick: 0, hours: 0, minutes: 0, seconds: 0]
 
-Tables, collections of cells arranged in a 2D grids of rows and columns, are the primary data structure in Mech. Other languages taught use tables as a fundamental data structure include Excel, Lua, and MATLAB. Everything from a scalar to a vector to a matrix is stored in a table. All operators and functions have one or more tables as an input, and one or more tables as output. Each cell in a table can hold a `Value`, which can have one of the following data types:
+Tables, collections of cells arranged in a 2D grids of rows and columns, are the primary data structure in Mech. Other languages that use tables as a fundamental data structure include Excel, Lua, and MATLAB. Everything from a scalar to a vector to a matrix is stored in a table. All operators and functions have one or more tables as an input, and one or more tables as output. Each cell in a table can hold a `Value`, which can have one of the following data types:
 
 - Quantity - either an integer (e.g. `123`), a float (e.g. `12.7`) or a number with a unit (e.g `13.5kg`)
 - String - e.g. `Hello World`
@@ -43,7 +46,7 @@ Tables, collections of cells arranged in a 2D grids of rows and columns, are the
 
 By default, rows and columns are referenced by their index, but they can optionally be given a name. A named column is interpreted as an attribute of the table, while a named row is interpreted as an entity in the table. To draw an analogy to object oriented programming, a table is analogous to a class, a column is analogous to a member variable of a class, and a row is analogous to an instance of a class.
 
-Tables with a `#` prefix have a global scope. They can be accessed anywhere in a Mech program. Certain global tables have special meaning, as they refer to values stored in libraries. For instance, the `#time/timer` table refers to the timer table in the time library. When it is created, the time library uses the value stored in the "period" column to instantiate a new timer and updates the rest of the row as time advances. We can report the current value of seconds and watch it update as time goes by: [[#time/timer.seconds]]
+Tables with a `#` prefix have a global scope. They can be accessed anywhere in a Mech program. Certain global tables have special meaning, as they refer to values stored in libraries. For instance, the `#time/timer` table refers to the timer table in the <a href="http://docs.mech-lang.org/#/docs/time/index.mec">time library</a>. When it is created, the time library uses the value stored in the "period" column to instantiate a new timer and updates the rest of the row as time advances.
 
 We can define a table with multiple rows:
 
@@ -56,10 +59,10 @@ This creates a table called `#clock-hands` with the fields degrees, x, y, and st
 
 We can do more than just define data in a block of code. Blocks can do one or more of the following:
 
-- Create new data
-- Select data in the global scope and bring it into the block's scope
-- Transform data within the scope of the block
-- Write data to the global scope
+- Create new tables in the global or local block scope
+- Select tables from the global scope and bring them into the block's scope
+- Transform tables within the scope of the block
+- Change tables in the global scope
 
 We've already defined two global tables, but we can use those tables to calculate new values:
 
@@ -112,7 +115,7 @@ In this section we use a new example program to motivate some additional feature
 
   #ball = [x: 20 y: 20 vx: 1 vy: 3]
 
-Using the timer we defined in the previous section, we can update the position of the ball as the timer ticks. This requires the `~` operator, pronounced "whenever". You would read the following block as "whenever #time/timer.tick changes, update #ball.x and #ball.y". This operator ensures that even though this block depends on `#ball`, it will only update on `#time/timer.tick`. 
+Using the timer we defined in the previous section, we can update the position of the ball as the timer ticks. This requires the `~` operator, pronounced "whenever". You would read the following block as "whenever #time/timer.tick changes, update #ball.x and #ball.y". This operator ensures that even though this block depends on `#ball` and updates `#ball` (an infintely recursive definition), it will only update on `#time/timer.tick`. 
 
   ~ #time/timer.tick
   #ball.x := #ball.x + #ball.vx
@@ -138,7 +141,7 @@ Additional tests are performed to bounce the ball off the ceiling and floor
   #ball.vy{#ball.y < 10} := -#ball.vy
   #ball.vx{#ball.x > 390 | #ball.x < 10} := -#ball.vx
 
-These blocks demonstrate the usage of indexing and slicing to perform conditional updates on tables. When used on the left-hand side of an assignment, the slicing operator `{}` select only rows where the index evaluates to true. For example, the statement `#ball.vx{#ball.x > 390 | #ball.x < 10} := -#ball.vx` updates the horizontal velocity of the ball only when its x component is greater than 390 or less than 10.
+These blocks demonstrate the usage of indexing and slicing to perform conditional updates on tables. When used on the left-hand side of an assignment, the slicing operator `{}` updates only rows where the index evaluates to `true`. For example, the statement `#ball.vx{#ball.x > 390 | #ball.x < 10} := -#ball.vx` updates the horizontal velocity of the ball only when its x component is greater than 390 or less than 10.
 
 We can then reset the ball if it reaches the bottom of the game area.
 
@@ -149,7 +152,7 @@ We can then reset the ball if it reaches the bottom of the game area.
 
 Just as we defined the clock canvas, we can define a canvas for our game. In the next block we define the paddle drawing and the ball drawing using the `#paddle-control` and `#ball`
 
-
+  ~ #time/timer.tick
   pos = #paddle-control{1,4}{1,3}
   start = pos
   end = pos + 100
@@ -158,9 +161,9 @@ Just as we defined the clock canvas, we can define a canvas for our game. In the
                      "line"   [x1: start y1: 350 x2: end y2: 350 stroke: "#000000"]]
 
 
-Then we concatenate `#paddle-control` a new table that defines the canvas and incorporates `#game/elements`
+Then we concatenate `#paddle-control` with a new table row that defines the an HTML canvas for the game using the shapes defined in `#game/elements`
 
-  #game/canvas = [|type     class contains    parameters|
+  #game/canvas = [|type     class contains         parameters|
                    #paddle-control
                    "canvas" _     [#game/elements] [width: 400 height: 400]]
 
@@ -175,7 +178,7 @@ This game demonstrates several important features of the language. First, it sho
 
 I first came up with the idea for Mech when I stumbled upon a book detailing the <a href="https://en.wikipedia.org/wiki/Lucid_(programming_language)">Lucid dataflow language</a> by Wadge and Ashcroft. At the time I was building a robot aircraft running on MATLAB, and I appreciated how the dataflow programming paradigm seemed like a better fit for my application than MATLAB's semantics. I started with a goal of creating a dataflow MATLAB language, but have since broadened my influences to include <a href="https://en.wikipedia.org/wiki/Datalog">Datalog</a>, which had the idea of programming using database queries; <a href="https://en.wikipedia.org/wiki/Smalltalk">Smalltalk</a>, which introduced the idea of a fully editable programming environment; <a href="https://en.wikipedia.org/wiki/Lustre_(programming_language)">Lustre</a>, which used streams of data for synchronous programming; and Excel, which is the most used programming language in the world thanks to its simple interface and programming model.
 
-The <a href="http://lighttable.com">Light Table editor</a> and the subsequent but now defunct language project <a href="http://witheve.com">Eve</a> are major influences on the design of the core language architecture. Eve had a goal of becoming a language for non-programmers to make applications they would otherwise make in Excel, whereas Mech aims to be a language for students to learn how to interact with sensors, timers, and other devices that represent physical quantitities like time and space.
+The <a href="http://lighttable.com">Light Table editor</a> and the subsequent but now defunct language project <a href="http://witheve.com">Eve</a> are major influences on the design of the core language architecture. Eve had a goal of becoming a language for non-programmers to make applications they would otherwise make in Excel, whereas Mech aims to be a language for students to learn how to interact with sensors, timers, and other devices that represent physical quantitities like time and space. Eve the language contains many of the ideas present in Mech, but because of its early demise, Eve was not able to fulfil its full potential. Mech looks to implement many of those language features missing from the final implementation of Eve.
 
 ## 6. Conclusions
 
