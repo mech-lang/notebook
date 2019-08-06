@@ -1,8 +1,8 @@
 # Version 0.0.2 - Documentation, Views, Inspector
 
-June 23, 2019
+June 12, 2019
 
-Today we're happy to release v0.0.2-alpha of Mech. This release has improvements for the language, but the focus was on documentation and notebook features. First, we've overhauled the notebook interface so that most components are rendered in Rust wasm instead of Javascript. Eventually we will move over to an interface entirely written in Mech. Second, we've rendered Mech documents in HTML, rather than plain text. This necessitated finishing the formatter for syntax highlighting. Finally, we have included a couple tools like an inspector and block views that will help programmers. Let's look at each of these new features.
+Today we're happy to release <a href="https://github.com/mech-lang/mech/releases/tag/v0.0.2">Mech v0.0.2-alpha</a>. This release has improvements for the language itself, but the focus was on documentation and notebook features. First, we've overhauled the notebook interface so that most components are rendered in Rust wasm instead of Javascript. Eventually we will move over to an interface entirely written in Mech. Second, we've rendered Mech documents in HTML, rather than plain text. This necessitated finishing the formatter for syntax highlighting. Finally, we have included a couple tools like an inspector and block views that will help programmers. Let's look at each of these new features.
 
 ## Documentation
 
@@ -26,13 +26,17 @@ Views are a notebook feature that allow us to write the output of a block direct
        6 5 4]
   block/view = x + y
 
-Block views update their output continually to reflect the current value of the `block/view` table. If we select a timer, for example, we can see the view update as the timer ticks:
+Block views update their output continually to reflect the current value of the `block/view` table. We can create a timer for example:
+
+  #time/timer = [period: 15, ticks: 0, hours: 0, minutes: 0, seconds: 0]
+
+In another block we can do a computation using this timer, and view the result under the block itself:
 
   block/view = #time/timer.seconds * 3
 
 We aren't limited to printing just numbers in a view. Below is an example of a scatter plot updating as parent table changes. The interface for this is not settled, and the visualization is very rough, but you can imagine putting any graph, video, or animation in this space to help visualize block functioning. 
 
-  x = 0:360
+  x = 0:650
   z = x + #time/timer.ticks
   y = math/sin(degrees: z) * 50 + 60
   block/view = [type: "scatter", x: [x], y: [y]]
@@ -60,16 +64,13 @@ There's a lot more work to do here. It would be nice to do the same thing we did
 
 <h3>Language Documentation</h3>
 
-Added:
-
-- The beginnings of a tutorial
-- installation and running docs
-- programming model doc
-- table doc
-- blocks doc
-- database doc
-- exploratory programming doc
-- indexing and slicing docs
+- The beginnings of a <a href="http://docs.mech-lang.org/#/docs/tutorial.mec">tutorial</a>
+- <a href="http://docs.mech-lang.org/#/docs/install.mec">installation</a> and <a href="http://docs.mech-lang.org/#/docs/running.mec">running</a> docs
+- <a href="http://docs.mech-lang.org/#/docs/programs/model.mec">programming model</a> doc
+- <a href="http://docs.mech-lang.org/#/docs/programs/tables.mec">table</a> doc
+- <a href="http://docs.mech-lang.org/#/docs/programs/blocks.mec">blocks</a> doc
+- <a href="http://docs.mech-lang.org/#/docs/programs/database.mec">database</a> doc
+- <a href="http://docs.mech-lang.org/#/docs/core/slicing.mec">indexing and slicing</a> doc
 
 <h3>Notebook</h3>
 
@@ -87,15 +88,17 @@ Added:
 
 <h3>Libraries</h3>
 
-- Added time library
-- Renamed system/timer to time/timer. Also renamed resolutin to period
+- Added <a href="http://docs.mech-lang.org/#/docs/time/index.mec">time library</a>
+- Renamed system/timer to <a href="http://docs.mech-lang.org/#/docs/time/timer.mec">time/timer</a>. Also renamed resolution to period
+- Added <a href="http://docs.mech-lang.org/#/docs/math/index.mec">Math</a> index doc
+- Added <a href="http://docs.mech-lang.org/#/docs/stat/index.mec">Stat</a> index doc
+- Added <a href="http://docs.mech-lang.org/#/docs/stat/sum.mec">stat/sum</a> index doc
+- Added <a href="http://docs.mech-lang.org/#/docs/math/sin.mec">math/sin</a> and <a href="http://docs.mech-lang.org/#/docs/math/cos.mec">cos</a> docs
 
 <h3>Example Programs</h3>
 
-- Added a simple pong game
+- Added a simple <a href="http://docs.mech-lang.org/#/examples/breakout.mec">pong game</a> that will eventually be breakout
 
 ## Roadmap
 
 The next version, v0.0.3, will focus on input/output facilities, which will necessarily involve a closer look at the distribution model. In the subsequent version, v0.0.4, we will circle back to the notebook and work on improving tooling and programmer creature comforts.
-
-  #time/timer = [period: 15, ticks: 0, hours: 0, minutes: 0, seconds: 0]
