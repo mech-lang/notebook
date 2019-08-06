@@ -30,21 +30,31 @@ Block views update their output continually to reflect the current value of the 
 
   block/view = #time/timer.seconds * 3
 
-We aren't limited to printint out numbers either. 
+We aren't limited to printing just numbers in a view. Below is an example of a scatter plot updating as parent table changes. The interface for this is not settled, and the visualization is very rough, but you can imagine putting any graph, video, or animation in this space to help visualize block functioning. 
 
   x = 0:360
   z = x + #time/timer.ticks
   y = math/sin(degrees: z) * 50 + 60
   block/view = [type: "scatter", x: [x], y: [y]]
 
+In v0.0.3 we're planning to revisit views with a better way to create them. For example, instead of binding to a special table, we're exploring the possibility or adding some syntax sugar to the language to streamline this capability and encourage its usage. Also, we'll expand the types of views that are supported (right now it's just text and scatter plots).
 
 ## Inspector 
 
-The inspector will be the main debugging tool in the Mech Notebook. As its name implies, it will allow you to inspect any aspect of a running Mech program, from the value of tables, to the result of a compiled block, to the properties on graphical elements of an output program. 
+The inspector will be the main debugging tool in the Mech Notebook. As its name implies, it will allow you to inspect any aspect of a running Mech program, from the value of tables, to the result of a compiled block, to the properties on graphical elements of an output program. The first feature of the inspector we've implemented is the ability to inspect tables and see their values displayed as a table:
 
 <img src="images/inspector.gif" />
 
-The editor can render block output. Right now, anything you bind to the block-scoped table `block/view` is rendered directly underneath the block. For example, we can write a block
+When you click on a table in a block, the inspector pops ups in a modal window nearby. The values displayed in the table update as they are recaculted. Try it out yourself with tables in the block below:
+
+  students = [|name     age major         gpa|
+               "Harold" 18  "Chemistry"   2.8
+               "Omar"   19  "Art History" 3.2
+               "Lisa"   19  "Comp Sci"    3.9]
+  time = #time/timer.ticks
+  x = [1:5 6:10]
+
+There's a lot more work to do here. It would be nice to do the same thing we did with views able, and allow the data to be viewed as a chart, graph, video, or any other type of visualization. We'll be exploring new possibilities for this in v0.0.4 (two versions from now).
 
 ## Changelog
 
