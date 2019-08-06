@@ -28,18 +28,13 @@ Views are a notebook feature that allow us to write the output of a block direct
 
 Block views update their output continually to reflect the current value of the `block/view` table. If we select a timer, for example, we can see the view update as the timer ticks:
 
-make a timer
-
-  #time/timer = [period: 1000, ticks: 0, hours: 0, minutes: 0, seconds: 0]
-
-react to timer
-
   block/view = #time/timer.seconds * 3
 
 We aren't limited to printint out numbers either. 
 
   x = 0:360
-  y = math/sin(degrees: x) * 50 + 60
+  z = x + #time/timer.ticks
+  y = math/sin(degrees: z) * 50 + 60
   block/view = [type: "scatter", x: [x], y: [y]]
 
 
@@ -53,7 +48,7 @@ The editor can render block output. Right now, anything you bind to the block-sc
 
 ## Changelog
 
-## Language Documentation 
+<h3>Language Documentation</h3>
 
 Added:
 
@@ -66,23 +61,31 @@ Added:
 - exploratory programming doc
 - indexing and slicing docs
 
-## Notebook
+<h3>Notebook</h3>
 
 - Changed from js to rust
+- Render .mec documents as rich HTML
+- Render block views under block
+- Added table inspector
+- Added table of contents
 
-## Syntax
+<h3>Syntax</h3>
 
 - Added syntax formatter
+- Make logic functions composable e.g. `x & y | z`
+- Inline filter expressions e.g. `table{x > 10}`
 
-## Libraries
+<h3>Libraries</h3>
 
 - Added time library
 - Renamed system/timer to time/timer. Also renamed resolutin to period
 
-## Example Programs
+<h3>Example Programs</h3>
 
 - Added a simple pong game
 
 ## Roadmap
 
 The next version, v0.0.3, will focus on input/output facilities, which will necessarily involve a closer look at the distribution model. In the subsequent version, v0.0.4, we will circle back to the notebook and work on improving tooling and programmer creature comforts.
+
+  #time/timer = [period: 15, ticks: 0, hours: 0, minutes: 0, seconds: 0]
