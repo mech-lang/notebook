@@ -1,0 +1,62 @@
+# Version 0.0.2 - Documentation, Views, Inspector
+
+June 23, 2019
+
+Today we're happy to release v0.0.2-alpha of Mech. This release has improvements for the language, but the focus was on documentation and notebook features. First, we've overhauled the notebook interface so that most components are rendered in Rust wasm instead of Javascript. Eventually we will move over to an interface entirely written in Mech. Second, we've rendered Mech documents in HTML, rather than plain text. This necessitated finishing the formatter for syntax highlighting. Finally, we have included a couple tools like an inspector and block views that will help programmers. Let's look at each of these new features.
+
+## Documentation
+
+For this version we've started the never-finished task of writing documentation for Mech. To do this we've created a dialect of Markdown called "Mechdown". It supports all the featues of Markdown (although not all are implemented yet), and has several extensions specific for Mech, like the ability to interpret and display the results of in-line Mech statements (for example [[45.7 * 4]]) and execute Mech blocks. This allows us to write live documentation for Mech directly in Mechdown.
+
+In this release we're including a new <a href="https://github.com/mech-lang/syntax/blob/master/src/formatter.rs">formatter</a>, which takes a Mech AST and produces formatted Mech syntax. We use this formatter to provide syntax highlighting for Mech code blocks. For example:
+
+  table = [|x y z|
+            1 2 3
+            4 5 6]
+
+## Views
+
+## Inspector 
+
+The inspector will be the main debugging tool in the Mech Notebook. As its name implies, it will allow you to inspect any aspect of a running Mech program, from the value of tables, to the result of a compiled block, to the properties on graphical elements of an output program. 
+
+<img src="http://mech-lang.org/img/post/inspector.PNG" />
+
+The editor can render block output. Right now, anything you bind to `block/view` is rendered under the block. For example, we can write a block
+
+## Changelog
+
+### Language Documentation 
+
+Added:
+
+- The beginnings of a tutorial
+- installation and running docs
+- programming model doc
+- table doc
+- blocks doc
+- database doc
+- exploratory programming doc
+- indexing and slicing docs
+- 
+
+### Notebook
+
+-
+
+### Syntax
+
+- Added syntax formatter
+
+### Libraries
+
+- Added time library
+- Renamed system/timer to time/timer. Also renamed resolutin to period
+
+### Example Programs
+
+- Added a simple pong game
+
+## Roadmap
+
+The next version, v0.0.3, will focus on input/output facilities, which will necessarily involve a closer look at the distribution model. In the subsequent version, v0.0.4, we will circle back to the notebook and work on improving tooling and programmer creature comforts.

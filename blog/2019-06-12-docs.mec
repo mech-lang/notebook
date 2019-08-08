@@ -1,8 +1,8 @@
-# Version 0.0.2 - Documentation, Views, Inspector
+# Version 0.0.2 - Documentation, Views, and the Inspector
 
 June 12, 2019
 
-Today we're happy to release <a href="https://github.com/mech-lang/mech/releases/tag/v0.0.2">Mech v0.0.2-alpha</a>. This release has improvements for the language itself, but the focus was on documentation and notebook features. First, we've overhauled the notebook interface so that most components are rendered in Rust wasm instead of Javascript. Eventually we will move over to an interface entirely written in Mech. Second, we've rendered Mech documents in HTML, rather than plain text. This necessitated finishing the formatter for syntax highlighting. Finally, we have included a couple tools like an inspector and block views that will help programmers. Let's look at each of these new features.
+Today we're happy to release <a href="https://github.com/mech-lang/mech/releases/tag/v0.0.2">Mech v0.0.2</a>. This release has improvements for the language itself, but the focus was on documentation and notebook features. First, we've overhauled the notebook interface so that most components are rendered in Rust wasm instead of Javascript. Eventually we will move over to an interface entirely written in Mech. Second, we've rendered Mech documents in HTML, rather than plain text. This necessitated finishing the formatter for syntax highlighting. Finally, we have included a couple tools like an inspector and block views that will help programmers. Let's look at each of these new features.
 
 ## Documentation
 
@@ -47,7 +47,7 @@ In v0.0.3 we're planning to revisit views with a better way to create them. For 
 
 The inspector will be the main debugging tool in the Mech Notebook. As its name implies, it will allow you to inspect any aspect of a running Mech program, from the value of tables, to the result of a compiled block, to the properties on graphical elements of an output program. The first feature of the inspector we've implemented is the ability to inspect tables and see their values displayed as a table:
 
-<img src="images/inspector.gif" />
+<img src="/img/inspector.gif" />
 
 When you click on a table in a block, the inspector pops ups in a modal window nearby. The values displayed in the table update as they are recaculted. Try it out yourself with tables in the block below:
 
