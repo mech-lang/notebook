@@ -14,11 +14,10 @@ Set up the parameters
 
 Calculate the robot arm link coordiantes 
   i = 2:6
-  i2 = i / 2
-  ir = math/floor(column: i2)
+  j = math/floor(column: i / 2)
   link-length = [53; 100; 85]
-  #x{i} := #x{i - 1} + link-length{ir} * math/sin(degrees: #angle{ir})
-  #y{i} := #y{i - 1} - link-length{ir} * math/cos(degrees: #angle{ir})
+  #x{i} := #x{i - 1} + link-length{j} * math/sin(degrees: #angle{j})
+  #y{i} := #y{i - 1} - link-length{j} * math/cos(degrees: #angle{j})
 
 ## Layout
 
