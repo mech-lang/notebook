@@ -32,4 +32,4 @@ Alternatively, you can use Rust's Cargo build system to build Mech. Note: This m
 > cargo install -g mech
 ```
 
-Up Next: <a href="/#/docs/running.mec">Running Mech</a>
+Up Next: <a href="#/docs/running.mec">Running Mech</a>

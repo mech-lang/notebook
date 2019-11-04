@@ -12,4 +12,4 @@ In each of these examples, Mech performs computations only in the presence of da
 
 Mech programs are made up of "Tables" of data and "Blocks" of code. You build a Mech program by specifying your data in tables, and you perform computation on them through a series of code blocks. Blocks are orderless and data-driven.
 
-Up Next: <a href="/#/docs/programs/tables.mec">Tables</a>
+Up Next: <a href="#/docs/programs/tables.mec">Tables</a>

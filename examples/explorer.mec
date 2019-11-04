@@ -1,0 +1,27 @@
+# Explorer
+
+The explorer has a position
+  #explorer = [x: 100 y: 100]
+
+We can move the explorer with arrow keys
+  ~ #html/event/keydown.key == "ArrowLeft"
+  #explorer.x := #explorer.x - 10
+
+Move right
+  ~ #html/event/keydown.key == "ArrowRight"
+  #explorer.x := #explorer.x + 10
+
+Move up
+  ~ #html/event/keydown.key == "ArrowUp"
+  #explorer.y := #explorer.y - 10
+
+Move down
+  ~ #html/event/keydown.key == "ArrowDown"
+  #explorer.y := #explorer.y + 10
+
+Draw the explorer in a canvas
+  avatar = [shape: "circle" parameters: [cx: #explorer.x cy: #explorer.y radius: 10 fill: "#000000"]]
+  #drawing = [type: "canvas" class: _ contains: [avatar] parameters: [width: 800, height: 800]]
+
+Attach the drawing to a root
+  #app/main = [root: "drawing" direction: _ contains: [#drawing]]

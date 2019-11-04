@@ -38,9 +38,9 @@ Plot a graph of sine
 
 ## Used In
 
-- <a href="/#/examples/clock.mec">clock.mec</a>
-- <a href="/#/examples/robot-drawing.mec">robot-drawing.mec</a>
+- <a href="#/examples/clock.mec">clock.mec</a>
+- <a href="#/examples/robot-drawing.mec">robot-drawing.mec</a>
 
 ## See Also
 
-- <a href="/#/docs/math/cos.mec">math/cos</a>
+- <a href="#/docs/math/cos.mec">math/cos</a>

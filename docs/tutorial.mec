@@ -41,4 +41,4 @@ Within a block, expressions are computed in the order they are written, as with 
 
 Since th GPA changed, every block that depends on this GPA will update as well. This is the essence of a dataflow language; although we cannot specify control flow as in an imperative language, we can specify the data, and this in turn causes execution to happen as defined by the data dependencies of blocks.
 
-Up Next: <a href="/#/docs/help.mec">Getting Help</a>
+Up Next: <a href="#/docs/help.mec">Getting Help</a>

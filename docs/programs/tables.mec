@@ -48,4 +48,4 @@ Create a nested table
 
   nested-table = [type: "div" parameters: [width: 100 height: 50]]
 
-Up Next: <a href="/#/docs/programs/blocks.mec">Blocks</a>
+Up Next: <a href="#/docs/programs/blocks.mec">Blocks</a>

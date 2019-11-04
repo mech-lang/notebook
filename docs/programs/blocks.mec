@@ -13,7 +13,7 @@ Each statment in a block is indented with two spaces from the margin. The block 
 - Transform data within the scope of the block
 - Write data to the global scope
 
-We'll talk more about what that global scope is in the <a href="/#/docs/programs/database.mec">database section</a>, but for now the important idea is that blocks are self contained. You can bring data into the block, and any transformations on that data apply only within the scope of the block unless explicitly stated.
+We'll talk more about what that global scope is in the <a href="#/docs/programs/database.mec">database section</a>, but for now the important idea is that blocks are self contained. You can bring data into the block, and any transformations on that data apply only within the scope of the block unless explicitly stated.
 
 Considering the block above, it creates two block-scoped variables, `x` and `y`. These variables are assigned the values `1` and `2` respectively, and they are added together in the variable `z`. The `#` preceeding `z` indicates that the variable is globally scoped, meaning we can access it from outside of the block e.g. the value is [[#z]].
 
@@ -53,7 +53,7 @@ And then we can actually assign a value to `#first`
 
 Despite the fact we used `#first` before we assigned it a value, we can see the result [[#second]].
 
-The orderlessness of blocks means you are free to write a Mech program however you see fit. Your program is never constrained by an arbitrary block order imposed by a compiler. This freedom opens up new possibilities for exploratory and expository programming, which we address more completely in <a href="/#/docs/programs/eploration.mec">a later section</a>.
+The orderlessness of blocks means you are free to write a Mech program however you see fit. Your program is never constrained by an arbitrary block order imposed by a compiler. This freedom opens up new possibilities for exploratory and expository programming, which we address more completely in <a href="#/docs/programs/eploration.mec">a later section</a>.
 
 ## Blocks are Reactive
 
@@ -76,4 +76,4 @@ Create a timer
 Alias the tick
   #tick = #time/timer.ticks
 
-Up Next: <a href="/#/docs/programs/database.mec">Database</a>
+Up Next: <a href="#/docs/programs/database.mec">Database</a>

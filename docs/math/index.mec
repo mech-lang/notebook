@@ -49,6 +49,6 @@ Element-wise operations apply to 2D tables as well
 
 ## Trigonometric Functions
 
-- <a href="/#/docs/math/sin.mec">math/sin</a> - Compute the sine of a vector of angles.
-- <a href="/#/docs/math/cos.mec">math/cos</a> - Compute the cosine a vector of angles.
-- <a href="/#/docs/math/tan.mec">math/tan</a> - Compute the tangent a vector of angles.
+- <a href="#/docs/math/sin.mec">math/sin</a> - Compute the sine of a vector of angles.
+- <a href="#/docs/math/cos.mec">math/cos</a> - Compute the cosine a vector of angles.
+- <a href="#/docs/math/tan.mec">math/tan</a> - Compute the tangent a vector of angles.

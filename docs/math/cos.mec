@@ -28,9 +28,9 @@ Calculate cosine of an angle in radians
 
 ## Used In
 
-- <a href="/#/examples/clock.mec">clock.mec</a>
-- <a href="/#/examples/robot-drawing.mec">robot-drawing.mec</a>
+- <a href="#/examples/clock.mec">clock.mec</a>
+- <a href="#/examples/robot-drawing.mec">robot-drawing.mec</a>
 
 ## See Also
 
-- <a href="/#/docs/math/sin.mec">math/sin</a>
+- <a href="#/docs/math/sin.mec">math/sin</a>

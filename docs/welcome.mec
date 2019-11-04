@@ -11,4 +11,4 @@ Some key features of Mech that set it apart from other languages are:
 - Mech has a builtin database. Every change to a Mech program is recordecd as a transaction on the database. This allows you to rewind and playback the execution of a program. This opens up interesting avenues for debugging and exploration, including the ability to rewind a program, fork its timeline, and test different possibilities for each timeline. Think of it as super-charged A/B testing.
 - Mech programs are compatible with markup languages like Markdown or HTML. In fact, all of the documentation contained for the language is written in Mech. This allows Mech code to be embedded in documents. For example: [[123 + 456]]
 
-Up Next: <a href="/#/docs/install.mec">Installation</a>
+Up Next: <a href="#/docs/install.mec">Installation</a>
