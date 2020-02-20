@@ -1,23 +1,28 @@
 # Explorer
 
 The explorer has a position
+  #time/timer = [period: 15, tick: 0, hours: 0, minutes: 0, seconds: 0]
   #explorer = [x: 100 y: 100]
+  #speed-x = 0
+  #speed-y = 0
 
 We can move the explorer with arrow keys
   ~ #html/event/keydown.key == "ArrowLeft"
-  #explorer.x := #explorer.x - 10
-
+  #speed-x := -1
 Move right
   ~ #html/event/keydown.key == "ArrowRight"
-  #explorer.x := #explorer.x + 10
-
+  #speed-x := 1
 Move up
   ~ #html/event/keydown.key == "ArrowUp"
-  #explorer.y := #explorer.y - 10
-
+  #speed-y := -1
 Move down
   ~ #html/event/keydown.key == "ArrowDown"
-  #explorer.y := #explorer.y + 10
+  #speed-y := 1
+
+Move the explorer according to its speed every tick of the timer
+  ~ #time/timer.tick
+  #explorer.x := #explorer.x + #speed-x
+  #explorer.y := #explorer.y + #speed-y
 
 Draw the explorer in a canvas
   avatar = [shape: "circle" parameters: [cx: #explorer.x cy: #explorer.y radius: 10 fill: "#000000"]]
