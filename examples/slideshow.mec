@@ -1,0 +1,29 @@
+# Slide Show
+
+block
+  #slide-number = 2
+
+block
+  ~ #html/event/keydown.key == "ArrowLeft"
+  #slide-number := #slide-number - 1
+
+block
+  ~ #html/event/keydown.key == "ArrowRight"
+  #slide-number := #slide-number + 1
+
+slides
+  #sayings = [[#slide1]; [#slide2]; [#slide3]]
+
+slide 1
+  #slide1 = [type: "div" class: "outer" contains: [type: "div" class: "inner" contains: "SLIDE 1"]]
+
+slide 2
+  #slide2 = [type: "div" class: "outer2" contains: "SLIDE 2"]
+
+slide 3
+  x = ["a"; "b"; "c"]
+  #slide3 = [type: "div" class: "outer3" contains: x] 
+
+block
+  words = [type: "div" class: "container" contains: [#sayings{#slide-number, :}]]
+  #app/main = [root: "drawing" direction: "column" contains: [words]]

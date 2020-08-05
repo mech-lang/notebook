@@ -1,0 +1,18 @@
+# Mech Editor
+
+## Layout
+
+Control buttons
+  #mech-editor/controls = [|name icon link|
+                            "home" "ion-pound" "/#/docs/index.mec"
+                            "tables" "ion-grid" "/#/docs/index.mec"]
+Turn buttons into links
+  #editor-links = [type: "a" class: #mech-editor/controls.icon  href: #mech-editor/controls.link]
+
+The main elements
+  controls = [type: "div" class: "mech-controls" contains: "Controls"]
+  container = [type: "div" class: "mech-container" contains: "main window"]
+  #window = [type: "div" class: "mech-app" contains: [controls; container]]
+
+Draw the thing
+  #app/main = [root: "drawing" direction: _ contains: [#window]]

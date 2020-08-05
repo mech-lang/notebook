@@ -493,7 +493,7 @@ p a {
   overflow-y: auto;
 }
 
-#mech-app {
+.mech-app {
   height: 100%;
   display: flex;
   flex-direction: row;

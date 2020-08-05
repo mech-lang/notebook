@@ -6,22 +6,18 @@ Define the environment
   #time/timer = [period: 15, tick: 0, hours: 0, minutes: 0, seconds: 0]
   #gravity = 1
   #boundary = [width: 500 height: 500]
-  #html/event/click = [|x y|
-                        0 0]
-  #html/event/mousemove = [|x y|
-                            0 0]
-  #html/event/mousedown = [|x y|
-                            0 0]
+  #launch-point = [x: 0 y: 0]
+  #end-point = [x: 0 y: 0]
 
-On mouse down, set the launch point
-  ~ #html/event/mousedown
+On pointer down, set the launch point
+  ~ #html/event/pointerdown
   #line-switch = 1
-  #launch-point = [x: #html/event/mousedown.x y: #html/event/mousedown.y]
-  #end-point = [x: #html/event/mousedown.x y: #html/event/mousedown.y]
+  #launch-point = [x: #html/event/pointerdown.x y: #html/event/pointerdown.y]
+  #end-point = [x: #html/event/pointerdown.x y: #html/event/pointerdown.y]
 
 Draw a line between the set point and cursor
-  ~ #html/event/mousemove
-  #end-point{#line-switch == 1,:} := [x: #html/event/mousemove.x y: #html/event/mousemove.y]
+  ~ #html/event/pointermove
+  #end-point{#line-switch == 1,:} := [x: #html/event/pointermove.x y: #html/event/pointermove.y]
 
 Create new balls
   ~ #html/event/click

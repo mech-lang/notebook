@@ -203,6 +203,20 @@ document.getElementById("clear core").addEventListener("click", function() {
   //render();
 });*/
 
+document.onkeyup = function (event) {
+  if (event.altKey) {
+    switch (event.key) {
+      case "1": window.location = "/#/examples/clock.mec"; break;
+      case "2": window.location = "/#/examples/breakout.mec"; break;
+      case "3": window.location = "/#/examples/bouncing-balls.mec"; break;
+      case "4": window.location = "/#/examples/robot-drawing.mec"; break;
+      case "5": window.location = "/#/examples/error.mec"; break;
+      case "6": window.location = "/#/examples/units.mec"; break;
+      case "7": window.location = "/#/docs/math/sin.mec"; break;
+    }
+    
+  }
+}
 
 window.onhashchange = function(event) {
   let extension = location.hash.substring(location.hash.length - 3);

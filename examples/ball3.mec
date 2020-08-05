@@ -1,0 +1,32 @@
+# Bouncing Balls
+
+Define the environment
+  #ball = [|x   y   vx vy|
+            10  10  0  0]
+  #time/timer = [period: 15, tick: 0, hours: 0, minutes: 0, seconds: 0]
+  #gravity = 1
+  #boundary = [width: 500 height: 500]
+  #launch-point = [x: 0 y: 0]
+  #end-point = [x: 0 y: 0]
+
+Move the circle on arrow keys
+  ~ #html/event/keydown
+  k = #html/event/keydown.key
+  d = 0.1
+  #ball.vx{k == "ArrowLeft"} := #ball.vx - d
+  #ball.vx{k == "ArrowRight"} := #ball.vx + d
+  #ball.vy{k == "ArrowDown"} := #ball.vy + d
+  #ball.vy{k == "ArrowUp"} := #ball.vy - d
+
+Move the ball according to its velocity
+  ~ #time/timer.tick
+  #ball.x := #ball.x + #ball.vx
+  #ball.y := #ball.y + #ball.vy
+
+## Drawing
+
+Set up clock drawing elements
+  ball = [shape: "circle" parameters: [cx: #ball.x cy: #ball.y radius: 10 fill: "#000000"]]
+  line = [shape: "line" parameters: [x1: #launch-point.x, y1: #launch-point.y, x2: #end-point.x, y2: #end-point.y, stroke: "#000000"]]
+  canvas = [type: "canvas" class: _ contains: [ball; line] parameters: [width: #boundary.width height: #boundary.height]]
+  #app/main = [root: "drawing" direction: "column" contains: [canvas]]

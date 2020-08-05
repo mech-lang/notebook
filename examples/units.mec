@@ -1,0 +1,9 @@
+# Quantities Example
+
+Add two quantities of the same base but different scale
+
+  x = 5kg + 10g
+
+Add two quantities of different base but the same scale
+
+  x = 5kg + 10km

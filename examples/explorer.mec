@@ -5,20 +5,49 @@ The explorer has a position
   #explorer = [x: 100 y: 100]
   #speed-x = 0
   #speed-y = 0
+  #z = 5
 
 We can move the explorer with arrow keys
   ~ #html/event/keydown.key == "ArrowLeft"
-  #speed-x := -1
+  #speed-x := -#z
 Move right
   ~ #html/event/keydown.key == "ArrowRight"
-  #speed-x := 1
+  #speed-x := #z
 Move up
   ~ #html/event/keydown.key == "ArrowUp"
-  #speed-y := -1
+  #speed-y := -#z
 Move down
   ~ #html/event/keydown.key == "ArrowDown"
-  #speed-y := 1
+  #speed-y := #z
 
+Move down
+  ~ #html/event/keyup.key == "ArrowDown"
+  #speed-y := 0
+Move left
+  ~ #html/event/keyup.key == "ArrowUp"
+  #speed-y := 0
+Move left
+  ~ #html/event/keyup.key == "ArrowLeft"
+  #speed-x := 0
+Move right
+  ~ #html/event/keyup.key == "ArrowRight"
+  #speed-x := 0
+
+Keep in bounds
+  ~ #explorer.x > 800
+  #speed-x := 0
+  #explorer.x := 800
+
+Keep in bounds
+  ~ #explorer.x < 0
+  #speed-x := 0
+  #explorer.x := 0
+
+Keep in bounds
+  ~ #explorer.y < 0
+  #speed-y := 0
+  #explorer.y := 0
+  
 Move the explorer according to its speed every tick of the timer
   ~ #time/timer.tick
   #explorer.x := #explorer.x + #speed-x
