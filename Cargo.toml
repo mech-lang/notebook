@@ -1,21 +1,42 @@
-<p align="center">
-  <img width="500px" src="http://mech-lang.org/img/logo.png">
-</p>
+[package]
+name = "mech-notebook"
+version = "0.1.0"
+authors = ["Corey Montella <corey@mech-lang.org>"]
+license = "Apache-2.0"
+edition = "2021"
+rust-version = "1.56"
+publish = false
+build = "build.rs"
 
-Mech is a language for developing **data-driven**, **reactive** systems like animations, games, and robots. It makes **composing**, **transforming**, and **distributing** data easy, allowing you to focus on the essential complexity of your project.
+[package.metadata.docs.rs]
+all-features = true
 
-You can try Mech online at [try.mech-lang.org](http://try.mech-lang.org).
+[lib]
+crate-type = ["cdylib", "rlib"]
 
-Usage and installation instructions can be found in the [documentation](http://mech-lang.org/page/learn/) or the [main Mech repository](https://github.com/mech-lang/mech).
+[dependencies]
+mech-core = {git = "https://gitlab.com/mech-lang/core", branch = "v0.1-beta"}
+mech-utilities = {git = "https://gitlab.com/mech-lang/utilities", branch = "v0.1-beta"}
+mech-syntax = {git = "https://gitlab.com/mech-lang/syntax", branch = "v0.1-beta"}
+mech-gui = {git = "https://gitlab.com/mech-lang/machines/gui", branch = "v0.1-beta"}
 
-Read about progress on our [blog](http://mech-lang.org/blog/), and follow us on Twitter [@MechLang](https://twitter.com/MechLang).
+lazy_static = "1.4.0"
+eframe = { version = "0.18.0"}
+image = { version = "0.24.0", default-features = false, features = [
+  "ico",
+  "jpeg",
+  "png",
+] }
 
-## Project Status
+tracing-subscriber = "0.3"
 
-Mech is currently in the **alpha** stage of development. This means that while some features work and are tested, programs are still likely to crash and produce incorrect results. We've implemented some language features, but many are not yet implemented.
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+console_error_panic_hook = "0.1.6"
+tracing-wasm = "0.2"
 
-Feel free to use the language for your own satisfaction, but please don't use it for anything important.
+[build-dependencies]
+winres = "0.1.12"
 
-## License
-
-Apache 2.0
+[package.metadata.winres]
+OriginalFilename = "MECH.EXE"
+LegalCopyright = "Copyright © 2022"
