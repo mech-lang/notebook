@@ -2,41 +2,19 @@
   <img width="500px" src="http://mech-lang.org/img/logo.png">
 </p>
 
-Mech is a language for developing **data-driven**, **reactive** systems like animations, games, and robots. It makes **composing**, **transforming**, and **distributing** data easy, allowing you to focus on the essential complexity of your problem. 
+Mech is a language for developing **data-driven**, **reactive** systems like animations, games, and robots. It makes **composing**, **transforming**, and **distributing** data easy, allowing you to focus on the essential complexity of your project.
 
-Read about progress on our [blog](http://mech-lang.org/blog/), follow us on Twitter [@MechLang](https://twitter.com/MechLang), or join the mailing list: [talk@mech-lang.org](http://mech-lang.org/page/community/).
+You can try Mech online at [try.mech-lang.org](http://try.mech-lang.org).
 
-# Mech Notebook
+Usage and installation instructions can be found in the [documentation](http://mech-lang.org/page/learn/) or the [main Mech repository](https://github.com/mech-lang/mech).
 
-A graphical interface for Mech using a notebook metaphor. Mech notebook presents the world as a grid of cells, into which you can log data, write queries over that data, collect and write notes, draw interfaces, and design visualizations.
+Read about progress on our [blog](http://mech-lang.org/blog/), and follow us on Twitter [@MechLang](https://twitter.com/MechLang).
 
-*Note: Right now the editor is a text area and a region that draws program output, but this will eventually evolve into the above vision.*
+## Project Roadmap
 
-## Building and Running
+Mech is currently in the **alpha** stage of development. This means that while some features work and are tested, programs are still likely to crash and produce incorrect results. There is a "happy path" that works well, but it's quite narrow. We've implemented many language features, but most are incomplete and some are not yet implemented at all. 
 
-Download and install [NodeJS](https://nodejs.org) and then run
-
-```bash
-> npm install
-```
-
-You can start a file server that will host the editor with
-
-```bash
-> npm start
-```
-
-Then navigate a browser to `localhost:8080`. A packaged version can be built with
-
-```bash
-> npm run build
-```
-
-## Project Status
-
-Mech is currently in the **alpha** stage of development. This means that while some features work and are tested, programs are still likely to crash and produce incorrect results. We've implemented some language features, but many are not yet implemented.
-
-Feel free to use the language for your own satisfaction, but please don't use it for anything important.
+The project will hit the **beta** stage of development when all currently planned features have been implemented at least as a prototype. The current target for this milestone is October 2022.
 
 ## License
 
