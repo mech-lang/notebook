@@ -26,8 +26,8 @@ pub fn load_mech(program_path: &str) -> Result<mech_core::Core,MechError> {
   let mut mech_core = mech_core::Core::new();
   let mut compiler = Compiler::new(); 
   match compiler.compile_str(&code_string) {
-    Ok(blocks) => {
-      mech_core.load_blocks(blocks);
+    Ok(sections) => {
+      mech_core.load_sections(sections);
     }
     Err(x) => {
       
@@ -51,8 +51,8 @@ pub fn load_mech(program_path: &str) -> Result<mech_core::Core,MechError> {
   code += "]";
   
   let mut compiler = Compiler::new();
-  let blocks = compiler.compile_str(&code).unwrap();
-  mech_core.load_blocks(blocks);
+  let sections = compiler.compile_str(&code).unwrap();
+  mech_core.load_sections(sections);
   mech_core.schedule_blocks();
   Ok(mech_core)
 }
