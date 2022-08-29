@@ -4,9 +4,11 @@ version = "0.1.0"
 authors = ["Corey Montella <corey@mech-lang.org>"]
 license = "Apache-2.0"
 edition = "2021"
-rust-version = "1.56"
-publish = false
 build = "build.rs"
+
+[badges]
+gitlab = { repository = "mech-lang/notebook", branch = "main" }
+maintenance = { status = "actively-developed" }
 
 [package.metadata.docs.rs]
 all-features = true
@@ -22,7 +24,7 @@ mech-gui = {git = "https://gitlab.com/mech-lang/machines/gui", branch = "v0.1-be
 
 lazy_static = "1.4.0"
 eframe = { version = "0.18.0"}
-image = { version = "0.24.0", default-features = false, features = [
+image = { version = "0.24.3", default-features = false, features = [
   "ico",
   "jpeg",
   "png",
@@ -31,8 +33,8 @@ image = { version = "0.24.0", default-features = false, features = [
 tracing-subscriber = "0.3"
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
-console_error_panic_hook = "0.1.6"
-tracing-wasm = "0.2"
+console_error_panic_hook = "0.1.7"
+tracing-wasm = "0.2.1"
 
 [build-dependencies]
 winres = "0.1.12"
@@ -40,3 +42,5 @@ winres = "0.1.12"
 [package.metadata.winres]
 OriginalFilename = "MECH.EXE"
 LegalCopyright = "Copyright © 2022"
+
+[workspace]
