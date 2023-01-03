@@ -21,7 +21,7 @@ use mech_gui::*;
 pub fn load_mech(program_path: &str) -> Result<mech_core::Core,MechError> {
   let code_string = match fs::read_to_string(program_path) {
     Ok(code) => code,
-    Err(err) => {return Err(MechError{id: 87491, kind: MechErrorKind::GenericError(format!("{:?}",err))});}
+    Err(err) => {return Err(MechError{msg: "".to_string(), id: 87491, kind: MechErrorKind::GenericError(format!("{:?}",err))});}
   };
   let mut mech_core = mech_core::Core::new();
   let mut compiler = Compiler::new(); 
