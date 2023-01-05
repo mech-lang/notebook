@@ -1,8 +1,9 @@
 Mech Notebook
 ==============
 
-Some global values
-  #time/timer += [period: 16<ms>]
+Start a timer for animations
+
+#time/timer += [period: 16<ms>]
 
 The dot grid
   x = (1:300) * 15 + 70
@@ -24,11 +25,10 @@ Follow Cursor
     contains: [
       shape: "circle"
       parameters: [
-        center-x: #io/pointer.x,
-        center-y: #io/pointer.y, 
+        center-x: #io/pointer.x
+        center-y: #io/pointer.y
         radius: 25,
         fill: 0x3E3848]]]
-
 
 1. Panels
 ----------
@@ -50,14 +50,13 @@ Panel contents
   ]
   #top-contents = [
     kind: "panel-left"
-    contains: [kind: "label", text: "bouncing-balls.mec", parameters: [color: 0xF4D8D8 size: 14]]
+    contains: [kind: "label", text: "Top Contents", parameters: [color: 0xFFFFFF size: 14]]
     parameters: [fill: 0x2E2A3C, min-width: 250 margin: 0]
   ]
-  #bottom-contents = [kind: "label" text: "Hello" parameters: [
+  #bottom-contents = [kind: "label" text: "Bottom Contents" parameters: [
     color: 0xF4D8D8
     size: 14]]
-  #app-contents = ["Bouncing Balls Simulation"
-                   "=========================="]
+  #app-contents = [#io/pointer.x #io/pointer.y]
   #left-contents = [panels]
 
 2. Interactions
