@@ -2,20 +2,19 @@
 name = "mech-notebook"
 version = "0.1.0"
 authors = ["Corey Montella <corey@mech-lang.org>"]
-description = "Notebook interface for Mech"
+description = "Gui notebook interface for the Mech programming language."
+documentation = "http://docs.mech-lang.org"
+homepage = "https://mech-lang.org"
+repository = "https://github.com/mech-lang/notebook"
+keywords = ["mech", "language", "programming", "dataflow", "runtime"]
+categories = ["science::robotics", "science", "game-engines", "web-programming"]
 license = "Apache-2.0"
+readme = "README.md"
 edition = "2021"
-build = "build.rs"
 
 [badges]
 gitlab = { repository = "mech-lang/notebook", branch = "main" }
 maintenance = { status = "actively-developed" }
-
-[package.metadata.docs.rs]
-all-features = true
-
-[lib]
-crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 mech-core = "0.1"
@@ -37,11 +36,11 @@ tracing-subscriber = "0.3"
 console_error_panic_hook = "0.1.7"
 tracing-wasm = "0.2.1"
 
+[workspace]
+
 [build-dependencies]
 winres = "0.1.12"
 
 [package.metadata.winres]
 OriginalFilename = "MECH.EXE"
 LegalCopyright = "Copyright © 2023"
-
-[workspace]
