@@ -117,6 +117,9 @@ lazy_static! {
   static ref COLOR: u64 = hash_str("color");
   static ref MARGIN: u64 = hash_str("margin");
   static ref PADDING: u64 = hash_str("padding");
+  static ref FRAME: u64 = hash_str("frame");
+  static ref ROUNDING: u64 = hash_str("rounding");
+  static ref SHADOW: u64 = hash_str("shadow");
 }
 
 pub struct MechApp {
@@ -228,6 +231,7 @@ impl MechApp {
               else if raw_kind == *CANVAS { self.render_canvas(table,row,ui)?; }
               else if raw_kind == *DEBUG { self.render_debug(table,row,ui)?; }
               else if raw_kind == *LABEL { self.render_label(table,ui)?; }
+              else if raw_kind == *FRAME { self.render_frame(table,row,ui)?; }
               //else if raw_kind == *IMAGE { render_iamge(table,ui)?; }
               else {
                 return Err(MechError{msg: "".to_string(), id: 6489, kind: MechErrorKind::GenericError(format!("{:?}", raw_kind))});
@@ -659,6 +663,60 @@ impl MechApp {
     }
     Ok(())
   }
+
+  pub fn render_frame(&mut self, table: &Table, row: usize, container: &mut egui::Ui) -> Result<(),MechError> {
+    match (table.get(&TableIndex::Index(row), &TableIndex::Alias(*CONTAINS)),
+            table.get(&TableIndex::Index(row), &TableIndex::Alias(*PARAMETERS))) {
+      (contained,parameters_table) => {
+        let mut frame = Frame::default();
+        if let Ok(Value::Reference(parameters_table_id)) = parameters_table {
+          match self.core.get_table_by_id(*parameters_table_id.unwrap()) {
+            Ok(parameters_table) => {
+              let parameters_table_brrw = parameters_table.borrow();
+              if let Ok(Value::U128(color)) = parameters_table_brrw.get(&TableIndex::Index(1),&TableIndex::Alias(*FILL)) { 
+                frame.fill = get_color(color);
+              }
+              if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*MARGIN)) {
+                frame.outer_margin = Margin::same(value.unwrap());
+              }
+              if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*PADDING)) {
+                frame.inner_margin = Margin::same(value.unwrap());
+              }
+              if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*ROUNDING)) {
+                frame.rounding = Rounding::same(value.unwrap());
+              }
+              if let Ok(Value::Reference(margin_table_id)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*STROKE)) {
+                match self.core.get_table_by_id(*margin_table_id.unwrap()) {
+                  Ok(margin_table) => {
+                    let margin_table_brrw = margin_table.borrow();
+                    let width: f32 = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*WIDTH)) {
+                      value.unwrap()
+                    } else { 1.0 };
+                    let color: Color32 = if let Ok(Value::U128(color)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*COLOR)) {
+                      get_color(color)
+                    } else { Color32::WHITE };
+                    frame.stroke = Stroke::new(width, color);
+                  }
+                  _ => (),
+                }
+              }
+            }
+            _ => (),
+          }
+        }
+        egui::SidePanel::left(humanize(&table.id))
+          .frame(frame)
+          .show_separator_line(false)
+          .show_inside(container, |ui| {
+            if let Ok(contained) = contained {
+              self.render_value(contained, ui);
+            }
+        });
+      }
+      x => {return Err(MechError{msg: "".to_string(), id: 6496, kind: MechErrorKind::GenericError(format!("{:?}", x))});},
+    }
+    Ok(())
+  }
   
   pub fn render_table__window(&mut self, table: &Table, row: usize, container: &mut egui::Ui) -> Result<(),MechError> {
     match (table.get(&TableIndex::Index(row), &TableIndex::Alias(*TEXT)),
@@ -835,17 +893,17 @@ impl eframe::App for MechApp {
     }
 
     // Set font
-    //let mut fonts = FontDefinitions::default();
-    //fonts.font_data.insert("FiraCode-Regular".to_owned(),FontData::from_static(include_bytes!("../../../assets/fonts/FiraCode-Regular.ttf")));
-    //fonts.families.get_mut(&FontFamily::Proportional).unwrap().insert(0, "FiraCode-Regular".to_owned());
-    //ctx.set_fonts(fonts);
+    let mut fonts = FontDefinitions::default();
+    fonts.font_data.insert("FiraCode-Regular".to_owned(),FontData::from_static(include_bytes!("../../../assets/fonts/FiraCode-Regular.ttf")));
+    fonts.families.get_mut(&FontFamily::Proportional).unwrap().insert(0, "FiraCode-Regular".to_owned());
+    ctx.set_fonts(fonts);
 
     // Draw frame
     let mut frame = Frame::default();
     frame.fill = Color32::from_rgb(0x13,0x12,0x18);
     egui::CentralPanel::default()
       .frame(frame)
-    .show(ctx, |ui| {
+      .show(ctx, |ui| {
       // Compile new code...
       {
         let code_table = self.core.get_table("mech/compiler").unwrap();
@@ -866,7 +924,6 @@ impl eframe::App for MechApp {
           }
         }
       }
-
 
       //ui.ctx().request_repaint();
       self.render_app(ui);
