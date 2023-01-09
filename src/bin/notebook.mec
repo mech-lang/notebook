@@ -6,8 +6,8 @@ Start a timer for animations
 #time/timer += [period: 16<ms>]
 
 The dot grid
-  x = (1:300) * 15 + 70
-  y = (1:100) * 15 + #top-panel-height
+  x = (1:300) * 15 + 115
+  y = (1:100) * 15 + #top-panel-height + 15
   indices = set/cartesian(a: x, b: y)
   #grid = [
     kind: "canvas"
@@ -49,14 +49,21 @@ Panel contents
     "Settings"
   ]
   #top-contents = [
-    kind: "panel-left"
-    contains: [kind: "label", text: "Top Contents", parameters: [color: 0xFFFFFF size: 14]]
-    parameters: [fill: 0x2E2A3C, min-width: 250 margin: 0]
+    kind: "frame"
+    contains: "Hello"
+    parameters: [fill: 0x3E3848, stroke: [width: 2, color: 0x0000FF], padding: 5, margin: 5, rounding: 5]
+  ]
+  #top-contents2 = [
+    kind: "frame"
+    contains: "World"
+    parameters: [fill: 0x3E3848, stroke: [width: 2, color: 0x0000FF], padding: 5, margin: 5, rounding: 5]
   ]
   #bottom-contents = [kind: "label" text: "Bottom Contents" parameters: [
     color: 0xF4D8D8
     size: 14]]
-  #app-contents = [#io/pointer.x #io/pointer.y]
+  #app-contents = [kind: "label" text: "This is some code here in the middle..." parameters: [
+    color: 0xF4D8D8
+    size: 16]]
   #left-contents = [panels]
 
 2. Interactions
@@ -75,30 +82,31 @@ and compile it.
 The panels
   #top-panel = [
     kind: "panel-top" 
-    contains: [#top-contents]
-    parameters: [height: 15] 
+    contains: [[#top-contents]; [#top-contents2]]
+    parameters: [height: 15, padding: 5] 
   ]
   #bottom-panel = [
     kind: "panel-bottom" 
     contains: [#bottom-contents]
-    parameters: [fill: 0xA14345, height: 25] 
+    parameters: [fill: 0xA14345, height: 25, padding: 5] 
   ]
   #left-panel = [
     kind: "panel-left" 
     contains: [#left-contents] 
-    parameters: [width: 60] 
+    parameters: [width: 100, padding: 10] 
   ]
   #app-area = [
     kind: "panel-center" 
-    contains: [#app-contents] 
+    contains: [#app-contents]
+    parameters: [margin: 20] 
   ]
 
 Add a gui application
   #app = [
     [#grid]
+    [#cursor]
     [#top-panel]
     [#bottom-panel]
     [#left-panel]
     [#app-area]
-    [#cursor]
   ]
