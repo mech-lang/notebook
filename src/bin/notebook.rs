@@ -371,9 +371,9 @@ impl MechApp {
     match (table.get(&TableIndex::Index(row), &TableIndex::Alias(*CONTAINS)),
             table.get(&TableIndex::Index(row), &TableIndex::Alias(*PARAMETERS))) {
       (contained,parameters_table) => {
-        let mut frame = Frame::default();
-        let mut min_height = 100.0;
-        let mut max_height = 100.0;
+        let mut frame = Frame::none();
+        frame.stroke = Stroke::new(0.0, Color32::BLACK);
+        let mut panel = egui::TopBottomPanel::top(humanize(&table.id)).resizable(false).show_separator_line(false);
         if let Ok(Value::Reference(parameters_table_id)) = parameters_table {
           match self.core.get_table_by_id(*parameters_table_id.unwrap()) {
             Ok(parameters_table) => {
@@ -382,10 +382,13 @@ impl MechApp {
                 frame.fill = get_color(color);
               }
               if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*MIN__HEIGHT)) {
-                min_height = value.into();
+                panel = panel.min_height(value.into());
               }
               if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*MAX__HEIGHT)) {
-                max_height = value.into();
+                panel = panel.min_height(value.into());
+              }
+              if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*HEIGHT)) {
+                panel = panel.exact_height(value.into());
               }
               if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*MARGIN)) {
                 frame.outer_margin = Margin::same(value.unwrap());
@@ -408,27 +411,35 @@ impl MechApp {
                 match self.core.get_table_by_id(*margin_table_id.unwrap()) {
                   Ok(margin_table) => {
                     let margin_table_brrw = margin_table.borrow();
-                    if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Index(1)) {
-                      frame.inner_margin = Margin{left: value.unwrap(), right: value.unwrap(), top: value.unwrap(), bottom: value.unwrap()};
-                    }
+                    let left = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*LEFT)) { value.unwrap()} else { 0.0 };
+                    let right = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*RIGHT)) { value.unwrap()} else { 0.0 };
+                    let top = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*TOP)) { value.unwrap()} else { 0.0 };
+                    let bottom = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*BOTTOM)) { value.unwrap()} else { 0.0 };
+                    frame.inner_margin = Margin{left, right, top, bottom};
                   }
                   _ => (),
                 }
               }
-              if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*HEIGHT)) {
-                max_height = value.into();
-                min_height = value.into();
+              if let Ok(Value::Reference(margin_table_id)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*STROKE)) {
+                match self.core.get_table_by_id(*margin_table_id.unwrap()) {
+                  Ok(margin_table) => {
+                    let margin_table_brrw = margin_table.borrow();
+                    let width: f32 = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*WIDTH)) {
+                      value.unwrap()
+                    } else { 1.0 };
+                    let color: Color32 = if let Ok(Value::U128(color)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*COLOR)) {
+                      get_color(color)
+                    } else { Color32::WHITE };
+                    frame.stroke = Stroke::new(width, color);
+                  }
+                  _ => (),
+                }
               }
             }
             _ => (),
           }
         }
-        egui::TopBottomPanel::top(humanize(&table.id))
-          .resizable(false)
-          .min_height(min_height)
-          .max_height(max_height)
-          .frame(frame)
-        .show_inside(container, |ui| {
+        panel.frame(frame).show_inside(container, |ui| {
           if let Ok(contained) = contained {
             self.render_value(contained, ui);
           }
@@ -442,9 +453,9 @@ impl MechApp {
     match (table.get(&TableIndex::Index(row), &TableIndex::Alias(*CONTAINS)),
             table.get(&TableIndex::Index(row), &TableIndex::Alias(*PARAMETERS))) {
       (contained,parameters_table) => {
-        let mut frame = Frame::default();
-        let mut min_width = 10.0;
-        let mut max_width = 100.0;
+        let mut frame = Frame::none();
+        frame.stroke = Stroke::new(0.0, Color32::BLACK);
+        let mut panel = egui::SidePanel::left(humanize(&table.id)).resizable(false).show_separator_line(false);
         if let Ok(Value::Reference(parameters_table_id)) = parameters_table {
           match self.core.get_table_by_id(*parameters_table_id.unwrap()) {
             Ok(parameters_table) => {
@@ -453,14 +464,13 @@ impl MechApp {
                 frame.fill = get_color(color);
               }
               if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*MIN__WIDTH)) {
-                min_width = value.into();
+                panel = panel.min_width(value.into());
               }
               if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*MAX__WIDTH)) {
-                max_width = value.into();
+                panel = panel.min_width(value.into());
               }
               if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*WIDTH)) {
-                max_width = value.into();
-                min_width = value.into();
+                panel = panel.exact_width(value.into());
               }
               if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*MARGIN)) {
                 frame.outer_margin = Margin::same(value.unwrap());
@@ -483,9 +493,26 @@ impl MechApp {
                 match self.core.get_table_by_id(*margin_table_id.unwrap()) {
                   Ok(margin_table) => {
                     let margin_table_brrw = margin_table.borrow();
-                    if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Index(1)) {
-                      frame.inner_margin = Margin{left: value.unwrap(), right: value.unwrap(), top: value.unwrap(), bottom: value.unwrap()};
-                    }
+                    let left = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*LEFT)) { value.unwrap()} else { 0.0 };
+                    let right = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*RIGHT)) { value.unwrap()} else { 0.0 };
+                    let top = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*TOP)) { value.unwrap()} else { 0.0 };
+                    let bottom = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*BOTTOM)) { value.unwrap()} else { 0.0 };
+                    frame.inner_margin = Margin{left, right, top, bottom};
+                  }
+                  _ => (),
+                }
+              }
+              if let Ok(Value::Reference(margin_table_id)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*STROKE)) {
+                match self.core.get_table_by_id(*margin_table_id.unwrap()) {
+                  Ok(margin_table) => {
+                    let margin_table_brrw = margin_table.borrow();
+                    let width: f32 = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*WIDTH)) {
+                      value.unwrap()
+                    } else { 1.0 };
+                    let color: Color32 = if let Ok(Value::U128(color)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*COLOR)) {
+                      get_color(color)
+                    } else { Color32::WHITE };
+                    frame.stroke = Stroke::new(width, color);
                   }
                   _ => (),
                 }
@@ -494,12 +521,7 @@ impl MechApp {
             _ => (),
           }
         }
-        egui::SidePanel::left(humanize(&table.id))
-          .resizable(false)
-          .min_width(min_width)
-          .max_width(max_width)
-          .frame(frame)
-        .show_inside(container, |ui| {
+        panel.frame(frame).show_inside(container, |ui| {
           if let Ok(contained) = contained {
             self.render_value(contained, ui);
           }
@@ -570,11 +592,11 @@ impl MechApp {
           .min_width(min_width)
           .max_width(max_width)
           .frame(frame)
-        .show_inside(container, |ui| {
-          if let Ok(contained) = contained {
-            self.render_value(contained, ui);
-          }
-        });
+          .show_inside(container, |ui| {
+            if let Ok(contained) = contained {
+              self.render_value(contained, ui);
+            }
+          });
       }
     }
     Ok(())
@@ -1154,7 +1176,7 @@ fn main() {
   let icon = load_icon();
   let core = load_mech().unwrap();
   native_options.icon_data = Some(icon);
-  native_options.min_window_size = Some(Vec2{x: 1480.0, y: 800.0});
+  native_options.min_window_size = Some(Vec2{x: 500.0, y: 400.0});
   eframe::run_native("Mech Notebook", native_options, Box::new(|cc| 
     Box::new(MechApp::new(cc,core))));
 }
