@@ -50,25 +50,47 @@ Panel contents
   ]
   lr = 7
   tb = 7
-  #top-contents = [
-    kind: "frame"
-    contains: "program.mec"
-    parameters: [fill: 0x3E3848, padding: [left: lr, top: tb, right: 150, bottom: tb] ]
+  #tab1 = [
+    kind: "panel-top"
+    contains: [kind: "label" text: "program.mec" parameters: [color: 0xAFABAB]]
+    parameters: [fill: 0x262626, padding: [left: 10, top: 3, right: 10, bottom: 3]]
   ]
-  #top-contents2 = [
-    kind: "frame"
-    contains: "ekf.mec"
-    parameters: [fill: 0x3E3848, padding: [left: lr, top: tb, right: 150, bottom: 15] ]
+  #tab2 = [
+    kind: "panel-top"
+    contains: [kind: "label" text: "ekf.mec" parameters: [color: 0xE3DDEB]]
+    parameters: [fill: 0x3E3848, height: 23, padding: [left: 10, top: 3, right: 10, bottom: 3]]
   ]
-  #top-contents3 = [
-    kind: "frame"
-    contains: "misc.mec"
-    parameters: [fill: 0x3E3848, padding: [left: lr, top: tb, right: 150, bottom: tb] ]
+  #tab3 = [
+    kind: "panel-top"
+    contains: [kind: "label" text: "bouncing-balls.mec" parameters: [color: 0xAFABAB]]
+    parameters: [fill: 0x262626, padding: [left: 10, top: 3, right: 10, bottom: 3]]
   ]
-  #tabs = [
-    kind: "strip" 
-    contains: [[#top-contents]; [#top-contents2]; [#top-contents3]]
-    parameters: [height: 15, padding: 5] 
+  #buffer1 = [
+    kind: "panel-top"
+    contains: ""
+  ]
+  #buffer2 = [
+    kind: "panel-top"
+    parameters: [fill: 0xA1DFCA, height: 2]
+  ]
+  #buffer3 = [
+    kind: "panel-top"
+    contains: ""
+  ]
+  #ttab1 = [
+    kind: "panel-left"
+    contains: [[#tab1]; [#buffer1]]
+    parameters: [min-width: 150]
+  ]
+  #ttab2 = [
+    kind: "panel-left"
+    contains: [[#tab2]; [#buffer2]]
+    parameters: [min-width: 150]
+  ]
+  #ttab3 = [
+    kind: "panel-left"
+    contains: [[#tab3]; [#buffer3]]
+    parameters: [min-width: 150]
   ]
   #test = [
     kind: "frame"
@@ -99,8 +121,8 @@ and compile it.
 The panels
   #top-panel = [
     kind: "panel-top" 
-    contains: [#tabs]
-    parameters: [height: 15, padding: 25] 
+    contains: [[#ttab1]; [#ttab2]; [#ttab3]]
+    parameters: [padding: 0] 
   ]
   #bottom-panel = [
     kind: "panel-bottom" 
@@ -115,15 +137,11 @@ The panels
   #app-area = [
     kind: "panel-center" 
     contains: [#app-contents]
-    parameters: [margin: 20] 
+    parameters: [margin: 2] 
   ]
 
 Add a gui application
   #app = [
-    [#grid]
-    [#cursor]
     [#top-panel]
     [#bottom-panel]
-    [#left-panel]
-    [#app-area]
   ]
