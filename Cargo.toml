@@ -24,6 +24,7 @@ mech-gui = "0.1"
 
 lazy_static = "1.4.0"
 eframe = { version = "0.20.1"}
+egui_extras = { version = "0.20.0"}
 image = { version = "0.24.3", default-features = false, features = [
   "ico",
   "jpeg",
