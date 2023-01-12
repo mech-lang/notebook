@@ -5,11 +5,14 @@
 use eframe::{egui};
 use eframe::egui::{containers::*, *};
 use egui::style::Margin;
+use egui_extras::{StripBuilder, Size};
+
 extern crate mech_utilities;
 extern crate mech_syntax;
 extern crate mech_core;
 
 use mech_utilities::*;
+use crate::epaint::Shadow;
 use mech_core::*;
 use mech_syntax::compiler::Compiler;
 use std::thread::JoinHandle;
@@ -120,6 +123,12 @@ lazy_static! {
   static ref FRAME: u64 = hash_str("frame");
   static ref ROUNDING: u64 = hash_str("rounding");
   static ref SHADOW: u64 = hash_str("shadow");
+  static ref DISTANCE: u64 = hash_str("distance");
+  static ref TOP: u64 = hash_str("top");
+  static ref BOTTOM: u64 = hash_str("bottom");
+  static ref STRIP: u64 = hash_str("strip");
+  static ref HORIZONTAL: u64 = hash_str("horizontal");
+  static ref VERTICAL: u64 = hash_str("vertical");
 }
 
 pub struct MechApp {
@@ -232,6 +241,7 @@ impl MechApp {
               else if raw_kind == *DEBUG { self.render_debug(table,row,ui)?; }
               else if raw_kind == *LABEL { self.render_label(table,ui)?; }
               else if raw_kind == *FRAME { self.render_frame(table,row,ui)?; }
+              else if raw_kind == *STRIP { self.render_strip(table,row,ui)?; }
               //else if raw_kind == *IMAGE { render_iamge(table,ui)?; }
               else {
                 return Err(MechError{msg: "".to_string(), id: 6489, kind: MechErrorKind::GenericError(format!("{:?}", raw_kind))});
@@ -669,6 +679,9 @@ impl MechApp {
             table.get(&TableIndex::Index(row), &TableIndex::Alias(*PARAMETERS))) {
       (contained,parameters_table) => {
         let mut frame = Frame::default();
+        let mut margin = Margin {left: 0.0, right: 0.0, top: 0.0, bottom: 0.0};
+        let mut padding = Margin {left: 0.0, right: 0.0, top: 0.0, bottom: 0.0};
+
         if let Ok(Value::Reference(parameters_table_id)) = parameters_table {
           match self.core.get_table_by_id(*parameters_table_id.unwrap()) {
             Ok(parameters_table) => {
@@ -676,14 +689,78 @@ impl MechApp {
               if let Ok(Value::U128(color)) = parameters_table_brrw.get(&TableIndex::Index(1),&TableIndex::Alias(*FILL)) { 
                 frame.fill = get_color(color);
               }
+              if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*ROUNDING)) {
+                frame.rounding = Rounding::same(value.unwrap());
+              }
+              if let Ok(Value::Reference(ref_table_id)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*ROUNDING)) {
+                let mut rounding = Rounding::same(0.0);
+                match self.core.get_table_by_id(*ref_table_id.unwrap()) {
+                  Ok(ref_table) => {
+                    let ref_table_brrw = ref_table.borrow();
+                    if let Ok(Value::F32(value)) = ref_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*LEFT)) {
+                      rounding.nw = value.unwrap();
+                    };
+                    if let Ok(Value::F32(value)) = ref_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*TOP)) {
+                      rounding.ne = value.unwrap();
+                    };
+                    if let Ok(Value::F32(value)) = ref_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*RIGHT)) {
+                      rounding.se = value.unwrap();
+                    };
+                    if let Ok(Value::F32(value)) = ref_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*BOTTOM)) {
+                      rounding.sw = value.unwrap();
+                    };
+                    frame.rounding = rounding;
+                  }
+                  _ => (),
+                }
+              }
               if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*MARGIN)) {
                 frame.outer_margin = Margin::same(value.unwrap());
+              }
+              if let Ok(Value::Reference(ref_table_id)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*MARGIN)) {
+                match self.core.get_table_by_id(*ref_table_id.unwrap()) {
+                  Ok(ref_table) => {
+                    let ref_table_brrw = ref_table.borrow();
+                    if let Ok(Value::F32(value)) = ref_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*LEFT)) {
+                      padding.left = value.unwrap();
+                    };
+                    if let Ok(Value::F32(value)) = ref_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*TOP)) {
+                      padding.top = value.unwrap();
+                    };
+                    if let Ok(Value::F32(value)) = ref_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*RIGHT)) {
+                      padding.right = value.unwrap();
+                    };
+                    if let Ok(Value::F32(value)) = ref_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*BOTTOM)) {
+                      padding.bottom = value.unwrap();
+                    };
+                    frame.outer_margin = padding;
+                  }
+                  _ => (),
+                }
               }
               if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*PADDING)) {
                 frame.inner_margin = Margin::same(value.unwrap());
               }
-              if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*ROUNDING)) {
-                frame.rounding = Rounding::same(value.unwrap());
+              if let Ok(Value::Reference(ref_table_id)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*PADDING)) {
+                match self.core.get_table_by_id(*ref_table_id.unwrap()) {
+                  Ok(ref_table) => {
+                    let ref_table_brrw = ref_table.borrow();
+                    if let Ok(Value::F32(value)) = ref_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*LEFT)) {
+                      padding.left = value.unwrap();
+                    };
+                    if let Ok(Value::F32(value)) = ref_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*TOP)) {
+                      padding.top = value.unwrap();
+                    };
+                    if let Ok(Value::F32(value)) = ref_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*RIGHT)) {
+                      padding.right = value.unwrap();
+                    };
+                    if let Ok(Value::F32(value)) = ref_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*BOTTOM)) {
+                      padding.bottom = value.unwrap();
+                    };
+                    frame.inner_margin = padding;
+                  }
+                  _ => (),
+                }
               }
               if let Ok(Value::Reference(margin_table_id)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*STROKE)) {
                 match self.core.get_table_by_id(*margin_table_id.unwrap()) {
@@ -700,6 +777,21 @@ impl MechApp {
                   _ => (),
                 }
               }
+              if let Ok(Value::Reference(margin_table_id)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*SHADOW)) {
+                match self.core.get_table_by_id(*margin_table_id.unwrap()) {
+                  Ok(margin_table) => {
+                    let margin_table_brrw = margin_table.borrow();
+                    let dist: f32 = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*DISTANCE)) {
+                      value.unwrap()
+                    } else { 1.0 };
+                    let color: Color32 = if let Ok(Value::U128(color)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*COLOR)) {
+                      get_color(color)
+                    } else { Color32::BLACK };
+                    frame.shadow = Shadow{extrusion: dist, color};
+                  }
+                  _ => (),
+                }
+              }
             }
             _ => (),
           }
@@ -712,6 +804,59 @@ impl MechApp {
               self.render_value(contained, ui);
             }
         });
+      }
+      x => {return Err(MechError{msg: "".to_string(), id: 6496, kind: MechErrorKind::GenericError(format!("{:?}", x))});},
+    }
+    Ok(())
+  }
+
+  pub fn render_strip(&mut self, table: &Table, row: usize, container: &mut egui::Ui) -> Result<(),MechError> {
+    match (table.get(&TableIndex::Index(row), &TableIndex::Alias(*CONTAINS)),
+           table.get(&TableIndex::Index(row), &TableIndex::Alias(*PARAMETERS))) {
+      (contained,parameters_table) => {
+        let mut frame = Frame::default();
+        let mut margin = Margin {left: 0.0, right: 0.0, top: 0.0, bottom: 0.0};
+        let mut padding = Margin {left: 0.0, right: 0.0, top: 0.0, bottom: 0.0};
+    
+        if let Ok(Value::Reference(contained_table_id)) = contained {
+          match self.core.get_table_by_id(*contained_table_id.unwrap()) {
+            Ok(contained_table) => {
+              let contained_table_brrw = contained_table.borrow();
+              let cells = contained_table_brrw.get_col_raw(0)?;
+
+              let cells = match cells {
+                Column::Ref(c) => c,
+                _ => {return Err(MechError{msg: "".to_string(), id: 6498, kind: MechErrorKind::None});}
+              };
+
+              StripBuilder::new(container)
+                .size(Size::initial(250.0 * cells.len() as f32)) 
+                .size(Size::remainder())
+                .horizontal(|mut strip| {
+                  strip.strip(|builder| {
+                    builder.sizes(Size::initial(250.0), cells.len()).horizontal(|mut strip| {
+                      for i in 0..cells.len() {
+                        strip.cell(|ui| {
+                          let mut r = ui.available_rect_before_wrap();
+                          if i == 1 {r.set_height(50.0);}
+                          ui.painter().rect_filled(
+                            r,
+                            0.0,
+                            Color32::BLUE,
+                          );
+                          self.render_value(Value::Reference(cells.get_unchecked(i)), ui);
+                        });
+                      }
+                    });
+                  });
+                  strip.cell(|ui| {
+         
+                  });
+                });
+            }
+            _ => (),
+          }
+        }
       }
       x => {return Err(MechError{msg: "".to_string(), id: 6496, kind: MechErrorKind::GenericError(format!("{:?}", x))});},
     }
