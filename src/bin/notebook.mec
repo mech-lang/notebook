@@ -6,8 +6,8 @@ Start a timer for animations
 #time/timer += [period: 16<ms>]
 
 The dot grid
-  x = (1:300) * 15 + 115
-  y = (1:100) * 15 + #top-panel-height + 15
+  x = (1:300) * 16 + 115
+  y = (1:200) * 16 + #top-panel-height + 15
   indices = set/cartesian(a: x, b: y)
   #grid = [
     kind: "canvas"
@@ -52,18 +52,39 @@ Panel contents
   tb = 7
   #tab1 = [
     kind: "panel-top"
-    contains: [kind: "label" text: "program.mec" parameters: [color: 0xAFABAB]]
-    parameters: [fill: 0x262626, padding: [left: 10, top: 3, right: 10, bottom: 3]]
+    contains: [
+      [kind: "panel-left" contains: "program.mec", parameters: [padding: [top: 5]]]
+      [kind: "panel-left"]
+      [kind: "panel-left" 
+       contains: [kind: "label", text: "×", parameters: [color: 0xD0CECE, size: 20]],
+       parameters: [width: 10, rounding: 4, padding: [left: 7, right: 7, top: 0, bottom: 1]]
+      ]
+    ]
+    parameters: [fill: 0x262626, padding: [left: 10, top: 0, right: 10, bottom: 3]]
   ]
   #tab2 = [
     kind: "panel-top"
-    contains: [kind: "label" text: "ekf.mec" parameters: [color: 0xE3DDEB]]
-    parameters: [fill: 0x3E3848, height: 23, padding: [left: 10, top: 3, right: 10, bottom: 3]]
+    contains: [
+      [kind: "panel-left" contains: "ekf.mec", parameters: [padding: [top: 5]]]
+      [kind: "panel-left"]
+      [kind: "panel-left" 
+       contains: [kind: "label", text: "×", parameters: [color: 0xD0CECE, size: 20]],
+       parameters: [width: 10, rounding: 4, padding: [left: 7, right: 7, top: 0, bottom: 1]]
+      ]
+    ]
+    parameters: [fill: 0x3E3848, height: 25, padding: [left: 10, right: 10, bottom: 0]]
   ]
   #tab3 = [
     kind: "panel-top"
-    contains: [kind: "label" text: "bouncing-balls.mec" parameters: [color: 0xAFABAB]]
-    parameters: [fill: 0x262626, padding: [left: 10, top: 3, right: 10, bottom: 3]]
+    contains: [
+      [kind: "panel-left" contains: "balls.mec", parameters: [padding: [top: 5]]]
+      [kind: "panel-left"]
+      [kind: "panel-left" 
+       contains: [kind: "label", text: "×", parameters: [color: 0xD0CECE, size: 20]],
+       parameters: [width: 10, rounding: 4, padding: [left: 7, right: 7, top: 0, bottom: 1]]
+      ]
+    ]
+    parameters: [fill: 0x262626, padding: [left: 10, top: 0, right: 10, bottom: 3]]
   ]
   #buffer1 = [
     kind: "panel-top"
@@ -92,6 +113,48 @@ Panel contents
     contains: [[#tab3]; [#buffer3]]
     parameters: [min-width: 150]
   ]
+  #btab1 = [
+    kind: "panel-bottom"
+    contains: [kind: "label" text: "core 1" parameters: [color: 0xF4D8D8]]
+    parameters: [fill: 0xA14345, padding: [left: 10, top: 3, right: 10, bottom: 3]]
+  ]
+  #btab2 = [
+    kind: "panel-bottom"
+    contains: [kind: "label" text: "core 2" parameters: [color: 0xF4D8D8]]
+    parameters: [fill: 0xCD5353, padding: [left: 10, top: 3, right: 10, bottom: 3]]
+  ]
+  #btab3 = [
+    kind: "panel-bottom"
+    contains: [kind: "label" text: "core4" parameters: [color: 0xF4D8D8]]
+    parameters: [fill: 0xA14345, padding: [left: 10, top: 3, right: 10, bottom: 3]]
+  ]
+  #bbuffer1 = [
+    kind: "panel-bottom"
+    parameters: [fill: 0xA14345, padding: 0, height: 2] 
+  ]
+  #bbuffer2 = [
+    kind: "panel-bottom"
+    parameters: [fill: 0xDD8B8B, padding: 0, height: 2] 
+  ]
+  #bbuffer3 = [
+    kind: "panel-bottom"
+    parameters: [fill: 0xA14345, padding: 0, height: 2] 
+  ]
+  #bttab1 = [
+    kind: "panel-left"
+    contains: [[#btab1]; [#bbuffer1] ]
+    parameters: [min-width: 150]
+  ]
+  #bttab2 = [
+    kind: "panel-left"
+    contains: [[#btab2]; [#bbuffer2] ]
+    parameters: [min-width: 150]
+  ]
+  #bttab3 = [
+    kind: "panel-left"
+    contains: [[#btab3]; [#bbuffer3] ]
+    parameters: [min-width: 150]
+  ]
   #test = [
     kind: "frame"
     contains: "World"
@@ -100,7 +163,7 @@ Panel contents
   #bottom-contents = [kind: "label" text: "Bottom Contents" parameters: [
     color: 0xF4D8D8
     size: 14]]
-  #app-contents = [kind: "label" text: "This is some code here in the middle..." parameters: [
+  #app-contents = [kind: "label" text: "This is some code here in the middle!!!" parameters: [
     color: 0xF4D8D8
     size: 16]]
   #left-contents = [panels]
@@ -126,8 +189,8 @@ The panels
   ]
   #bottom-panel = [
     kind: "panel-bottom" 
-    contains: [#bottom-contents]
-    parameters: [fill: 0xA14345, height: 25, padding: 5] 
+    contains: [[#bttab1]; [#bttab2]; [#bttab3]]
+    parameters: [fill: 0xA14345, padding: 0, height: 25] 
   ]
   #left-panel = [
     kind: "panel-left" 
@@ -136,12 +199,15 @@ The panels
   ]
   #app-area = [
     kind: "panel-center" 
-    contains: [#app-contents]
-    parameters: [margin: 2] 
+    contains: [[#app-contents]; [#app-contents]]
+    parameters: [margin: 2, padding: [top: 33 left: 40 right: 20 bottom: 20]]
   ]
 
 Add a gui application
   #app = [
     [#top-panel]
+    [#grid]
     [#bottom-panel]
+    [#left-panel]
+    [#app-area]
   ]
