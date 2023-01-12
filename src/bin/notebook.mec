@@ -48,15 +48,32 @@ Panel contents
     "Timeline"
     "Settings"
   ]
+  lr = 7
+  tb = 7
   #top-contents = [
     kind: "frame"
-    contains: "Hello"
-    parameters: [fill: 0x3E3848, stroke: [width: 2, color: 0x0000FF], padding: 5, margin: 5, rounding: 5]
+    contains: "program.mec"
+    parameters: [fill: 0x3E3848, padding: [left: lr, top: tb, right: 150, bottom: tb] ]
   ]
   #top-contents2 = [
     kind: "frame"
+    contains: "ekf.mec"
+    parameters: [fill: 0x3E3848, padding: [left: lr, top: tb, right: 150, bottom: 15] ]
+  ]
+  #top-contents3 = [
+    kind: "frame"
+    contains: "misc.mec"
+    parameters: [fill: 0x3E3848, padding: [left: lr, top: tb, right: 150, bottom: tb] ]
+  ]
+  #tabs = [
+    kind: "strip" 
+    contains: [[#top-contents]; [#top-contents2]; [#top-contents3]]
+    parameters: [height: 15, padding: 5] 
+  ]
+  #test = [
+    kind: "frame"
     contains: "World"
-    parameters: [fill: 0x3E3848, stroke: [width: 2, color: 0x0000FF], padding: 5, margin: 5, rounding: 5]
+    parameters: [fill: 0x3E3848, stroke: [width: 2, color: 0x000000], shadow: [distance: 10, color: 0xFFFFFF], padding: [left: 10, top: 10, right: 150, bottom: 20], margin: 5, rounding: 5]
   ]
   #bottom-contents = [kind: "label" text: "Bottom Contents" parameters: [
     color: 0xF4D8D8
@@ -82,8 +99,8 @@ and compile it.
 The panels
   #top-panel = [
     kind: "panel-top" 
-    contains: [[#top-contents]; [#top-contents2]]
-    parameters: [height: 15, padding: 5] 
+    contains: [#tabs]
+    parameters: [height: 15, padding: 25] 
   ]
   #bottom-panel = [
     kind: "panel-bottom" 
