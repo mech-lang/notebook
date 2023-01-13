@@ -4,6 +4,15 @@ Mech Notebook
 Start a timer for animations
 
 #time/timer += [period: 16<ms>]
+#code-button = false
+#tables-button = false
+#docs-button = false
+#inspect-button = false
+#timeline-button = false
+#settings-button = false
+#compile-button = false
+
+#code = [""]
 
 The dot grid
   x = (1:300) * 16 + 115
@@ -34,20 +43,17 @@ Follow Cursor
 ----------
 
 Panel contents
-  opened-files = [
-    "bouncing-balls.mec" 
-    "other1.mec" 
-    "other2.mec"
+  switches = [
+    [#code-button]
+    [#tables-button]
+    [#docs-button]
   ]
-  opened-files-labels = [kind: "label", text: opened-files, parameters: [color: 0xF4D8D8]]
   panels = [
     "Code"
     "Tables"
     "Docs"
-    "Inspect"
-    "Timeline"
-    "Settings"
   ]
+  #left-contents = [[kind: "button" clicked: switches text: panels]]
   lr = 7
   tb = 7
   #tab1 = [
@@ -163,17 +169,53 @@ Panel contents
   #bottom-contents = [kind: "label" text: "Bottom Contents" parameters: [
     color: 0xF4D8D8
     size: 14]]
-  #app-contents = [kind: "label" text: "This is some code here in the middle!!!" parameters: [
-    color: 0xF4D8D8
-    size: 16]]
-  #left-contents = [panels]
+  #code-output = [
+    kind: "panel-left"
+    contains: "Stuff"
+    parameters: [min-width: 150, padding: 20]
+  ]
+  #app-contents = [[#code-area]; [#code-output]]
+
+This creates a table of booleans switches which will be used to open and close an assoicated window
+  x = [false #mech/tables]
+  #table-toggles >- x
+
+Tables panels
+  #tables-panel-contents = [
+    [kind: "scroll-area"
+     contains: [[kind: "table-window" clicked: #table-toggles text: #mech/tables]]
+    ]
+  ]
+
+The code area
+  #code-area = [
+    kind: "panel-left" 
+    contains: [#code-contents] 
+    parameters: [fill: 0x131218, min-width: 600] 
+  ]
 
 2. Interactions
 ----------------
 
 When the compile button is clicked, take the contents of the code area
 and compile it.
-  #mech/compiler := ""
+  ~ #compile-button
+  #mech/compiler := [code: #code]
+
+Code contents
+  #code-contents = [
+    [kind: "button" clicked: [#compile-button] text: "Compile"]
+    [kind: "code" text: [#code]]
+  ]
+
+When the code button is clicked, show the code editor
+  ~ #code-button
+  #code-area.contains := [[#code-contents]]
+  #app-area.contains := [[#app-contents]]
+
+When the tables button is clicked, show the tables panel
+  ~ #tables-button
+  #app-area.contains := [[#tables-panel-contents]]
 
 3. Drawing
 -----------
@@ -199,7 +241,7 @@ The panels
   ]
   #app-area = [
     kind: "panel-center" 
-    contains: [[#app-contents]; [#app-contents]]
+    contains: [#app-contents]
     parameters: [margin: 2, padding: [top: 33 left: 40 right: 20 bottom: 20]]
   ]
 

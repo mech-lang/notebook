@@ -129,6 +129,7 @@ lazy_static! {
   static ref STRIP: u64 = hash_str("strip");
   static ref HORIZONTAL: u64 = hash_str("horizontal");
   static ref VERTICAL: u64 = hash_str("vertical");
+  static ref SCROLL__AREA: u64 = hash_str("scroll-area");
 }
 
 pub struct MechApp {
@@ -232,6 +233,7 @@ impl MechApp {
               else if raw_kind == *CODE { self.render_code(table,row,ui)?; }
               else if raw_kind == *PANEL__TOP { self.render_panel_top(table,row,ui)?; }
               else if raw_kind == *PANEL__BOTTOM { self.render_panel_bottom(table,row,ui)?; }
+              else if raw_kind == *SCROLL__AREA { self.render_scroll_area(table,row,ui)?; }
               else if raw_kind == *PANEL__RIGHT { self.render_panel_right(table,row,ui)?; }
               else if raw_kind == *PANEL__LEFT { self.render_panel_left(table,row,ui)?; }
               else if raw_kind == *PANEL__CENTER { self.render_panel_center(table,row,ui)?; }
@@ -280,9 +282,10 @@ impl MechApp {
         match code_table_brrw.get(&TableIndex::Index(1), &TableIndex::Index(1)) {
           Ok(Value::String(code)) => {
             self.code = code.to_string();
+            let frame = Frame::default().fill(Color32::TRANSPARENT);
             let response = container.add_sized(container.available_size(), egui::TextEdit::multiline(&mut self.code)
               .code_editor()
-              .frame(false)
+              .frame(true)
             );
             if response.changed() {
               self.changes.push(Change::Set((code_table_brrw.id,vec![(TableIndex::Index(1),TableIndex::Index(1),Value::String(MechString::from_string(self.code.clone())))])));
@@ -901,6 +904,21 @@ impl MechApp {
     Ok(())
   }
 
+  pub fn render_scroll_area(&mut self, table: &Table, row: usize, container: &mut egui::Ui) -> Result<(),MechError> {
+    match (table.get(&TableIndex::Index(row), &TableIndex::Alias(*CONTAINS)),
+           table.get(&TableIndex::Index(row), &TableIndex::Alias(*PARAMETERS))) {
+      (contained,parameters_table) => {
+        egui::ScrollArea::vertical().show(container, |ui| {
+          if let Ok(contained) = contained {
+            self.render_value(contained, ui);
+          }
+        });
+      }
+      x => {return Err(MechError{msg: "".to_string(), id: 6496, kind: MechErrorKind::GenericError(format!("{:?}", x))});},
+    }
+    Ok(())
+  }
+
   pub fn render_strip(&mut self, table: &Table, row: usize, container: &mut egui::Ui) -> Result<(),MechError> {
     match (table.get(&TableIndex::Index(row), &TableIndex::Alias(*CONTAINS)),
            table.get(&TableIndex::Index(row), &TableIndex::Alias(*PARAMETERS))) {
@@ -1142,6 +1160,7 @@ impl eframe::App for MechApp {
       .show(ctx, |ui| {
       // Compile new code...
       {
+
         let code_table = self.core.get_table("mech/compiler").unwrap();
         let code_table_brrw = code_table.borrow();
         if let Value::String(code_string) = code_table_brrw.get(&TableIndex::Index(1),&TableIndex::Index(1)).unwrap() {
@@ -1150,7 +1169,7 @@ impl eframe::App for MechApp {
             match compiler.compile_str(&code_string.to_string()) {
               Ok(sections) => {
                 self.core.load_sections(sections);
-                self.core.schedule_blocks();    
+                self.core.schedule_blocks();
                 self.changes.push(Change::Set((hash_str("mech/compiler"),vec![
                   (TableIndex::Index(1),TableIndex::Index(1),Value::String(MechString::from_string("".to_string())))
                 ])));
@@ -1211,16 +1230,15 @@ pub fn load_mech_from_path(program_path: &str) -> Result<mech_core::Core,MechErr
 #io/pointer = [|x<f32> y<f32>| 0 0]"#.to_string();
         
         code += r#"
-#mech/tables = [|name<string>|
-                "time/timer"
+#mech/tables = ["time/timer"
                 "io/pointer"
                 "mech/tables"
                 "mech/compiler""#;
       for name in mech_core.table_names() {
         code += &format!("\n{:?}",name);     
-       }
-       code += "]";
-        
+      }
+      code += "]";
+      
       let mut compiler = Compiler::new();
       let sections = compiler.compile_str(&code).unwrap();
       mech_core.load_sections(sections);
@@ -1248,18 +1266,19 @@ pub fn load_mech() -> Result<mech_core::Core,MechError> {
 #time/timer = [|period<ms> ticks<u64>|]
 #mech/compiler = [|code<string>| "hi"]
 #io/pointer = [|x<f32> y<f32>| 0 0]"#.to_string();
-  
   code += r#"
 #mech/tables = [|name<string>|
                 "time/timer"
                 "io/pointer"
                 "mech/tables"
                 "mech/compiler""#;
-  for name in mech_core.table_names() {
-  code += &format!("\n{:?}",name);     
+  for (table,row,col) in &mech_core.output {
+    let table = match mech_core.dictionary.borrow().get(table.unwrap()) {
+      Some(name) => {code += &format!("\n{:?}",name.to_string());}
+      None => (),
+    };
   }
   code += "]";
-  
   let mut compiler = Compiler::new();
   let sections = compiler.compile_str(&code).unwrap();
   mech_core.load_sections(sections);
