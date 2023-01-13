@@ -3,7 +3,7 @@ Mech Notebook
 
 Start a timer for animations
 
-#time/timer += [period: 16<ms>]
+#time/timer += [period: 1<ms>]
 #code-button = false
 #tables-button = false
 #docs-button = false
@@ -54,22 +54,22 @@ Panel contents
     "Docs"
   ]
   #left-contents = [[kind: "button" clicked: switches text: panels]]
+
+Top Tabs
   lr = 7
   tb = 7
-  #tab1 = [
-    kind: "panel-top"
-    contains: [
+  tab1 = [
+    [kind: "panel-top"
+     contains: [
       [kind: "panel-left" contains: "program.mec", parameters: [padding: [top: 5]]]
       [kind: "panel-left"]
       [kind: "panel-left" 
        contains: [kind: "label", text: "×", parameters: [color: 0xD0CECE, size: 20]],
-       parameters: [width: 10, rounding: 4, padding: [left: 7, right: 7, top: 0, bottom: 1]]
-      ]
-    ]
-    parameters: [fill: 0x262626, padding: [left: 10, top: 0, right: 10, bottom: 3]]
-  ]
-  #tab2 = [
-    kind: "panel-top"
+       parameters: [width: 10, rounding: 4, padding: [left: 7, right: 7, top: 0, bottom: 1]]]] 
+     parameters: [fill: 0x262626, padding: [left: 10, top: 0, right: 10, bottom: 3]]]
+    [kind: "panel-top"]]
+  tab2 = [
+    [kind: "panel-top"
     contains: [
       [kind: "panel-left" contains: "ekf.mec", parameters: [padding: [top: 5]]]
       [kind: "panel-left"]
@@ -78,94 +78,67 @@ Panel contents
        parameters: [width: 10, rounding: 4, padding: [left: 7, right: 7, top: 0, bottom: 1]]
       ]
     ]
-    parameters: [fill: 0x3E3848, height: 25, padding: [left: 10, right: 10, bottom: 0]]
+    parameters: [fill: 0x3E3848, height: 25, padding: [left: 10, right: 10, bottom: 0]]]
+    [kind: "panel-top" parameters: [fill: 0xA1DFCA, height: 2]]
   ]
-  #tab3 = [
-    kind: "panel-top"
-    contains: [
-      [kind: "panel-left" contains: "balls.mec", parameters: [padding: [top: 5]]]
+  tab3 = [
+    [kind: "panel-top"
+     contains: [
+      [kind: "panel-left" contains: "program.mec", parameters: [padding: [top: 5]]]
       [kind: "panel-left"]
       [kind: "panel-left" 
        contains: [kind: "label", text: "×", parameters: [color: 0xD0CECE, size: 20]],
-       parameters: [width: 10, rounding: 4, padding: [left: 7, right: 7, top: 0, bottom: 1]]
-      ]
-    ]
-    parameters: [fill: 0x262626, padding: [left: 10, top: 0, right: 10, bottom: 3]]
-  ]
-  #buffer1 = [
-    kind: "panel-top"
-    contains: ""
-  ]
-  #buffer2 = [
-    kind: "panel-top"
-    parameters: [fill: 0xA1DFCA, height: 2]
-  ]
-  #buffer3 = [
-    kind: "panel-top"
-    contains: ""
-  ]
-  #ttab1 = [
+       parameters: [width: 10, rounding: 4, padding: [left: 7, right: 7, top: 0, bottom: 1]]]] 
+     parameters: [fill: 0x262626, padding: [left: 10, top: 0, right: 10, bottom: 3]]]
+    [kind: "panel-top"]]
+
+  #tab1 = [
     kind: "panel-left"
-    contains: [[#tab1]; [#buffer1]]
+    contains: [tab1]
     parameters: [min-width: 150]
   ]
-  #ttab2 = [
+  #tab2 = [
     kind: "panel-left"
-    contains: [[#tab2]; [#buffer2]]
+    contains: [tab2]
     parameters: [min-width: 150]
   ]
-  #ttab3 = [
+  #tab3 = [
     kind: "panel-left"
-    contains: [[#tab3]; [#buffer3]]
+    contains: [tab3]
     parameters: [min-width: 150]
   ]
-  #btab1 = [
-    kind: "panel-bottom"
-    contains: [kind: "label" text: "core 1" parameters: [color: 0xF4D8D8]]
-    parameters: [fill: 0xA14345, padding: [left: 10, top: 3, right: 10, bottom: 3]]
+
+Bottom Tabs
+  btab1 = [
+    [kind: "panel-bottom"
+     contains: [kind: "label" text: "core 1" parameters: [color: 0xF4D8D8]]
+     parameters: [fill: 0xA14345, padding: [left: 10, top: 3, right: 10, bottom: 3]]]
+    [kind: "panel-bottom" parameters: [fill: 0xA14345, padding: 0, height: 2]]
   ]
-  #btab2 = [
-    kind: "panel-bottom"
-    contains: [kind: "label" text: "core 2" parameters: [color: 0xF4D8D8]]
-    parameters: [fill: 0xCD5353, padding: [left: 10, top: 3, right: 10, bottom: 3]]
+  btab2 = [
+    [kind: "panel-bottom"
+     contains: [kind: "label" text: "core 2" parameters: [color: 0xF4D8D8]]
+     parameters: [fill: 0xCD5353, padding: [left: 10, top: 3, right: 10, bottom: 3]]]
+    [kind: "panel-bottom" parameters: [fill: 0xDD8B8B, padding: 0, height: 2]]
   ]
-  #btab3 = [
-    kind: "panel-bottom"
-    contains: [kind: "label" text: "core4" parameters: [color: 0xF4D8D8]]
-    parameters: [fill: 0xA14345, padding: [left: 10, top: 3, right: 10, bottom: 3]]
+  btab3 = [
+    [kind: "panel-bottom"
+     contains: [kind: "label" text: "core4" parameters: [color: 0xF4D8D8]]
+     parameters: [fill: 0xA14345, padding: [left: 10, top: 3, right: 10, bottom: 3]]]
+    [kind: "panel-bottom" parameters: [fill: 0xA14345, padding: 0, height: 2]]
   ]
-  #bbuffer1 = [
-    kind: "panel-bottom"
-    parameters: [fill: 0xA14345, padding: 0, height: 2] 
-  ]
-  #bbuffer2 = [
-    kind: "panel-bottom"
-    parameters: [fill: 0xDD8B8B, padding: 0, height: 2] 
-  ]
-  #bbuffer3 = [
-    kind: "panel-bottom"
-    parameters: [fill: 0xA14345, padding: 0, height: 2] 
-  ]
-  #bttab1 = [
-    kind: "panel-left"
-    contains: [[#btab1]; [#bbuffer1] ]
-    parameters: [min-width: 150]
-  ]
-  #bttab2 = [
-    kind: "panel-left"
-    contains: [[#btab2]; [#bbuffer2] ]
-    parameters: [min-width: 150]
-  ]
-  #bttab3 = [
-    kind: "panel-left"
-    contains: [[#btab3]; [#bbuffer3] ]
-    parameters: [min-width: 150]
-  ]
+  #btab1 = [kind: "panel-left" contains: [btab1] parameters: [min-width: 150]]
+  #btab2 = [kind: "panel-left" contains: [btab2] parameters: [min-width: 150]]
+  #btab3 = [kind: "panel-left" contains: [btab3] parameters: [min-width: 150]]
+
+Testing frames
   #test = [
     kind: "frame"
     contains: "World"
     parameters: [fill: 0x3E3848, stroke: [width: 2, color: 0x000000], shadow: [distance: 10, color: 0xFFFFFF], padding: [left: 10, top: 10, right: 150, bottom: 20], margin: 5, rounding: 5]
   ]
+
+Bottom contents
   #bottom-contents = [kind: "label" text: "Bottom Contents" parameters: [
     color: 0xF4D8D8
     size: 14]]
@@ -226,13 +199,13 @@ When the tables button is clicked, show the tables panel
 The panels
   #top-panel = [
     kind: "panel-top" 
-    contains: [[#ttab1]; [#ttab2]; [#ttab3]]
-    parameters: [padding: 0] 
+    contains: [[#tab1]; [#tab2]; [#tab3]]
+    parameters: [padding: 0, height: #top-panel-height] 
   ]
   #bottom-panel = [
     kind: "panel-bottom" 
-    contains: [[#bttab1]; [#bttab2]; [#bttab3]]
-    parameters: [fill: 0xA14345, padding: 0, height: 25] 
+    contains: [[#btab1]; [#btab2]; [#btab3]]
+    parameters: [fill: 0xA14345, padding: 0, height: #bottom-panel-height] 
   ]
   #left-panel = [
     kind: "panel-left" 
