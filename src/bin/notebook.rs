@@ -840,9 +840,21 @@ impl MechApp {
         let value_table = self.core.get_table_by_id(*value_table_id.unwrap())?;
         let value_table_brrw = value_table.borrow();
         let frame = self.get_frame(&parameters_table);
+        let mut color = Color32::WHITE;
+        if let Ok(Value::Reference(parameters_table_id)) = parameters_table {
+          match self.core.get_table_by_id(*parameters_table_id.unwrap()) {
+            Ok(parameters_table) => {
+              let parameters_table_brrw = parameters_table.borrow();
+              if let Ok(Value::U128(u128_color)) = parameters_table_brrw.get(&TableIndex::Index(1),&TableIndex::Alias(*COLOR)) { 
+                color = get_color(u128_color);
+              }
+            }
+            _ => (),
+          }
+        }
         match value_table_brrw.get(&TableIndex::Index(1), &TableIndex::Index(1)) {
           Ok(Value::Bool(value)) => {
-            let button = mech_notebook::MyButton::new(text.to_string()).frame(frame);
+            let button = mech_notebook::MyButton::new(text.to_string()).frame(frame).color(color);
             if container.add(button).clicked() {
               self.changes.push(Change::Set((value_table_brrw.id,vec![(TableIndex::Index(1),TableIndex::Index(1),Value::Bool(!value))])));
             }
