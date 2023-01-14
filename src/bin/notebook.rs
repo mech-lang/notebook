@@ -834,13 +834,16 @@ impl MechApp {
 
   pub fn render_button(&mut self, table: &Table, row: usize, container: &mut egui::Ui) -> Result<(),MechError> {
     match (table.get(&TableIndex::Index(row), &TableIndex::Alias(*TEXT)),
-            table.get(&TableIndex::Index(row), &TableIndex::Alias(*CLICKED))) {
-        (Ok(Value::String(text)), Ok(Value::Reference(value_table_id))) => {
+           table.get(&TableIndex::Index(row), &TableIndex::Alias(*CLICKED)),
+           table.get(&TableIndex::Index(row), &TableIndex::Alias(*PARAMETERS))) {
+        (Ok(Value::String(text)), Ok(Value::Reference(value_table_id)), parameters_table) => {
         let value_table = self.core.get_table_by_id(*value_table_id.unwrap())?;
         let value_table_brrw = value_table.borrow();
+        let frame = self.get_frame(&parameters_table);
         match value_table_brrw.get(&TableIndex::Index(1), &TableIndex::Index(1)) {
           Ok(Value::Bool(value)) => {
-            if container.add(mech_notebook::MyButton::new(text.to_string())).clicked() {
+            let button = mech_notebook::MyButton::new(text.to_string()).frame(frame);
+            if container.add(button).clicked() {
               self.changes.push(Change::Set((value_table_brrw.id,vec![(TableIndex::Index(1),TableIndex::Index(1),Value::Bool(!value))])));
             }
           }
