@@ -389,89 +389,20 @@ impl MechApp {
     match (table.get(&TableIndex::Index(row), &TableIndex::Alias(*CONTAINS)),
             table.get(&TableIndex::Index(row), &TableIndex::Alias(*PARAMETERS))) {
       (contained,parameters_table) => {
-        let mut frame = Frame::none();
-        frame.stroke = Stroke::new(0.0, Color32::BLACK);
         let mut panel = egui::TopBottomPanel::top(humanize(&table.id)).resizable(false).show_separator_line(false);
+        let frame = self.get_frame(&parameters_table);
         if let Ok(Value::Reference(parameters_table_id)) = parameters_table {
           match self.core.get_table_by_id(*parameters_table_id.unwrap()) {
             Ok(parameters_table) => {
               let parameters_table_brrw = parameters_table.borrow();
-              if let Ok(Value::U128(color)) = parameters_table_brrw.get(&TableIndex::Index(1),&TableIndex::Alias(*FILL)) { 
-                frame.fill = get_color(color);
-              }
               if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*MIN__HEIGHT)) {
                 panel = panel.min_height(value.into());
               }
               if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*MAX__HEIGHT)) {
                 panel = panel.min_height(value.into());
               }
-              if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*ROUNDING)) {
-                frame.rounding = Rounding::same(value.unwrap());
-              }
               if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*HEIGHT)) {
                 panel = panel.exact_height(value.into());
-              }
-              if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*MARGIN)) {
-                frame.outer_margin = Margin::same(value.unwrap());
-              }
-              if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*PADDING)) {
-                frame.inner_margin = Margin::same(value.unwrap());
-              }
-              if let Ok(Value::Reference(margin_table_id)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*MARGIN)) {
-                match self.core.get_table_by_id(*margin_table_id.unwrap()) {
-                  Ok(margin_table) => {
-                    let margin_table_brrw = margin_table.borrow();
-                    let left = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*LEFT)) { value.unwrap()} else { 0.0 };
-                    let right = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*RIGHT)) { value.unwrap()} else { 0.0 };
-                    let top = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*TOP)) { value.unwrap()} else { 0.0 };
-                    let bottom = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*BOTTOM)) { value.unwrap()} else { 0.0 };
-                    frame.outer_margin = Margin{left, right, top, bottom};
-                  }
-                  _ => (),
-                }
-              }
-              if let Ok(Value::Reference(margin_table_id)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*PADDING)) {
-                match self.core.get_table_by_id(*margin_table_id.unwrap()) {
-                  Ok(margin_table) => {
-                    let margin_table_brrw = margin_table.borrow();
-                    let left = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*LEFT)) { value.unwrap()} else { 0.0 };
-                    let right = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*RIGHT)) { value.unwrap()} else { 0.0 };
-                    let top = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*TOP)) { value.unwrap()} else { 0.0 };
-                    let bottom = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*BOTTOM)) { value.unwrap()} else { 0.0 };
-                    frame.inner_margin = Margin{left, right, top, bottom};
-                  }
-                  _ => (),
-                }
-              }
-              if let Ok(Value::Reference(margin_table_id)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*STROKE)) {
-                match self.core.get_table_by_id(*margin_table_id.unwrap()) {
-                  Ok(margin_table) => {
-                    let margin_table_brrw = margin_table.borrow();
-                    let width: f32 = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*WIDTH)) {
-                      value.unwrap()
-                    } else { 1.0 };
-                    let color: Color32 = if let Ok(Value::U128(color)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*COLOR)) {
-                      get_color(color)
-                    } else { Color32::WHITE };
-                    frame.stroke = Stroke::new(width, color);
-                  }
-                  _ => (),
-                }
-              }
-              if let Ok(Value::Reference(margin_table_id)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*SHADOW)) {
-                match self.core.get_table_by_id(*margin_table_id.unwrap()) {
-                  Ok(margin_table) => {
-                    let margin_table_brrw = margin_table.borrow();
-                    let dist: f32 = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*DISTANCE)) {
-                      value.unwrap()
-                    } else { 1.0 };
-                    let color: Color32 = if let Ok(Value::U128(color)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*COLOR)) {
-                      get_color(color)
-                    } else { Color32::BLACK };
-                    frame.shadow = Shadow{extrusion: dist, color};
-                  }
-                  _ => (),
-                }
               }
             }
             _ => (),
@@ -491,72 +422,20 @@ impl MechApp {
     match (table.get(&TableIndex::Index(row), &TableIndex::Alias(*CONTAINS)),
             table.get(&TableIndex::Index(row), &TableIndex::Alias(*PARAMETERS))) {
       (contained,parameters_table) => {
-        let mut frame = Frame::none();
-        frame.stroke = Stroke::new(0.0, Color32::BLACK);
         let mut panel = egui::SidePanel::left(humanize(&table.id)).resizable(false).show_separator_line(false);
+        let frame = self.get_frame(&parameters_table);
         if let Ok(Value::Reference(parameters_table_id)) = parameters_table {
           match self.core.get_table_by_id(*parameters_table_id.unwrap()) {
             Ok(parameters_table) => {
               let parameters_table_brrw = parameters_table.borrow();
-              if let Ok(Value::U128(color)) = parameters_table_brrw.get(&TableIndex::Index(1),&TableIndex::Alias(*FILL)) { 
-                frame.fill = get_color(color);
-              }
               if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*MIN__WIDTH)) {
                 panel = panel.min_width(value.into());
               }
               if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*MAX__WIDTH)) {
                 panel = panel.min_width(value.into());
               }
-              if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*ROUNDING)) {
-                frame.rounding = Rounding::same(value.unwrap());
-              }
               if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*WIDTH)) {
                 panel = panel.exact_width(value.into());
-              }
-              if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*MARGIN)) {
-                frame.outer_margin = Margin::same(value.unwrap());
-              }
-              if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*PADDING)) {
-                frame.inner_margin = Margin::same(value.unwrap());
-              }
-              if let Ok(Value::Reference(margin_table_id)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*MARGIN)) {
-                match self.core.get_table_by_id(*margin_table_id.unwrap()) {
-                  Ok(margin_table) => {
-                    let margin_table_brrw = margin_table.borrow();
-                    if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Index(1)) {
-                      frame.outer_margin = Margin{left: value.unwrap(), right: value.unwrap(), top: value.unwrap(), bottom: value.unwrap()};
-                    }
-                  }
-                  _ => (),
-                }
-              }
-              if let Ok(Value::Reference(margin_table_id)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*PADDING)) {
-                match self.core.get_table_by_id(*margin_table_id.unwrap()) {
-                  Ok(margin_table) => {
-                    let margin_table_brrw = margin_table.borrow();
-                    let left = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*LEFT)) { value.unwrap()} else { 0.0 };
-                    let right = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*RIGHT)) { value.unwrap()} else { 0.0 };
-                    let top = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*TOP)) { value.unwrap()} else { 0.0 };
-                    let bottom = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*BOTTOM)) { value.unwrap()} else { 0.0 };
-                    frame.inner_margin = Margin{left, right, top, bottom};
-                  }
-                  _ => (),
-                }
-              }
-              if let Ok(Value::Reference(margin_table_id)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*STROKE)) {
-                match self.core.get_table_by_id(*margin_table_id.unwrap()) {
-                  Ok(margin_table) => {
-                    let margin_table_brrw = margin_table.borrow();
-                    let width: f32 = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*WIDTH)) {
-                      value.unwrap()
-                    } else { 1.0 };
-                    let color: Color32 = if let Ok(Value::U128(color)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*COLOR)) {
-                      get_color(color)
-                    } else { Color32::WHITE };
-                    frame.stroke = Stroke::new(width, color);
-                  }
-                  _ => (),
-                }
               }
             }
             _ => (),
@@ -576,72 +455,20 @@ impl MechApp {
     match (table.get(&TableIndex::Index(row), &TableIndex::Alias(*CONTAINS)),
             table.get(&TableIndex::Index(row), &TableIndex::Alias(*PARAMETERS))) {
       (contained,parameters_table) => {
-        let mut frame = Frame::none();
-        frame.stroke = Stroke::new(0.0, Color32::BLACK);
         let mut panel = egui::SidePanel::right(humanize(&table.id)).resizable(false).show_separator_line(false);
+        let frame = self.get_frame(&parameters_table);
         if let Ok(Value::Reference(parameters_table_id)) = parameters_table {
           match self.core.get_table_by_id(*parameters_table_id.unwrap()) {
             Ok(parameters_table) => {
               let parameters_table_brrw = parameters_table.borrow();
-              if let Ok(Value::U128(color)) = parameters_table_brrw.get(&TableIndex::Index(1),&TableIndex::Alias(*FILL)) { 
-                frame.fill = get_color(color);
-              }
               if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*MIN__WIDTH)) {
                 panel = panel.min_width(value.into());
               }
               if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*MAX__WIDTH)) {
                 panel = panel.min_width(value.into());
               }
-              if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*ROUNDING)) {
-                frame.rounding = Rounding::same(value.unwrap());
-              }
               if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*WIDTH)) {
                 panel = panel.exact_width(value.into());
-              }
-              if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*MARGIN)) {
-                frame.outer_margin = Margin::same(value.unwrap());
-              }
-              if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*PADDING)) {
-                frame.inner_margin = Margin::same(value.unwrap());
-              }
-              if let Ok(Value::Reference(margin_table_id)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*MARGIN)) {
-                match self.core.get_table_by_id(*margin_table_id.unwrap()) {
-                  Ok(margin_table) => {
-                    let margin_table_brrw = margin_table.borrow();
-                    if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Index(1)) {
-                      frame.outer_margin = Margin{left: value.unwrap(), right: value.unwrap(), top: value.unwrap(), bottom: value.unwrap()};
-                    }
-                  }
-                  _ => (),
-                }
-              }
-              if let Ok(Value::Reference(margin_table_id)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*PADDING)) {
-                match self.core.get_table_by_id(*margin_table_id.unwrap()) {
-                  Ok(margin_table) => {
-                    let margin_table_brrw = margin_table.borrow();
-                    let left = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*LEFT)) { value.unwrap()} else { 0.0 };
-                    let right = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*RIGHT)) { value.unwrap()} else { 0.0 };
-                    let top = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*TOP)) { value.unwrap()} else { 0.0 };
-                    let bottom = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*BOTTOM)) { value.unwrap()} else { 0.0 };
-                    frame.inner_margin = Margin{left, right, top, bottom};
-                  }
-                  _ => (),
-                }
-              }
-              if let Ok(Value::Reference(margin_table_id)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*STROKE)) {
-                match self.core.get_table_by_id(*margin_table_id.unwrap()) {
-                  Ok(margin_table) => {
-                    let margin_table_brrw = margin_table.borrow();
-                    let width: f32 = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*WIDTH)) {
-                      value.unwrap()
-                    } else { 1.0 };
-                    let color: Color32 = if let Ok(Value::U128(color)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*COLOR)) {
-                      get_color(color)
-                    } else { Color32::WHITE };
-                    frame.stroke = Stroke::new(width, color);
-                  }
-                  _ => (),
-                }
               }
             }
             _ => (),
@@ -771,128 +598,132 @@ impl MechApp {
     Ok(())
   }
 
+  pub fn get_frame(&mut self, parameters_table: &Result<Value,MechError>) -> Frame {
+    let mut frame = Frame::default();
+    let mut margin = Margin {left: 0.0, right: 0.0, top: 0.0, bottom: 0.0};
+    let mut padding = Margin {left: 0.0, right: 0.0, top: 0.0, bottom: 0.0};
+    if let Ok(Value::Reference(parameters_table_id)) = parameters_table {
+      match self.core.get_table_by_id(*parameters_table_id.unwrap()) {
+        Ok(parameters_table) => {
+          let parameters_table_brrw = parameters_table.borrow();
+          if let Ok(Value::U128(color)) = parameters_table_brrw.get(&TableIndex::Index(1),&TableIndex::Alias(*FILL)) { 
+            frame.fill = get_color(color);
+          }
+          if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*ROUNDING)) {
+            frame.rounding = Rounding::same(value.unwrap());
+          }
+          if let Ok(Value::Reference(ref_table_id)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*ROUNDING)) {
+            let mut rounding = Rounding::same(0.0);
+            match self.core.get_table_by_id(*ref_table_id.unwrap()) {
+              Ok(ref_table) => {
+                let ref_table_brrw = ref_table.borrow();
+                if let Ok(Value::F32(value)) = ref_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*LEFT)) {
+                  rounding.nw = value.unwrap();
+                };
+                if let Ok(Value::F32(value)) = ref_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*TOP)) {
+                  rounding.ne = value.unwrap();
+                };
+                if let Ok(Value::F32(value)) = ref_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*RIGHT)) {
+                  rounding.se = value.unwrap();
+                };
+                if let Ok(Value::F32(value)) = ref_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*BOTTOM)) {
+                  rounding.sw = value.unwrap();
+                };
+                frame.rounding = rounding;
+              }
+              _ => (),
+            }
+          }
+          if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*MARGIN)) {
+            frame.outer_margin = Margin::same(value.unwrap());
+          }
+          if let Ok(Value::Reference(ref_table_id)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*MARGIN)) {
+            match self.core.get_table_by_id(*ref_table_id.unwrap()) {
+              Ok(ref_table) => {
+                let ref_table_brrw = ref_table.borrow();
+                if let Ok(Value::F32(value)) = ref_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*LEFT)) {
+                  padding.left = value.unwrap();
+                };
+                if let Ok(Value::F32(value)) = ref_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*TOP)) {
+                  padding.top = value.unwrap();
+                };
+                if let Ok(Value::F32(value)) = ref_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*RIGHT)) {
+                  padding.right = value.unwrap();
+                };
+                if let Ok(Value::F32(value)) = ref_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*BOTTOM)) {
+                  padding.bottom = value.unwrap();
+                };
+                frame.outer_margin = padding;
+              }
+              _ => (),
+            }
+          }
+          if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*PADDING)) {
+            frame.inner_margin = Margin::same(value.unwrap());
+          }
+          if let Ok(Value::Reference(ref_table_id)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*PADDING)) {
+            match self.core.get_table_by_id(*ref_table_id.unwrap()) {
+              Ok(ref_table) => {
+                let ref_table_brrw = ref_table.borrow();
+                if let Ok(Value::F32(value)) = ref_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*LEFT)) {
+                  padding.left = value.unwrap();
+                };
+                if let Ok(Value::F32(value)) = ref_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*TOP)) {
+                  padding.top = value.unwrap();
+                };
+                if let Ok(Value::F32(value)) = ref_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*RIGHT)) {
+                  padding.right = value.unwrap();
+                };
+                if let Ok(Value::F32(value)) = ref_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*BOTTOM)) {
+                  padding.bottom = value.unwrap();
+                };
+                frame.inner_margin = padding;
+              }
+              _ => (),
+            }
+          }
+          if let Ok(Value::Reference(margin_table_id)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*STROKE)) {
+            match self.core.get_table_by_id(*margin_table_id.unwrap()) {
+              Ok(margin_table) => {
+                let margin_table_brrw = margin_table.borrow();
+                let width: f32 = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*WIDTH)) {
+                  value.unwrap()
+                } else { 1.0 };
+                let color: Color32 = if let Ok(Value::U128(color)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*COLOR)) {
+                  get_color(color)
+                } else { Color32::WHITE };
+                frame.stroke = Stroke::new(width, color);
+              }
+              _ => (),
+            }
+          }
+          if let Ok(Value::Reference(margin_table_id)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*SHADOW)) {
+            match self.core.get_table_by_id(*margin_table_id.unwrap()) {
+              Ok(margin_table) => {
+                let margin_table_brrw = margin_table.borrow();
+                let dist: f32 = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*DISTANCE)) {
+                  value.unwrap()
+                } else { 1.0 };
+                let color: Color32 = if let Ok(Value::U128(color)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*COLOR)) {
+                  get_color(color)
+                } else { Color32::BLACK };
+                frame.shadow = Shadow{extrusion: dist, color};
+              }
+              _ => (),
+            }
+          }
+        }
+        _ => (),
+      }
+    }
+    frame
+  }
+
   pub fn render_frame(&mut self, table: &Table, row: usize, container: &mut egui::Ui) -> Result<(),MechError> {
     match (table.get(&TableIndex::Index(row), &TableIndex::Alias(*CONTAINS)),
             table.get(&TableIndex::Index(row), &TableIndex::Alias(*PARAMETERS))) {
       (contained,parameters_table) => {
-        let mut frame = Frame::default();
-        let mut margin = Margin {left: 0.0, right: 0.0, top: 0.0, bottom: 0.0};
-        let mut padding = Margin {left: 0.0, right: 0.0, top: 0.0, bottom: 0.0};
-
-        if let Ok(Value::Reference(parameters_table_id)) = parameters_table {
-          match self.core.get_table_by_id(*parameters_table_id.unwrap()) {
-            Ok(parameters_table) => {
-              let parameters_table_brrw = parameters_table.borrow();
-              if let Ok(Value::U128(color)) = parameters_table_brrw.get(&TableIndex::Index(1),&TableIndex::Alias(*FILL)) { 
-                frame.fill = get_color(color);
-              }
-              if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*ROUNDING)) {
-                frame.rounding = Rounding::same(value.unwrap());
-              }
-              if let Ok(Value::Reference(ref_table_id)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*ROUNDING)) {
-                let mut rounding = Rounding::same(0.0);
-                match self.core.get_table_by_id(*ref_table_id.unwrap()) {
-                  Ok(ref_table) => {
-                    let ref_table_brrw = ref_table.borrow();
-                    if let Ok(Value::F32(value)) = ref_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*LEFT)) {
-                      rounding.nw = value.unwrap();
-                    };
-                    if let Ok(Value::F32(value)) = ref_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*TOP)) {
-                      rounding.ne = value.unwrap();
-                    };
-                    if let Ok(Value::F32(value)) = ref_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*RIGHT)) {
-                      rounding.se = value.unwrap();
-                    };
-                    if let Ok(Value::F32(value)) = ref_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*BOTTOM)) {
-                      rounding.sw = value.unwrap();
-                    };
-                    frame.rounding = rounding;
-                  }
-                  _ => (),
-                }
-              }
-              if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*MARGIN)) {
-                frame.outer_margin = Margin::same(value.unwrap());
-              }
-              if let Ok(Value::Reference(ref_table_id)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*MARGIN)) {
-                match self.core.get_table_by_id(*ref_table_id.unwrap()) {
-                  Ok(ref_table) => {
-                    let ref_table_brrw = ref_table.borrow();
-                    if let Ok(Value::F32(value)) = ref_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*LEFT)) {
-                      padding.left = value.unwrap();
-                    };
-                    if let Ok(Value::F32(value)) = ref_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*TOP)) {
-                      padding.top = value.unwrap();
-                    };
-                    if let Ok(Value::F32(value)) = ref_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*RIGHT)) {
-                      padding.right = value.unwrap();
-                    };
-                    if let Ok(Value::F32(value)) = ref_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*BOTTOM)) {
-                      padding.bottom = value.unwrap();
-                    };
-                    frame.outer_margin = padding;
-                  }
-                  _ => (),
-                }
-              }
-              if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*PADDING)) {
-                frame.inner_margin = Margin::same(value.unwrap());
-              }
-              if let Ok(Value::Reference(ref_table_id)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*PADDING)) {
-                match self.core.get_table_by_id(*ref_table_id.unwrap()) {
-                  Ok(ref_table) => {
-                    let ref_table_brrw = ref_table.borrow();
-                    if let Ok(Value::F32(value)) = ref_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*LEFT)) {
-                      padding.left = value.unwrap();
-                    };
-                    if let Ok(Value::F32(value)) = ref_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*TOP)) {
-                      padding.top = value.unwrap();
-                    };
-                    if let Ok(Value::F32(value)) = ref_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*RIGHT)) {
-                      padding.right = value.unwrap();
-                    };
-                    if let Ok(Value::F32(value)) = ref_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*BOTTOM)) {
-                      padding.bottom = value.unwrap();
-                    };
-                    frame.inner_margin = padding;
-                  }
-                  _ => (),
-                }
-              }
-              if let Ok(Value::Reference(margin_table_id)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*STROKE)) {
-                match self.core.get_table_by_id(*margin_table_id.unwrap()) {
-                  Ok(margin_table) => {
-                    let margin_table_brrw = margin_table.borrow();
-                    let width: f32 = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*WIDTH)) {
-                      value.unwrap()
-                    } else { 1.0 };
-                    let color: Color32 = if let Ok(Value::U128(color)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*COLOR)) {
-                      get_color(color)
-                    } else { Color32::WHITE };
-                    frame.stroke = Stroke::new(width, color);
-                  }
-                  _ => (),
-                }
-              }
-              if let Ok(Value::Reference(margin_table_id)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*SHADOW)) {
-                match self.core.get_table_by_id(*margin_table_id.unwrap()) {
-                  Ok(margin_table) => {
-                    let margin_table_brrw = margin_table.borrow();
-                    let dist: f32 = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*DISTANCE)) {
-                      value.unwrap()
-                    } else { 1.0 };
-                    let color: Color32 = if let Ok(Value::U128(color)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*COLOR)) {
-                      get_color(color)
-                    } else { Color32::BLACK };
-                    frame.shadow = Shadow{extrusion: dist, color};
-                  }
-                  _ => (),
-                }
-              }
-            }
-            _ => (),
-          }
-        }
+        let frame = self.get_frame(&parameters_table);
         egui::SidePanel::left(humanize(&table.id))
           .frame(frame)
           .show_separator_line(false)
@@ -983,7 +814,7 @@ impl MechApp {
         let value_table_brrw = value_table.borrow();
         match value_table_brrw.get(&TableIndex::Index(1), &TableIndex::Index(1)) {
           Ok(Value::Bool(value)) => {
-            if container.add(egui::Button::new(text.to_string())).clicked() {
+            if container.add(mech_notebook::MyButton::new(text.to_string())).clicked() {
               let new_value = !value;
               if new_value {
                 self.windows.insert(text.to_string());
@@ -1009,7 +840,7 @@ impl MechApp {
         let value_table_brrw = value_table.borrow();
         match value_table_brrw.get(&TableIndex::Index(1), &TableIndex::Index(1)) {
           Ok(Value::Bool(value)) => {
-            if container.add(egui::Button::new(text.to_string())).clicked() {
+            if container.add(mech_notebook::MyButton::new(text.to_string())).clicked() {
               self.changes.push(Change::Set((value_table_brrw.id,vec![(TableIndex::Index(1),TableIndex::Index(1),Value::Bool(!value))])));
             }
           }
