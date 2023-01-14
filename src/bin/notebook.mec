@@ -74,7 +74,7 @@ Top Tabs
       [kind: "panel-left" contains: "ekf.mec", parameters: [padding: [top: 5]]]
       [kind: "panel-left"]
       [kind: "panel-left" 
-       contains: [kind: "label", text: "×", parameters: [color: 0xD0CECE, size: 20]],
+       contains: [kind: "label", text: "×", parameters: [color: 0xE3DDEB, size: 20]],
        parameters: [width: 10, rounding: 4, padding: [left: 7, right: 7, top: 0, bottom: 1]]
       ]
     ]
@@ -149,6 +149,17 @@ Bottom contents
   ]
   #app-contents = [[#code-area]; [#code-output]]
 
+Here's the docs contents
+  #docs-contents = [ 
+    [kind: "panel-left"
+     contains: [
+      [kind: "panel-top" contains: [kind: "label" text: "Bouncing Balls" parameters: [color: 0x9DC3E6, size: 16]] parameters: [margin: [bottom: 2]]]
+      [kind: "panel-top" contains: [kind: "label" text: "===============" parameters: [color: 0x9DC3E6, size: 16]] parameters: [margin: [bottom: 10]]]
+      [kind: "panel-top" contains: [kind: "label" text: "This program is a forward kinematic simulation of three balls bouncing in a bounded arena. Each of the balls are accelerated by simulated gravity and are repelled by the bounds of the arena." parameters: [color: 0xE3DDEB, size: 16]] parameters: [margin: [bottom: 2]]]
+     ]
+     parameters: [width: 600]
+  ]]
+
 This creates a table of booleans switches which will be used to open and close an assoicated window
   x = [false #mech/tables]
   #table-toggles >- x
@@ -189,6 +200,10 @@ When the code button is clicked, show the code editor
 When the tables button is clicked, show the tables panel
   ~ #tables-button
   #app-area.contains := [[#tables-panel-contents]]
+
+When the docs button is clicked, show the docs panel
+  ~ #docs-button
+  #app-area.contains := [[#docs-contents]]
 
 3. Drawing
 -----------
