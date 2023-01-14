@@ -282,10 +282,11 @@ impl MechApp {
         match code_table_brrw.get(&TableIndex::Index(1), &TableIndex::Index(1)) {
           Ok(Value::String(code)) => {
             self.code = code.to_string();
+            container.visuals_mut().extreme_bg_color = Color32::TRANSPARENT;
             let frame = Frame::default().fill(Color32::TRANSPARENT);
             let response = container.add_sized(container.available_size(), egui::TextEdit::multiline(&mut self.code)
-              .code_editor()
-              .frame(true)
+              .font(FontId{size: 20.0, family: FontFamily::Monospace})
+              .frame(false)
             );
             if response.changed() {
               self.changes.push(Change::Set((code_table_brrw.id,vec![(TableIndex::Index(1),TableIndex::Index(1),Value::String(MechString::from_string(self.code.clone())))])));
@@ -420,9 +421,11 @@ impl MechApp {
                 match self.core.get_table_by_id(*margin_table_id.unwrap()) {
                   Ok(margin_table) => {
                     let margin_table_brrw = margin_table.borrow();
-                    if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Index(1)) {
-                      frame.outer_margin = Margin{left: value.unwrap(), right: value.unwrap(), top: value.unwrap(), bottom: value.unwrap()};
-                    }
+                    let left = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*LEFT)) { value.unwrap()} else { 0.0 };
+                    let right = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*RIGHT)) { value.unwrap()} else { 0.0 };
+                    let top = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*TOP)) { value.unwrap()} else { 0.0 };
+                    let bottom = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*BOTTOM)) { value.unwrap()} else { 0.0 };
+                    frame.outer_margin = Margin{left, right, top, bottom};
                   }
                   _ => (),
                 }
