@@ -1,4 +1,4 @@
-//#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 #![allow(warnings)]
 #![recursion_limit="256"]
 
@@ -6,6 +6,10 @@ use eframe::{egui};
 use eframe::egui::{containers::*, *};
 use egui::style::Margin;
 use egui_extras::{StripBuilder, Size};
+
+use mech_notebook::button::MyButton;
+use mech_notebook::textarea::MyTextEdit;
+use native_dialog::{FileDialog, MessageDialog, MessageType};
 
 extern crate mech_utilities;
 extern crate mech_syntax;
@@ -21,6 +25,7 @@ use std::path::Path;
 use std::collections::{HashMap, HashSet};
 use std::env;
 use std::fs;
+use std::fs::File;
 
 use std::io::Cursor;
 use image::io::Reader as ImageReader;
@@ -130,6 +135,8 @@ lazy_static! {
   static ref HORIZONTAL: u64 = hash_str("horizontal");
   static ref VERTICAL: u64 = hash_str("vertical");
   static ref SCROLL__AREA: u64 = hash_str("scroll-area");
+  static ref OPEN_FILE: u64 = hash_str("open-file");
+  static ref FILE: u64 = hash_str("file");
 }
 
 pub struct MechApp {
@@ -238,6 +245,7 @@ impl MechApp {
               else if raw_kind == *PANEL__LEFT { self.render_panel_left(table,row,ui)?; }
               else if raw_kind == *PANEL__CENTER { self.render_panel_center(table,row,ui)?; }
               else if raw_kind == *BUTTON { self.render_button(table,row,ui)?; }
+              else if raw_kind == *OPEN_FILE { self.render_open_file_button(table,row,ui)?; }
               else if raw_kind == *TABLE__WINDOW { self.render_table__window(table,row,ui)?; }
               else if raw_kind == *CANVAS { self.render_canvas(table,row,ui)?; }
               else if raw_kind == *DEBUG { self.render_debug(table,row,ui)?; }
@@ -284,9 +292,9 @@ impl MechApp {
             self.code = code.to_string();
             container.visuals_mut().extreme_bg_color = Color32::TRANSPARENT;
             let frame = Frame::default().fill(Color32::TRANSPARENT);
-            let response = container.add_sized(container.available_size(), egui::TextEdit::multiline(&mut self.code)
-              .font(FontId{size: 20.0, family: FontFamily::Monospace})
-              .frame(false)
+            let response = container.add_sized(container.available_size(), TextEdit::multiline(&mut self.code)
+              .font(FontId{size: 16.0, family: FontFamily::Monospace})
+              .frame(true)
             );
             if response.changed() {
               self.changes.push(Change::Set((code_table_brrw.id,vec![(TableIndex::Index(1),TableIndex::Index(1),Value::String(MechString::from_string(self.code.clone())))])));
@@ -590,7 +598,7 @@ impl MechApp {
             .color(get_color(color))
             .size(size.into());
 
-          container.label(label);
+          container.add(mech_notebook::label::MyLabel::new(label));
         }
         x => {return Err(MechError{msg: "".to_string(), id: 6496, kind: MechErrorKind::GenericError(format!("{:?}", x))});},
       }
@@ -814,13 +822,63 @@ impl MechApp {
         let value_table_brrw = value_table.borrow();
         match value_table_brrw.get(&TableIndex::Index(1), &TableIndex::Index(1)) {
           Ok(Value::Bool(value)) => {
-            if container.add(mech_notebook::MyButton::new(text.to_string())).clicked() {
+            if container.add(MyButton::new(text.to_string())).clicked() {
               let new_value = !value;
               if new_value {
                 self.windows.insert(text.to_string());
               } else {
                 self.windows.remove(&text.to_string());
               }
+              self.changes.push(Change::Set((value_table_brrw.id,vec![(TableIndex::Index(1),TableIndex::Index(1),Value::Bool(!value))])));
+            }
+          }
+          x => {return Err(MechError{msg: "".to_string(), id: 6497, kind: MechErrorKind::GenericError(format!("{:?}", x))});},
+        }
+      }
+      x => {return Err(MechError{msg: "".to_string(), id: 6497, kind: MechErrorKind::GenericError(format!("{:?}", x))});},
+    }
+    Ok(())
+  }
+
+  pub fn render_open_file_button(&mut self, table: &Table, row: usize, container: &mut egui::Ui) -> Result<(),MechError> {
+    match (table.get(&TableIndex::Index(row), &TableIndex::Alias(*TEXT)),
+           table.get(&TableIndex::Index(row), &TableIndex::Alias(*CLICKED)),
+           table.get(&TableIndex::Index(row), &TableIndex::Alias(*FILE)),
+           table.get(&TableIndex::Index(row), &TableIndex::Alias(*PARAMETERS))) {
+        (Ok(Value::String(text)), Ok(Value::Reference(value_table_id)), Ok(Value::Reference(file_table_id)), parameters_table) => {
+        let value_table = self.core.get_table_by_id(*value_table_id.unwrap())?;
+        let value_table_brrw = value_table.borrow();
+        let file_table = self.core.get_table_by_id(*file_table_id.unwrap())?;
+        let file_table_brrw = file_table.borrow();
+        let frame = self.get_frame(&parameters_table);
+        let mut color = Color32::WHITE;
+        if let Ok(Value::Reference(parameters_table_id)) = parameters_table {
+          match self.core.get_table_by_id(*parameters_table_id.unwrap()) {
+            Ok(parameters_table) => {
+              let parameters_table_brrw = parameters_table.borrow();
+              if let Ok(Value::U128(u128_color)) = parameters_table_brrw.get(&TableIndex::Index(1),&TableIndex::Alias(*COLOR)) { 
+                color = get_color(u128_color);
+              }
+            }
+            _ => (),
+          }
+        }
+        match (value_table_brrw.get(&TableIndex::Index(1), &TableIndex::Index(1)),file_table_brrw.get(&TableIndex::Index(1), &TableIndex::Index(1))) {
+          (Ok(Value::Bool(value)),Ok(Value::String(file))) => {
+            let button = MyButton::new(text.to_string()).frame(frame).color(color);
+            if container.add(button).clicked() {
+              let file_path = FileDialog::new()
+                  .set_location("~/Desktop")
+                  .add_filter("Mech source file", &["mec"])
+                  .add_filter("Mech blocks file", &["blx"])
+                  .show_open_single_file()
+                  .unwrap().unwrap();
+
+
+              let path = file_path.as_path();
+              use std::fs;
+              let file = fs::read_to_string(path).unwrap();
+              self.changes.push(Change::Set((file_table_brrw.id,vec![(TableIndex::Index(1),TableIndex::Index(1),Value::String(MechString::from_string(file)))])));
               self.changes.push(Change::Set((value_table_brrw.id,vec![(TableIndex::Index(1),TableIndex::Index(1),Value::Bool(!value))])));
             }
           }
@@ -854,7 +912,7 @@ impl MechApp {
         }
         match value_table_brrw.get(&TableIndex::Index(1), &TableIndex::Index(1)) {
           Ok(Value::Bool(value)) => {
-            let button = mech_notebook::MyButton::new(text.to_string()).frame(frame).color(color);
+            let button = MyButton::new(text.to_string()).frame(frame).color(color);
             if container.add(button).clicked() {
               self.changes.push(Change::Set((value_table_brrw.id,vec![(TableIndex::Index(1),TableIndex::Index(1),Value::Bool(!value))])));
             }
@@ -1045,10 +1103,10 @@ impl eframe::App for MechApp {
         }
         _ => (),
       }
-      if ui.input().keys_down.contains(&egui::Key::F5) {
+      /*if ui.input().keys_down.contains(&egui::Key::F5) {
         let core = load_mech_from_path(r#"C:\Users\cmont\mech\mech\notebook\src\bin\notebook.mec"#).unwrap();
         self.core = core;
-      }
+      }*/
       self.core.process_transaction(&self.changes);
       self.changes.clear();
     });
