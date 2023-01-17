@@ -11,6 +11,8 @@ Start a timer for animations
 #timeline-button = false
 #settings-button = false
 #compile-button = false
+#inspect-button = false
+#open-file-button = false
 
 #code = [""]
 
@@ -46,18 +48,19 @@ Panel contents
   switches = [
     [#code-button]
     [#tables-button]
+    [#inspect-button]
     [#docs-button]
   ]
   panels = [
     "Code"
     "Tables"
+    "Inspect"
     "Docs"
   ]
-  #left-contents = [[kind: "button" clicked: switches text: panels]]
+  #left-contents = [[kind: "button" clicked: switches text: panels parameters: [padding: 10]]
+                    [kind: "open-file" clicked: [#open-file-button] file: [#code] text: "Open File" parameters: [padding: 10]]]
 
 Top Tabs
-  lr = 7
-  tb = 7
   tab1 = [
     [kind: "panel-top"
      contains: [
@@ -142,11 +145,21 @@ Bottom contents
   #bottom-contents = [kind: "label" text: "Bottom Contents" parameters: [
     color: 0xF4D8D8
     size: 14]]
+The code area and output
+  #code-area = [
+    kind: "panel-left" 
+    contains: [#code-contents] 
+    parameters: [fill: 0x131218, min-width: 600] 
+  ]
   #code-output = [
     kind: "panel-left"
-    contains: "Stuff"
-    parameters: [min-width: 150, padding: 20]
+    contains: #code-output-contents
+    parameters: [width: 900, padding: 20]
   ]
+  
+#code-output-contents = [""]
+
+Init with code area and output
   #app-contents = [[#code-area]; [#code-output]]
 
 Here's the docs contents
@@ -171,13 +184,6 @@ Tables panels
     ]
   ]
 
-The code area
-  #code-area = [
-    kind: "panel-left" 
-    contains: [#code-contents] 
-    parameters: [fill: 0x131218, min-width: 600] 
-  ]
-
 2. Interactions
 ----------------
 
@@ -185,11 +191,14 @@ When the compile button is clicked, take the contents of the code area
 and compile it.
   ~ #compile-button
   #mech/compiler := [code: #code]
+  #code-output-contents := #code
 
 Code contents
   #code-contents = [
-    [kind: "button" clicked: [#compile-button] text: "Compile"]
-    [kind: "code" text: [#code]]
+    [kind: "button" clicked: [#compile-button] text: "Compile!", parameters: [padding: 10]]
+    [kind: "scroll-area"
+      contains: [kind: "code" text: [#code]]
+    ]
   ]
 
 When the code button is clicked, show the code editor
@@ -210,11 +219,12 @@ When the docs button is clicked, show the docs panel
 
 #top-panel-height = 25
 #bottom-panel-height = 25
+#active-tab-ix = 0<u64>
 
 The panels
   #top-panel = [
     kind: "panel-top" 
-    contains: [[#tab1]; [#tab2]; [#tab3]]
+    contains: [[kind: "tabs" active: [#active-tab-ix] text: "ekf.mec", parameters: [padding: 10, margin: 10]]]
     parameters: [padding: 0, height: #top-panel-height] 
   ]
   #bottom-panel = [
