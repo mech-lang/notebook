@@ -874,19 +874,19 @@ impl MechApp {
           (Ok(Value::Bool(value)),Ok(Value::String(file))) => {
             let button = MyButton::new(text.to_string()).frame(frame).color(color);
             if container.add(button).clicked() {
-              let file_path = FileDialog::new()
+              match FileDialog::new()
                   .set_location("~/Desktop")
                   .add_filter("Mech source file", &["mec"])
                   .add_filter("Mech blocks file", &["blx"])
-                  .show_open_single_file()
-                  .unwrap().unwrap();
-
-
-              let path = file_path.as_path();
-              use std::fs;
-              let file = fs::read_to_string(path).unwrap();
-              self.changes.push(Change::Set((file_table_brrw.id,vec![(TableIndex::Index(1),TableIndex::Index(1),Value::String(MechString::from_string(file)))])));
-              self.changes.push(Change::Set((value_table_brrw.id,vec![(TableIndex::Index(1),TableIndex::Index(1),Value::Bool(!value))])));
+                  .show_open_single_file() {
+                Ok(Some(file_path)) => {
+                  let path = file_path.as_path();
+                  let file = fs::read_to_string(path).unwrap();
+                  self.changes.push(Change::Set((file_table_brrw.id,vec![(TableIndex::Index(1),TableIndex::Index(1),Value::String(MechString::from_string(file)))])));
+                  self.changes.push(Change::Set((value_table_brrw.id,vec![(TableIndex::Index(1),TableIndex::Index(1),Value::Bool(!value))])));
+                }
+                _ => (),
+              }
             }
           }
           x => {return Err(MechError{msg: "".to_string(), id: 6497, kind: MechErrorKind::GenericError(format!("{:?}", x))});},
