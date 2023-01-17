@@ -9,6 +9,8 @@ use egui_extras::{StripBuilder, Size};
 
 use mech_notebook::button::MyButton;
 use mech_notebook::textarea::MyTextEdit;
+use mech_notebook::tabs::MyButtonTabs;
+
 use native_dialog::{FileDialog, MessageDialog, MessageType};
 
 extern crate mech_utilities;
@@ -26,6 +28,8 @@ use std::collections::{HashMap, HashSet};
 use std::env;
 use std::fs;
 use std::fs::File;
+use std::rc::Rc;
+use std::cell::RefCell;
 
 use std::io::Cursor;
 use image::io::Reader as ImageReader;
@@ -137,6 +141,8 @@ lazy_static! {
   static ref SCROLL__AREA: u64 = hash_str("scroll-area");
   static ref OPEN_FILE: u64 = hash_str("open-file");
   static ref FILE: u64 = hash_str("file");
+  static ref TABS: u64 = hash_str("tabs");
+  static ref ACTIVE: u64 = hash_str("active");
 }
 
 pub struct MechApp {
@@ -147,7 +153,7 @@ pub struct MechApp {
   core: mech_core::Core,
   maestro_thread: Option<JoinHandle<()>>,
   shapes: Vec<epaint::Shape>,
-  value_store: HashMap<usize,Value>,
+  value_store: HashMap<u64,Rc<RefCell<Value>>>,
   changes: Vec<Change>,
   windows: HashSet<String>,
 }
@@ -245,6 +251,7 @@ impl MechApp {
               else if raw_kind == *PANEL__LEFT { self.render_panel_left(table,row,ui)?; }
               else if raw_kind == *PANEL__CENTER { self.render_panel_center(table,row,ui)?; }
               else if raw_kind == *BUTTON { self.render_button(table,row,ui)?; }
+              else if raw_kind == *TABS { self.render_tabs(table,row,ui)?; }
               else if raw_kind == *OPEN_FILE { self.render_open_file_button(table,row,ui)?; }
               else if raw_kind == *TABLE__WINDOW { self.render_table__window(table,row,ui)?; }
               else if raw_kind == *CANVAS { self.render_canvas(table,row,ui)?; }
@@ -881,6 +888,48 @@ impl MechApp {
               self.changes.push(Change::Set((file_table_brrw.id,vec![(TableIndex::Index(1),TableIndex::Index(1),Value::String(MechString::from_string(file)))])));
               self.changes.push(Change::Set((value_table_brrw.id,vec![(TableIndex::Index(1),TableIndex::Index(1),Value::Bool(!value))])));
             }
+          }
+          x => {return Err(MechError{msg: "".to_string(), id: 6497, kind: MechErrorKind::GenericError(format!("{:?}", x))});},
+        }
+      }
+      x => {return Err(MechError{msg: "".to_string(), id: 6497, kind: MechErrorKind::GenericError(format!("{:?}", x))});},
+    }
+    Ok(())
+  }
+
+  pub fn render_tabs(&mut self, table: &Table, row: usize, container: &mut egui::Ui) -> Result<(),MechError> {
+    match (table.get(&TableIndex::Index(row), &TableIndex::Alias(*TEXT)),
+           table.get(&TableIndex::Index(row), &TableIndex::Alias(*ACTIVE)),
+           table.get(&TableIndex::Index(row), &TableIndex::Alias(*PARAMETERS))) {
+        (Ok(Value::String(text)), Ok(Value::Reference(value_table_id)), parameters_table) => {
+        let active_tab: Rc<RefCell<Value>> = self.value_store.entry(table.id).or_insert(Rc::new(RefCell::new(Value::U64(U64::new(0))))).clone();
+        let at = active_tab.clone();
+
+        let value_table = self.core.get_table_by_id(*value_table_id.unwrap())?;
+        let value_table_brrw = value_table.borrow();
+        let frame = self.get_frame(&parameters_table);
+        let mut color = Color32::WHITE;
+        if let Ok(Value::Reference(parameters_table_id)) = parameters_table {
+          match self.core.get_table_by_id(*parameters_table_id.unwrap()) {
+            Ok(parameters_table) => {
+              let parameters_table_brrw = parameters_table.borrow();
+              if let Ok(Value::U128(u128_color)) = parameters_table_brrw.get(&TableIndex::Index(1),&TableIndex::Alias(*COLOR)) { 
+                color = get_color(u128_color);
+              }
+            }
+            _ => (),
+          }
+        }
+        match value_table_brrw.get(&TableIndex::Index(1), &TableIndex::Index(1)) {
+          Ok(Value::U64(value)) => {
+            let tabs = MyButtonTabs::new(active_tab,vec![text.to_string(),"program.mec".to_string(),"bouncing-balls.mec".to_string()]).frame(frame).color(color);
+            if container.add(tabs).clicked() {
+              let value = at.borrow();
+              self.changes.push(Change::Set((value_table_brrw.id,vec![(TableIndex::Index(1),TableIndex::Index(1),value.clone())])));
+            }
+            let value = at.borrow();
+            self.changes.push(Change::Set((value_table_brrw.id,vec![(TableIndex::Index(1),TableIndex::Index(1),value.clone())])));
+     
           }
           x => {return Err(MechError{msg: "".to_string(), id: 6497, kind: MechErrorKind::GenericError(format!("{:?}", x))});},
         }
