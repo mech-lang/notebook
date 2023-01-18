@@ -1,4 +1,4 @@
-#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+//#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 #![allow(warnings)]
 #![recursion_limit="256"]
 
@@ -881,8 +881,10 @@ impl MechApp {
                   .show_open_single_file() {
                 Ok(Some(file_path)) => {
                   let path = file_path.as_path();
+                  let file_path_string = path.to_str().unwrap();
                   let file = fs::read_to_string(path).unwrap();
-                  self.changes.push(Change::Set((file_table_brrw.id,vec![(TableIndex::Index(1),TableIndex::Index(1),Value::String(MechString::from_string(file)))])));
+                  self.changes.push(Change::Set((file_table_brrw.id,vec![(TableIndex::Index(1),TableIndex::Index(1),Value::String(MechString::from_str(file_path_string)))])));
+                  self.changes.push(Change::Set((file_table_brrw.id,vec![(TableIndex::Index(1),TableIndex::Index(2),Value::String(MechString::from_string(file)))])));
                   self.changes.push(Change::Set((value_table_brrw.id,vec![(TableIndex::Index(1),TableIndex::Index(1),Value::Bool(!value))])));
                 }
                 _ => (),
