@@ -14,6 +14,13 @@ Start a timer for animations
 #inspect-button = false
 #open-file-button = false
 
+#opened-file = [name: "" contents: ""]
+
+#loaded-files = [|filename<string> contents<string>|]
+
+block
+  #loaded-files += #opened-file
+
 #code = [""]
 
 The dot grid
@@ -58,7 +65,7 @@ Panel contents
     "Docs"
   ]
   #left-contents = [[kind: "button" clicked: switches text: panels parameters: [padding: 10]]
-                    [kind: "open-file" clicked: [#open-file-button] file: [#code] text: "Open File" parameters: [padding: 10]]]
+                    [kind: "open-file" clicked: [#open-file-button] file: [#opened-file] text: "Open File" parameters: [padding: 10]]]
 
 Top Tabs
   tab1 = [
