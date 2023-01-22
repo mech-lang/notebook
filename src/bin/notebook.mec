@@ -16,12 +16,10 @@ Start a timer for animations
 
 #opened-file = [name: "" contents: ""]
 
-#loaded-files = [|filename<string> contents<string>|]
+#loaded-files = [|name<string> contents<string>|]
 
 block
   #loaded-files += #opened-file
-
-#code = [""]
 
 The dot grid
   x = (1:300) * 16 + 115
@@ -66,57 +64,6 @@ Panel contents
   ]
   #left-contents = [[kind: "button" clicked: switches text: panels parameters: [padding: 10]]
                     [kind: "open-file" clicked: [#open-file-button] file: [#opened-file] text: "Open File" parameters: [padding: 10]]]
-
-Top Tabs
-  tab1 = [
-    [kind: "panel-top"
-     contains: [
-      [kind: "panel-left" contains: "program.mec", parameters: [padding: [top: 5]]]
-      [kind: "panel-left"]
-      [kind: "panel-left" 
-       contains: [kind: "label", text: "×", parameters: [color: 0xD0CECE, size: 20]],
-       parameters: [width: 10, rounding: 4, padding: [left: 7, right: 7, top: 0, bottom: 1]]]] 
-     parameters: [fill: 0x262626, padding: [left: 10, top: 0, right: 10, bottom: 3]]]
-    [kind: "panel-top"]]
-  tab2 = [
-    [kind: "panel-top"
-    contains: [
-      [kind: "panel-left" contains: "ekf.mec", parameters: [padding: [top: 5]]]
-      [kind: "panel-left"]
-      [kind: "panel-left" 
-       contains: [kind: "label", text: "×", parameters: [color: 0xE3DDEB, size: 20]],
-       parameters: [width: 10, rounding: 4, padding: [left: 7, right: 7, top: 0, bottom: 1]]
-      ]
-    ]
-    parameters: [fill: 0x3E3848, height: 25, padding: [left: 10, right: 10, bottom: 0]]]
-    [kind: "panel-top" parameters: [fill: 0xA1DFCA, height: 2]]
-  ]
-  tab3 = [
-    [kind: "panel-top"
-     contains: [
-      [kind: "panel-left" contains: "program.mec", parameters: [padding: [top: 5]]]
-      [kind: "panel-left"]
-      [kind: "panel-left" 
-       contains: [kind: "label", text: "×", parameters: [color: 0xD0CECE, size: 20]],
-       parameters: [width: 10, rounding: 4, padding: [left: 7, right: 7, top: 0, bottom: 1]]]] 
-     parameters: [fill: 0x262626, padding: [left: 10, top: 0, right: 10, bottom: 3]]]
-    [kind: "panel-top"]]
-
-  #tab1 = [
-    kind: "panel-left"
-    contains: [tab1]
-    parameters: [min-width: 150]
-  ]
-  #tab2 = [
-    kind: "panel-left"
-    contains: [tab2]
-    parameters: [min-width: 150]
-  ]
-  #tab3 = [
-    kind: "panel-left"
-    contains: [tab3]
-    parameters: [min-width: 150]
-  ]
 
 Bottom Tabs
   btab1 = [
@@ -221,17 +168,24 @@ When the docs button is clicked, show the docs panel
   ~ #docs-button
   #app-area.contains := [[#docs-contents]]
 
+Keep docs content in sync with file contents
+  #code = #loaded-files.contents{#active-tab-ix}
+
 3. Drawing
 -----------
 
 #top-panel-height = 25
 #bottom-panel-height = 25
-#active-tab-ix = 0<u64>
+#active-tab-ix = 1<u8>
+#add-file-button = false
 
 The panels
   #top-panel = [
     kind: "panel-top" 
-    contains: [[kind: "tabs" active: [#active-tab-ix] text: "ekf.mec", parameters: [padding: 10, margin: 10]]]
+    contains: [
+      [kind: "panel-left" contains: [kind: "tabs" active: [#active-tab-ix] labels: [#loaded-files.name], parameters: [padding: 10, margin: 10]]]
+      [kind: "panel-left" contains: [kind: "button" clicked: [#add-file-button] text: "+", parameters: [padding: 10, margin: 10]]]
+    ]
     parameters: [padding: 0, height: #top-panel-height] 
   ]
   #bottom-panel = [
