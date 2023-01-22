@@ -143,6 +143,7 @@ lazy_static! {
   static ref FILE: u64 = hash_str("file");
   static ref TABS: u64 = hash_str("tabs");
   static ref ACTIVE: u64 = hash_str("active");
+  static ref LABELS: u64 = hash_str("labels");
 }
 
 pub struct MechApp {
@@ -881,7 +882,7 @@ impl MechApp {
                   .show_open_single_file() {
                 Ok(Some(file_path)) => {
                   let path = file_path.as_path();
-                  let file_path_string = path.to_str().unwrap();
+                  let file_path_string = path.file_name().unwrap().to_str().unwrap();
                   let file = fs::read_to_string(path).unwrap();
                   self.changes.push(Change::Set((file_table_brrw.id,vec![(TableIndex::Index(1),TableIndex::Index(1),Value::String(MechString::from_str(file_path_string)))])));
                   self.changes.push(Change::Set((file_table_brrw.id,vec![(TableIndex::Index(1),TableIndex::Index(2),Value::String(MechString::from_string(file)))])));
@@ -900,15 +901,19 @@ impl MechApp {
   }
 
   pub fn render_tabs(&mut self, table: &Table, row: usize, container: &mut egui::Ui) -> Result<(),MechError> {
-    match (table.get(&TableIndex::Index(row), &TableIndex::Alias(*TEXT)),
+    match (table.get(&TableIndex::Index(row), &TableIndex::Alias(*LABELS)),
            table.get(&TableIndex::Index(row), &TableIndex::Alias(*ACTIVE)),
            table.get(&TableIndex::Index(row), &TableIndex::Alias(*PARAMETERS))) {
-        (Ok(Value::String(text)), Ok(Value::Reference(value_table_id)), parameters_table) => {
-        let active_tab: Rc<RefCell<Value>> = self.value_store.entry(table.id).or_insert(Rc::new(RefCell::new(Value::U64(U64::new(0))))).clone();
+        (Ok(Value::Reference(labels_table_id)), Ok(Value::Reference(value_table_id)), parameters_table) => {
+        let active_tab: Rc<RefCell<Value>> = self.value_store.entry(table.id).or_insert(Rc::new(RefCell::new(Value::U8(U8::new(1))))).clone();
         let at = active_tab.clone();
 
         let value_table = self.core.get_table_by_id(*value_table_id.unwrap())?;
         let value_table_brrw = value_table.borrow();
+        let labels_table = self.core.get_table_by_id(*labels_table_id.unwrap())?;
+        let labels_table_brrw = labels_table.borrow();
+        let labels = labels_table_brrw.get_col_raw(0)?;
+
         let frame = self.get_frame(&parameters_table);
         let mut color = Color32::WHITE;
         if let Ok(Value::Reference(parameters_table_id)) = parameters_table {
@@ -922,16 +927,17 @@ impl MechApp {
             _ => (),
           }
         }
-        match value_table_brrw.get(&TableIndex::Index(1), &TableIndex::Index(1)) {
-          Ok(Value::U64(value)) => {
-            let tabs = MyButtonTabs::new(active_tab,vec![text.to_string(),"program.mec".to_string(),"bouncing-balls.mec".to_string()]).frame(frame).color(color);
+        match (value_table_brrw.get(&TableIndex::Index(1), &TableIndex::Index(1)),labels) {
+          (Ok(Value::U8(value)),Column::String(labels_vector)) => {
+            let labels_strings: Vec<String> = labels_vector.borrow().iter().map(|s| s.to_string()).collect::<Vec<String>>();
+            let tabs = MyButtonTabs::new(active_tab,labels_strings).frame(frame).color(color);
             if container.add(tabs).clicked() {
               let value = at.borrow();
               self.changes.push(Change::Set((value_table_brrw.id,vec![(TableIndex::Index(1),TableIndex::Index(1),value.clone())])));
             }
             let value = at.borrow();
             self.changes.push(Change::Set((value_table_brrw.id,vec![(TableIndex::Index(1),TableIndex::Index(1),value.clone())])));
-     
+            
           }
           x => {return Err(MechError{msg: "".to_string(), id: 6497, kind: MechErrorKind::GenericError(format!("{:?}", x))});},
         }
