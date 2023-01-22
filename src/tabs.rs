@@ -30,7 +30,7 @@ pub struct MyButtonTabs {
         labels: labels.iter().map(|t| WidgetText::RichText(RichText::new(t))).collect(),
         wrap: None,
         sense: Sense::click(),
-        min_size: Vec2::ZERO,
+        min_size: Vec2{x: 120.0, y: 15.0},
         frame: Frame::default().fill(Color32::GRAY),
         color: Color32::DARK_GRAY,
         clicked_color: Color32::GRAY,
@@ -113,30 +113,29 @@ pub struct MyButtonTabs {
       let mut label_galley = vec![];
       let mut desired_tab_sizes: Vec<Vec2> = vec![];
       for l in labels {
-        let mut text_wrap_width = ui.available_width() - (frame.inner_margin.left + frame.inner_margin.right) - desired_size.x;
+        let mut text_wrap_width = ui.available_width() - (frame.inner_margin.left + frame.inner_margin.right);
         let label = l.into_galley(ui, wrap, text_wrap_width, TextStyle::Button);
         let mut button_size = label.size();
-
         button_size += button_padding;
         button_size = button_size.at_least(min_size);
+
+        desired_size = Vec2{x: desired_size.x + button_size.x, y: desired_size.y};
         label_galley.push(label);
         desired_tab_sizes.push(button_size);
       }
 
       let mut tab_rect = Rect::from_min_size(ui.clip_rect().min, Vec2{x: 0.0, y: 0.0});
-
-
       let (rect, mut response) = ui.allocate_at_least(desired_size, sense);
 
-      let mut ix = 0;
+      let mut ix = 1;
       let mut active_ixx = active_ix.borrow_mut();
       for l in label_galley {
         response.widget_info(|| WidgetInfo::labeled(WidgetType::Button, l.text()));
-        let tab_size = desired_tab_sizes[ix];
+        let tab_size = desired_tab_sizes[ix - 1];
         tab_rect = Rect::from_min_size(Pos2{x: tab_rect.max.x, y: tab_rect.min.y}, tab_size);
         let hovered = if let Some(hovered_pos) = ui.input().pointer.hover_pos() { tab_rect.contains(hovered_pos) } else { false };
         let primary_down = ui.input().pointer.primary_down();
-        let vix = Value::U64(U64::new(ix as u64));
+        let vix = Value::U8(U8::new(ix as u8));
         let (frame,text_color) = if hovered & primary_down {
           if *active_ixx == vix {
             (active_clicked, active_clicked_color)
