@@ -5,23 +5,23 @@ use std::cell::RefCell;
 use mech_core::*;
 
 pub struct MyButtonTabs {
-    labels: Vec<WidgetText>,
-    color: Color32,
-    hovered_color: Color32,
-    clicked_color: Color32,
-    wrap: Option<bool>,
-    sense: Sense,
-    min_size: Vec2,
-    frame: Frame,
-    hovered_frame: Frame,
-    clicked_frame: Frame,
-    active_frame: Frame,
-    active_clicked: Frame,
-    active_hovered: Frame,
-    active_color: Color32,
-    active_hovered_color: Color32,
-    active_clicked_color: Color32,
-    active_ix: Rc<RefCell<Value>>,
+    pub labels: Vec<WidgetText>,
+    pub color: Color32,
+    pub hovered_color: Color32,
+    pub clicked_color: Color32,
+    pub wrap: Option<bool>,
+    pub sense: Sense,
+    pub min_size: Vec2,
+    pub frame: Frame,
+    pub hovered_frame: Frame,
+    pub clicked_frame: Frame,
+    pub active_frame: Frame,
+    pub active_clicked: Frame,
+    pub active_hovered: Frame,
+    pub active_color: Color32,
+    pub active_hovered_color: Color32,
+    pub active_clicked_color: Color32,
+    pub active_ix: Rc<RefCell<Value>>,
   }
   
   impl MyButtonTabs {
@@ -45,42 +45,6 @@ pub struct MyButtonTabs {
         active_hovered: Frame::default().fill(Color32::LIGHT_BLUE),
         active_ix,
       }
-    }
-  
-    #[inline]
-    pub fn wrap(mut self, wrap: bool) -> Self {
-      self.wrap = Some(wrap);
-      self
-    }
-  
-    pub fn frame(mut self, frame: Frame) -> Self {
-      self.frame = frame;
-      self
-    }
-  
-    pub fn hovered_frame(mut self, frame: Frame) -> Self {
-      self.frame = frame;
-      self
-    }
-  
-    pub fn hovered_color(mut self, color: Color32) -> Self {
-      self.hovered_color = color;
-      self
-    }
-  
-    pub fn color(mut self, color: Color32) -> Self {
-      self.color = color;
-      self
-    }
-  
-    pub fn sense(mut self, sense: Sense) -> Self {
-      self.sense = sense;
-      self
-    }
-  
-    pub fn min_size(mut self, min_size: Vec2) -> Self {
-      self.min_size = min_size;
-      self
     }
   
   }
@@ -124,8 +88,9 @@ pub struct MyButtonTabs {
         desired_tab_sizes.push(button_size);
       }
 
-      let mut tab_rect = Rect::from_min_size(ui.clip_rect().min, Vec2{x: 0.0, y: 0.0});
       let (rect, mut response) = ui.allocate_at_least(desired_size, sense);
+      let mut tab_rect = rect;
+      tab_rect.max.x = rect.min.x;      
 
       let mut ix = 1;
       let mut active_ixx = active_ix.borrow_mut();
@@ -137,15 +102,13 @@ pub struct MyButtonTabs {
         let primary_down = ui.input().pointer.primary_down();
         let vix = Value::U8(U8::new(ix as u8));
         let (frame,text_color) = if hovered & primary_down {
-          if *active_ixx == vix {
-            (active_clicked, active_clicked_color)
-          } else {
+          if *active_ixx != vix {
             *active_ixx = vix;
             response.mark_changed();
-            (clicked_frame, clicked_color)
           }
+          (clicked_frame, clicked_color)
         } else if hovered {
-          if *active_ixx == vix {(active_hovered, active_hovered_color)} else {(hovered_frame, hovered_color)}
+          (hovered_frame, hovered_color)
         } else {
           if *active_ixx == vix {(active_frame, active_color)} else {(frame,color)}
         };
@@ -154,7 +117,7 @@ pub struct MyButtonTabs {
         if ui.is_rect_visible(rect) {
           let mut visuals: WidgetVisuals = ui.style().interact(&response).clone();
           visuals.fg_stroke.color = text_color;
-          ui.painter_at(tab_rect).rect(
+          ui.painter().rect(
             tab_rect,
             frame.rounding,
             frame.fill,
