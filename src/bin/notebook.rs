@@ -8,7 +8,6 @@ use egui::style::Margin;
 use egui_extras::{StripBuilder, Size};
 
 use mech_notebook::button::MyButton;
-use mech_notebook::textarea::MyTextEdit;
 use mech_notebook::tabs::MyButtonTabs;
 
 use native_dialog::{FileDialog, MessageDialog, MessageType};
@@ -630,7 +629,7 @@ impl MechApp {
             .color(get_color(color))
             .size(size.into());
 
-          container.add(mech_notebook::label::MyLabel::new(label));
+          container.add(Label::new(label));
         }
         x => {return Err(MechError{msg: "".to_string(), id: 6496, kind: MechErrorKind::GenericError(format!("{:?}", x))});},
       }
