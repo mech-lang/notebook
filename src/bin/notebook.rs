@@ -16,8 +16,10 @@ use native_dialog::{FileDialog, MessageDialog, MessageType};
 extern crate mech_utilities;
 extern crate mech_syntax;
 extern crate mech_core;
+extern crate mech_program;
 
 use mech_utilities::*;
+use mech_program::*;
 use crate::epaint::Shadow;
 use mech_core::*;
 use mech_syntax::compiler::Compiler;
@@ -144,10 +146,11 @@ lazy_static! {
   static ref TABS: u64 = hash_str("tabs");
   static ref ACTIVE: u64 = hash_str("active");
   static ref LABELS: u64 = hash_str("labels");
+  static ref ACTIVE__FILL: u64 = hash_str("active-fill");
+  static ref HOVER__FILL: u64 = hash_str("hover-fill");
 }
 
 pub struct MechApp {
-  //mech_client: RunLoop,
   ticks: f32,
   frame: usize,
   code: String,
@@ -157,6 +160,7 @@ pub struct MechApp {
   value_store: HashMap<u64,Rc<RefCell<Value>>>,
   changes: Vec<Change>,
   windows: HashSet<String>,
+  mech_client: RunLoop,
 }
 
 //static LONG_STRING: &'static str = include_str!(concat!(env!("OUT_DIR"), "/hello.rs"));
@@ -168,11 +172,31 @@ impl MechApp {
 
     let mut shapes = vec![epaint::Shape::Noop; 100000];
 
+    let mut runner = ProgramRunner::new("Notebook");
+    let mech_client = runner.run().unwrap();
+    let address: String = "127.0.0.1".to_string();
+    let port: String = "0".to_string();
+    let mech_socket_address = mech_client.socket_address.clone();
+    let mut core_socket_thread;
+    let formatted_address = format!("{}:{}",address,port);
+    let mech_client_channel = mech_client.outgoing.clone();   
+    match mech_socket_address {
+      Some(mech_socket_address) => {
+        core_socket_thread = start_maestro(
+          mech_socket_address, 
+          formatted_address, 
+          "127.0.0.1:3235".to_string(), 
+          "127.0.0.1:3236".to_string(), 
+          mech_client_channel);
+      }
+      None => (),
+    };
+
     Self {
       frame: 0,
       ticks: 0.0,
       code: "".to_string(),
-      //mech_client,
+      mech_client,
       core,
       maestro_thread: None,
       shapes,
@@ -916,12 +940,20 @@ impl MechApp {
 
         let frame = self.get_frame(&parameters_table);
         let mut color = Color32::WHITE;
+        let mut active_frame = frame.clone();
+        let mut hover_frame = frame.clone();
         if let Ok(Value::Reference(parameters_table_id)) = parameters_table {
           match self.core.get_table_by_id(*parameters_table_id.unwrap()) {
             Ok(parameters_table) => {
               let parameters_table_brrw = parameters_table.borrow();
               if let Ok(Value::U128(u128_color)) = parameters_table_brrw.get(&TableIndex::Index(1),&TableIndex::Alias(*COLOR)) { 
                 color = get_color(u128_color);
+              }
+              if let Ok(Value::U128(u128_color)) = parameters_table_brrw.get(&TableIndex::Index(1),&TableIndex::Alias(*ACTIVE__FILL)) { 
+                active_frame.fill = get_color(u128_color);
+              }
+              if let Ok(Value::U128(u128_color)) = parameters_table_brrw.get(&TableIndex::Index(1),&TableIndex::Alias(*HOVER__FILL)) { 
+                hover_frame.fill = get_color(u128_color);
               }
             }
             _ => (),
@@ -930,14 +962,14 @@ impl MechApp {
         match (value_table_brrw.get(&TableIndex::Index(1), &TableIndex::Index(1)),labels) {
           (Ok(Value::U8(value)),Column::String(labels_vector)) => {
             let labels_strings: Vec<String> = labels_vector.borrow().iter().map(|s| s.to_string()).collect::<Vec<String>>();
-            let tabs = MyButtonTabs::new(active_tab,labels_strings).frame(frame).color(color);
-            if container.add(tabs).clicked() {
-              let value = at.borrow();
-              self.changes.push(Change::Set((value_table_brrw.id,vec![(TableIndex::Index(1),TableIndex::Index(1),value.clone())])));
-            }
+            let mut tabs = MyButtonTabs::new(active_tab,labels_strings);
+            tabs.frame = frame;
+            tabs.active_frame = active_frame;
+            tabs.hovered_frame = hover_frame;
+            tabs.color = color;
+            container.add(tabs);
             let value = at.borrow();
             self.changes.push(Change::Set((value_table_brrw.id,vec![(TableIndex::Index(1),TableIndex::Index(1),value.clone())])));
-            
           }
           x => {return Err(MechError{msg: "".to_string(), id: 6497, kind: MechErrorKind::GenericError(format!("{:?}", x))});},
         }
