@@ -14,11 +14,12 @@ Start a timer for animations
 #inspect-button = false
 #open-file-button = false
 
-#opened-file = [name: "" contents: ""]
+#opened-file = [name: "untitled.mec" contents: ""]
 
 #loaded-files = [|name<string> contents<string>|]
 
 block
+  ~ #opened-file.name
   #loaded-files += #opened-file
 
 The dot grid
@@ -65,29 +66,6 @@ Panel contents
   #left-contents = [[kind: "button" clicked: switches text: panels parameters: [padding: 10]]
                     [kind: "open-file" clicked: [#open-file-button] file: [#opened-file] text: "Open File" parameters: [padding: 10]]]
 
-Bottom Tabs
-  btab1 = [
-    [kind: "panel-bottom"
-     contains: [kind: "label" text: "core 1" parameters: [color: 0xF4D8D8]]
-     parameters: [fill: 0xA14345, padding: [left: 10, top: 3, right: 10, bottom: 3]]]
-    [kind: "panel-bottom" parameters: [fill: 0xA14345, padding: 0, height: 2]]
-  ]
-  btab2 = [
-    [kind: "panel-bottom"
-     contains: [kind: "label" text: "core 2" parameters: [color: 0xF4D8D8]]
-     parameters: [fill: 0xCD5353, padding: [left: 10, top: 3, right: 10, bottom: 3]]]
-    [kind: "panel-bottom" parameters: [fill: 0xDD8B8B, padding: 0, height: 2]]
-  ]
-  btab3 = [
-    [kind: "panel-bottom"
-     contains: [kind: "label" text: "core4" parameters: [color: 0xF4D8D8]]
-     parameters: [fill: 0xA14345, padding: [left: 10, top: 3, right: 10, bottom: 3]]]
-    [kind: "panel-bottom" parameters: [fill: 0xA14345, padding: 0, height: 2]]
-  ]
-  #btab1 = [kind: "panel-left" contains: [btab1] parameters: [min-width: 150]]
-  #btab2 = [kind: "panel-left" contains: [btab2] parameters: [min-width: 150]]
-  #btab3 = [kind: "panel-left" contains: [btab3] parameters: [min-width: 150]]
-
 Testing frames
   #test = [
     kind: "frame"
@@ -96,9 +74,10 @@ Testing frames
   ]
 
 Bottom contents
-  #bottom-contents = [kind: "label" text: "Bottom Contents" parameters: [
-    color: 0xF4D8D8
-    size: 14]]
+  #bottom-contents = [
+    kind: "label" text: "Bottom Contents" 
+    parameters: [color: 0xF4D8D8 size: 14]
+  ]
 The code area and output
   #code-area = [
     kind: "panel-left" 
@@ -151,7 +130,7 @@ Code contents
   #code-contents = [
     [kind: "button" clicked: [#compile-button] text: "Compile!", parameters: [padding: 10]]
     [kind: "scroll-area"
-      contains: [kind: "code" text: [#code]]
+     contains: [kind: "code" text: [#code]]
     ]
   ]
 
@@ -171,6 +150,16 @@ When the docs button is clicked, show the docs panel
 Keep docs content in sync with file contents
   #code = #loaded-files.contents{#active-tab-ix}
 
+Add a blank file when the add-file button is clicked
+  ~ #add-file-button
+  #loaded-files += [name: "untitled.mec" contents: ""]
+
+Add a blank file when the add-file button is clicked
+  ~ #add-core-button
+  #core-names += [name: "core" contents: ""]
+
+#core-names = [name: "core 1" contents: ""]
+
 3. Drawing
 -----------
 
@@ -178,20 +167,25 @@ Keep docs content in sync with file contents
 #bottom-panel-height = 25
 #active-tab-ix = 1<u8>
 #add-file-button = false
+#active-core-ix = 1<u8>
+#add-core-button = false
 
 The panels
   #top-panel = [
     kind: "panel-top" 
     contains: [
-      [kind: "panel-left" contains: [kind: "tabs" active: [#active-tab-ix] labels: [#loaded-files.name], parameters: [padding: 10, margin: 10]]]
+      [kind: "panel-left" contains: [kind: "tabs" active: [#active-tab-ix] labels: [#loaded-files.name], parameters: [padding: 10, margin: 10, active-fill: 0x2E2A3C, hover-fill: 0xB1ABC5]]]
       [kind: "panel-left" contains: [kind: "button" clicked: [#add-file-button] text: "+", parameters: [padding: 10, margin: 10]]]
     ]
-    parameters: [padding: 0, height: #top-panel-height] 
+    parameters: [padding: 0] 
   ]
   #bottom-panel = [
     kind: "panel-bottom" 
-    contains: [[#btab1]; [#btab2]; [#btab3]]
-    parameters: [fill: 0xA14345, padding: 0, height: #bottom-panel-height] 
+    contains: [
+      [kind: "panel-left" contains: [kind: "tabs" active: [#active-core-ix] labels: [#core-names], parameters: [padding: 10, margin: 10, active-fill: 0xCD5353, hover-fill: 0xE3A1A1]]]
+      [kind: "panel-left" contains: [kind: "button" clicked: [#add-core-button] text: "+", parameters: [padding: 10, margin: 10]]]
+    ]
+    parameters: [fill: 0xA14345, padding: 0] 
   ]
   #left-panel = [
     kind: "panel-left" 
