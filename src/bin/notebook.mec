@@ -86,25 +86,25 @@ The code area and output
   ]
   #code-output = [
     kind: "panel-left"
-    contains: #code-output-contents
-    parameters: [width: 900, padding: 20]
+    contains: "Hello"
+    parameters: [width: 600, padding: 20]
   ]
   
-#code-output-contents = [""]
+#code-output-contents = ["Hello"]
 
 Init with code area and output
   #app-contents = [[#code-area]; [#code-output]]
 
 Here's the docs contents
-  #docs-contents = [ 
-    [kind: "panel-left"
-     contains: [
+  #docs-contents = [
+    kind: "panel-left"
+    contains: [
       [kind: "panel-top" contains: [kind: "label" text: "Bouncing Balls" parameters: [color: 0x9DC3E6, size: 16]] parameters: [margin: [bottom: 2]]]
       [kind: "panel-top" contains: [kind: "label" text: "===============" parameters: [color: 0x9DC3E6, size: 16]] parameters: [margin: [bottom: 10]]]
       [kind: "panel-top" contains: [kind: "label" text: "This program is a forward kinematic simulation of three balls bouncing in a bounded arena. Each of the balls are accelerated by simulated gravity and are repelled by the bounds of the arena." parameters: [color: 0xE3DDEB, size: 16]] parameters: [margin: [bottom: 2]]]
-     ]
-     parameters: [width: 600]
-  ]]
+    ]
+    parameters: [width: 400 fill: 0x795F9F visible: #docs-button]
+  ]
 
 This creates a table of booleans switches which will be used to open and close an assoicated window
   x = [false #mech/tables]
@@ -112,9 +112,11 @@ This creates a table of booleans switches which will be used to open and close a
 
 Tables panels
   #tables-panel-contents = [
-    [kind: "scroll-area"
-     contains: [[kind: "table-window" clicked: #table-toggles text: #mech/tables]]
+    kind: "panel-left"
+    contains: [
+      [kind: "scroll-area" contains: [kind: "table-window" clicked: #table-toggles text: #mech/tables]]
     ]
+    parameters: [width: 400 fill: 0x795F9F visible: #tables-button]
   ]
 
 2. Interactions
@@ -138,14 +140,6 @@ When the code button is clicked, show the code editor
   ~ #code-button
   #code-area.contains := [[#code-contents]]
   #app-area.contains := [[#app-contents]]
-
-When the tables button is clicked, show the tables panel
-  ~ #tables-button
-  #app-area.contains := [[#tables-panel-contents]]
-
-When the docs button is clicked, show the docs panel
-  ~ #docs-button
-  #app-area.contains := [[#docs-contents]]
 
 Keep docs content in sync with file contents
   #code = #loaded-files.contents{#active-tab-ix}
@@ -204,5 +198,7 @@ Add a gui application
     [#grid]
     [#bottom-panel]
     [#left-panel]
+    [#tables-panel-contents]
+    [#docs-contents]
     [#app-area]
   ]
