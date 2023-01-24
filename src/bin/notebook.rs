@@ -148,6 +148,7 @@ lazy_static! {
   static ref ACTIVE__FILL: u64 = hash_str("active-fill");
   static ref HOVER__FILL: u64 = hash_str("hover-fill");
   static ref VISIBLE: u64 = hash_str("visible");
+  static ref RESIZABLE: u64 = hash_str("resizable");
 }
 
 pub struct MechApp {
@@ -361,7 +362,7 @@ impl MechApp {
                 panel = panel.min_height(value.into());
               }
               if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*MAX__HEIGHT)) {
-                panel = panel.min_height(value.into());
+                panel = panel.max_height(value.into());
               }
               if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*HEIGHT)) {
                 panel = panel.exact_height(value.into());
@@ -439,7 +440,7 @@ impl MechApp {
                 panel = panel.min_height(value.into());
               }
               if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*MAX__HEIGHT)) {
-                panel = panel.min_height(value.into());
+                panel = panel.max_height(value.into());
               }
               if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*HEIGHT)) {
                 panel = panel.exact_height(value.into());
@@ -462,9 +463,10 @@ impl MechApp {
     match (table.get(&TableIndex::Index(row), &TableIndex::Alias(*CONTAINS)),
             table.get(&TableIndex::Index(row), &TableIndex::Alias(*PARAMETERS))) {
       (contained,parameters_table) => {
-        let mut panel = egui::SidePanel::left(humanize(&table.id)).resizable(false).show_separator_line(false);
         let frame = self.get_frame(&parameters_table);
         let mut visible = true;
+        let mut panel = egui::SidePanel::left(humanize(&table.id)).resizable(false).show_separator_line(false);
+
         if let Ok(Value::Reference(parameters_table_id)) = parameters_table {
           match self.core.get_table_by_id(*parameters_table_id.unwrap()) {
             Ok(parameters_table) => {
@@ -473,13 +475,16 @@ impl MechApp {
                 panel = panel.min_width(value.into());
               }
               if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*MAX__WIDTH)) {
-                panel = panel.min_width(value.into());
+                panel = panel.max_width(value.into());
               }
               if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*WIDTH)) {
                 panel = panel.exact_width(value.into());
               }
               if let Ok(Value::Bool(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*VISIBLE)) {
                 visible = value;
+              }
+              if let Ok(Value::Bool(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*RESIZABLE)) {
+                panel = panel.resizable(value.into());
               }
             }
             _ => (),
@@ -511,7 +516,7 @@ impl MechApp {
                 panel = panel.min_width(value.into());
               }
               if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*MAX__WIDTH)) {
-                panel = panel.min_width(value.into());
+                panel = panel.max_width(value.into());
               }
               if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*WIDTH)) {
                 panel = panel.exact_width(value.into());
@@ -1160,6 +1165,11 @@ impl eframe::App for MechApp {
     egui::CentralPanel::default()
       .frame(frame)
       .show(ctx, |ui| {
+        if ui.input().keys_down.contains(&egui::Key::F5) {
+          let core = load_mech_from_path(r#"C:\Users\cmont\mech\mech\notebook\src\bin\notebook.mec"#).unwrap();
+          self.core = core;
+        }
+
       // Compile new code...
       {
 
@@ -1198,10 +1208,7 @@ impl eframe::App for MechApp {
         }
         _ => (),
       }
-      /*if ui.input().keys_down.contains(&egui::Key::F5) {
-        let core = load_mech_from_path(r#"C:\Users\cmont\mech\mech\notebook\src\bin\notebook.mec"#).unwrap();
-        self.core = core;
-      }*/
+
       self.core.process_transaction(&self.changes);
       self.changes.clear();
     });
