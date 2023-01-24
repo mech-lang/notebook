@@ -147,6 +147,7 @@ lazy_static! {
   static ref LABELS: u64 = hash_str("labels");
   static ref ACTIVE__FILL: u64 = hash_str("active-fill");
   static ref HOVER__FILL: u64 = hash_str("hover-fill");
+  static ref VISIBLE: u64 = hash_str("visible");
 }
 
 pub struct MechApp {
@@ -463,6 +464,7 @@ impl MechApp {
       (contained,parameters_table) => {
         let mut panel = egui::SidePanel::left(humanize(&table.id)).resizable(false).show_separator_line(false);
         let frame = self.get_frame(&parameters_table);
+        let mut visible = true;
         if let Ok(Value::Reference(parameters_table_id)) = parameters_table {
           match self.core.get_table_by_id(*parameters_table_id.unwrap()) {
             Ok(parameters_table) => {
@@ -476,15 +478,20 @@ impl MechApp {
               if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*WIDTH)) {
                 panel = panel.exact_width(value.into());
               }
+              if let Ok(Value::Bool(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*VISIBLE)) {
+                visible = value;
+              }
             }
             _ => (),
           }
         }
-        panel.frame(frame).show_inside(container, |ui| {
-          if let Ok(contained) = contained {
-            self.render_value(contained, ui);
-          }
-        });
+        if visible {
+          panel.frame(frame).show_inside(container, |ui| {
+            if let Ok(contained) = contained {
+              self.render_value(contained, ui);
+            }
+          });
+        }
       }
     }
     Ok(())
