@@ -73,11 +73,6 @@ Testing frames
     parameters: [fill: 0x3E3848, stroke: [width: 2, color: 0x000000], shadow: [distance: 10, color: 0xFFFFFF], padding: [left: 10, top: 10, right: 150, bottom: 20], margin: 5, rounding: 5]
   ]
 
-Bottom contents
-  #bottom-contents = [
-    kind: "label" text: "Bottom Contents" 
-    parameters: [color: 0xF4D8D8 size: 14]
-  ]
 The code area and output
   #code-area = [
     kind: "panel-left" 
@@ -103,7 +98,7 @@ Here's the docs contents
       [kind: "panel-top" contains: [kind: "label" text: "===============" parameters: [color: 0x9DC3E6, size: 16]] parameters: [margin: [bottom: 10]]]
       [kind: "panel-top" contains: [kind: "label" text: "This program is a forward kinematic simulation of three balls bouncing in a bounded arena. Each of the balls are accelerated by simulated gravity and are repelled by the bounds of the arena." parameters: [color: 0xE3DDEB, size: 16]] parameters: [margin: [bottom: 2]]]
     ]
-    parameters: [width: 400 fill: 0x795F9F visible: #docs-button]
+    parameters: [min-width: 400, resizable: true, padding: 40, fill: 0x2E2A3C visible: #docs-button]
   ]
 
 This creates a table of booleans switches which will be used to open and close an assoicated window
@@ -116,7 +111,7 @@ Tables panels
     contains: [
       [kind: "scroll-area" contains: [kind: "table-window" clicked: #table-toggles text: #mech/tables]]
     ]
-    parameters: [width: 400 fill: 0x795F9F visible: #tables-button]
+    parameters: [min-width: 400 fill: 0x2E2A3C visible: #tables-button]
   ]
 
 2. Interactions
