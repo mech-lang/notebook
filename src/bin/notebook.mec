@@ -34,7 +34,7 @@ The dot grid
         center-x: indices{:,1}, 
         center-y: indices{:,2}, 
         radius: 1
-        fill: 0x3E3848]]]
+        fill: 0x5A5476]]]
 
 Follow Cursor
   #cursor = [
@@ -98,7 +98,7 @@ Here's the docs contents
       [kind: "panel-top" contains: [kind: "label" text: "===============" parameters: [color: 0x9DC3E6, size: 16]] parameters: [margin: [bottom: 10]]]
       [kind: "panel-top" contains: [kind: "label" text: "This program is a forward kinematic simulation of three balls bouncing in a bounded arena. Each of the balls are accelerated by simulated gravity and are repelled by the bounds of the arena." parameters: [color: 0xE3DDEB, size: 16]] parameters: [margin: [bottom: 2]]]
     ]
-    parameters: [min-width: 400, resizable: true, padding: 40, fill: 0x2E2A3C visible: #docs-button]
+    parameters: [min-width: 400, resizable: true, padding: 40, fill: 0x7043A1 visible: #docs-button]
   ]
 
 This creates a table of booleans switches which will be used to open and close an assoicated window
@@ -125,7 +125,7 @@ and compile it.
 
 Code contents
   #code-contents = [
-    [kind: "button" clicked: [#compile-button] text: "Compile!", parameters: [padding: 10]]
+    [kind: "button" clicked: [#compile-button] text: "Compile!", parameters: [padding: 10 fill: 0x7F4C68 stroke: [width: 2, color: 0xCEAFC0]]]
     [kind: "scroll-area"
      contains: [kind: "code" text: [#code]]
     ]
@@ -163,18 +163,18 @@ The panels
   #top-panel = [
     kind: "panel-top" 
     contains: [
-      [kind: "panel-left" contains: [kind: "tabs" active: [#active-tab-ix] labels: [#loaded-files.name], parameters: [padding: 10, margin: 10, active-fill: 0x2E2A3C, hover-fill: 0xB1ABC5]]]
-      [kind: "panel-left" contains: [kind: "button" clicked: [#add-file-button] text: "+", parameters: [padding: 10, margin: 10]]]
+      [kind: "panel-left" contains: [kind: "tabs" active: [#active-tab-ix] labels: [#loaded-files.name], parameters: [padding: [left: 10 right: 10 top: 5 bottom: 5], margin: 10, active-fill: 0x39344A, hover-fill: 0xB8B4CA]]]
+      [kind: "panel-left" contains: [kind: "button" clicked: [#add-file-button] text: "+", parameters: [padding: 5, margin: 10, active-fill: 0x39344A, hover-fill: 0xB8B4CA]]]
     ]
     parameters: [padding: 0] 
   ]
   #bottom-panel = [
     kind: "panel-bottom" 
     contains: [
-      [kind: "panel-left" contains: [kind: "tabs" active: [#active-core-ix] labels: [#core-names], parameters: [padding: 10, margin: 10, active-fill: 0xCD5353, hover-fill: 0xE3A1A1]]]
-      [kind: "panel-left" contains: [kind: "button" clicked: [#add-core-button] text: "+", parameters: [padding: 10, margin: 10]]]
+      [kind: "panel-left" contains: [kind: "tabs" active: [#active-core-ix] labels: [#core-names], parameters: [padding: [left: 10 right: 10 top: 5 bottom: 5], margin: 10, active-fill: 0xCC6563, hover-fill: 0xDE9E9D]]]
+      [kind: "panel-left" contains: [kind: "button" clicked: [#add-core-button] text: "+", parameters: [padding: 5, margin: 10 active-fill: 0xCC6563, hover-fill: 0xDE9E9D]]]
     ]
-    parameters: [fill: 0xA14345, padding: 0] 
+    parameters: [fill: 0xC0403D, padding: 0, height: 25] 
   ]
   #left-panel = [
     kind: "panel-left" 
