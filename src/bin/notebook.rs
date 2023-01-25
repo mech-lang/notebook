@@ -9,6 +9,7 @@ use egui_extras::{StripBuilder, Size};
 
 use mech_notebook::button::MyButton;
 use mech_notebook::tabs::MyButtonTabs;
+use mech_notebook::FrameStroke;
 
 use native_dialog::{FileDialog, MessageDialog, MessageType};
 
@@ -145,6 +146,7 @@ lazy_static! {
   static ref TABS: u64 = hash_str("tabs");
   static ref ACTIVE: u64 = hash_str("active");
   static ref LABELS: u64 = hash_str("labels");
+  static ref CLICKED__FILL: u64 = hash_str("clicked-fill");
   static ref ACTIVE__FILL: u64 = hash_str("active-fill");
   static ref HOVER__FILL: u64 = hash_str("hover-fill");
   static ref VISIBLE: u64 = hash_str("visible");
@@ -431,7 +433,7 @@ impl MechApp {
             table.get(&TableIndex::Index(row), &TableIndex::Alias(*PARAMETERS))) {
       (contained,parameters_table) => {
         let mut panel = egui::TopBottomPanel::top(humanize(&table.id)).resizable(false).show_separator_line(false);
-        let frame = self.get_frame(&parameters_table);
+        let (frame,frame_stroke) = self.get_frame(&parameters_table);
         if let Ok(Value::Reference(parameters_table_id)) = parameters_table {
           match self.core.get_table_by_id(*parameters_table_id.unwrap()) {
             Ok(parameters_table) => {
@@ -463,7 +465,7 @@ impl MechApp {
     match (table.get(&TableIndex::Index(row), &TableIndex::Alias(*CONTAINS)),
             table.get(&TableIndex::Index(row), &TableIndex::Alias(*PARAMETERS))) {
       (contained,parameters_table) => {
-        let frame = self.get_frame(&parameters_table);
+        let (frame,frame_stroke) = self.get_frame(&parameters_table);
         let mut visible = true;
         let mut panel = egui::SidePanel::left(humanize(&table.id)).resizable(false).show_separator_line(false);
 
@@ -507,7 +509,7 @@ impl MechApp {
             table.get(&TableIndex::Index(row), &TableIndex::Alias(*PARAMETERS))) {
       (contained,parameters_table) => {
         let mut panel = egui::SidePanel::right(humanize(&table.id)).resizable(false).show_separator_line(false);
-        let frame = self.get_frame(&parameters_table);
+        let (frame,frame_stroke) = self.get_frame(&parameters_table);
         if let Ok(Value::Reference(parameters_table_id)) = parameters_table {
           match self.core.get_table_by_id(*parameters_table_id.unwrap()) {
             Ok(parameters_table) => {
@@ -649,10 +651,13 @@ impl MechApp {
     Ok(())
   }
 
-  pub fn get_frame(&mut self, parameters_table: &Result<Value,MechError>) -> Frame {
+  
+
+  pub fn get_frame(&mut self, parameters_table: &Result<Value,MechError>) -> (Frame,FrameStroke) {
     let mut frame = Frame::default();
     let mut margin = Margin {left: 0.0, right: 0.0, top: 0.0, bottom: 0.0};
     let mut padding = Margin {left: 0.0, right: 0.0, top: 0.0, bottom: 0.0};
+    let mut frame_stroke = FrameStroke{left: Stroke::NONE, right: Stroke::NONE, top: Stroke::NONE, bottom: Stroke::NONE, color: Color32::TRANSPARENT};
     if let Ok(Value::Reference(parameters_table_id)) = parameters_table {
       match self.core.get_table_by_id(*parameters_table_id.unwrap()) {
         Ok(parameters_table) => {
@@ -733,17 +738,33 @@ impl MechApp {
               _ => (),
             }
           }
-          if let Ok(Value::Reference(margin_table_id)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*STROKE)) {
-            match self.core.get_table_by_id(*margin_table_id.unwrap()) {
-              Ok(margin_table) => {
-                let margin_table_brrw = margin_table.borrow();
-                let width: f32 = if let Ok(Value::F32(value)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*WIDTH)) {
-                  value.unwrap()
-                } else { 1.0 };
-                let color: Color32 = if let Ok(Value::U128(color)) = margin_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*COLOR)) {
+          if let Ok(Value::Reference(table_id)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*STROKE)) {
+            match self.core.get_table_by_id(*table_id.unwrap()) {
+              Ok(table) => {
+                let table_brrw = table.borrow();
+                if let Ok(Value::F32(value)) = table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*WIDTH)) {
+                  frame_stroke.left = Stroke{width: value.unwrap(), color: Color32::TRANSPARENT};
+                  frame_stroke.right = Stroke{width: value.unwrap(), color: Color32::TRANSPARENT};
+                  frame_stroke.top = Stroke{width: value.unwrap(), color: Color32::TRANSPARENT};
+                  frame_stroke.bottom = Stroke{width: value.unwrap(), color: Color32::TRANSPARENT};
+                } else {
+                  if let Ok(Value::F32(value)) = table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*LEFT)) {
+                    frame_stroke.left = Stroke{width: value.unwrap(), color: Color32::TRANSPARENT};
+                  }
+                  if let Ok(Value::F32(value)) = table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*RIGHT)) {
+                    frame_stroke.right = Stroke{width: value.unwrap(), color: Color32::TRANSPARENT};
+                  } 
+                  if let Ok(Value::F32(value)) = table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*TOP)) {
+                    frame_stroke.top = Stroke{width: value.unwrap(), color: Color32::TRANSPARENT};
+                  } 
+                  if let Ok(Value::F32(value)) = table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*BOTTOM)) {
+                    frame_stroke.bottom = Stroke{width: value.unwrap(), color: Color32::TRANSPARENT};
+                  }          
+                }
+                let color: Color32 = if let Ok(Value::U128(color)) = table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*COLOR)) {
                   get_color(color)
-                } else { Color32::WHITE };
-                frame.stroke = Stroke::new(width, color);
+                } else { Color32::TRANSPARENT };
+                frame_stroke.color = color;
               }
               _ => (),
             }
@@ -767,14 +788,14 @@ impl MechApp {
         _ => (),
       }
     }
-    frame
+    (frame,frame_stroke)
   }
 
   pub fn render_frame(&mut self, table: &Table, row: usize, container: &mut egui::Ui) -> Result<(),MechError> {
     match (table.get(&TableIndex::Index(row), &TableIndex::Alias(*CONTAINS)),
             table.get(&TableIndex::Index(row), &TableIndex::Alias(*PARAMETERS))) {
       (contained,parameters_table) => {
-        let frame = self.get_frame(&parameters_table);
+        let (frame,frame_stroke) = self.get_frame(&parameters_table);
         egui::SidePanel::left(humanize(&table.id))
           .frame(frame)
           .show_separator_line(false)
@@ -893,7 +914,7 @@ impl MechApp {
         let value_table_brrw = value_table.borrow();
         let file_table = self.core.get_table_by_id(*file_table_id.unwrap())?;
         let file_table_brrw = file_table.borrow();
-        let frame = self.get_frame(&parameters_table);
+        let (frame,frame_stroke) = self.get_frame(&parameters_table);
         let mut color = Color32::WHITE;
         if let Ok(Value::Reference(parameters_table_id)) = parameters_table {
           match self.core.get_table_by_id(*parameters_table_id.unwrap()) {
@@ -908,7 +929,9 @@ impl MechApp {
         }
         match (value_table_brrw.get(&TableIndex::Index(1), &TableIndex::Index(1)),file_table_brrw.get(&TableIndex::Index(1), &TableIndex::Index(1))) {
           (Ok(Value::Bool(value)),Ok(Value::String(file))) => {
-            let button = MyButton::new(text.to_string()).frame(frame).color(color);
+            let mut button = MyButton::new(text.to_string());
+            button.frame = frame;
+            button.color = color;
             if container.add(button).clicked() {
               match FileDialog::new()
                   .set_location("~/Desktop")
@@ -949,7 +972,7 @@ impl MechApp {
         let labels_table_brrw = labels_table.borrow();
         let labels = labels_table_brrw.get_col_raw(0)?;
 
-        let frame = self.get_frame(&parameters_table);
+        let (frame,frame_stroke) = self.get_frame(&parameters_table);
         let mut color = Color32::WHITE;
         let mut active_frame = frame.clone();
         let mut hover_frame = frame.clone();
@@ -997,8 +1020,10 @@ impl MechApp {
         (Ok(Value::String(text)), Ok(Value::Reference(value_table_id)), parameters_table) => {
         let value_table = self.core.get_table_by_id(*value_table_id.unwrap())?;
         let value_table_brrw = value_table.borrow();
-        let frame = self.get_frame(&parameters_table);
+        let (frame,frame_stroke) = self.get_frame(&parameters_table);
         let mut color = Color32::WHITE;
+        let mut clicked_frame = frame.clone();
+        let mut hovered_frame = frame.clone();
         if let Ok(Value::Reference(parameters_table_id)) = parameters_table {
           match self.core.get_table_by_id(*parameters_table_id.unwrap()) {
             Ok(parameters_table) => {
@@ -1006,13 +1031,24 @@ impl MechApp {
               if let Ok(Value::U128(u128_color)) = parameters_table_brrw.get(&TableIndex::Index(1),&TableIndex::Alias(*COLOR)) { 
                 color = get_color(u128_color);
               }
+              if let Ok(Value::U128(u128_color)) = parameters_table_brrw.get(&TableIndex::Index(1),&TableIndex::Alias(*CLICKED__FILL)) { 
+                clicked_frame.fill = get_color(u128_color);
+              }
+              if let Ok(Value::U128(u128_color)) = parameters_table_brrw.get(&TableIndex::Index(1),&TableIndex::Alias(*HOVER__FILL)) { 
+                hovered_frame.fill = get_color(u128_color);
+              }
             }
             _ => (),
           }
         }
         match value_table_brrw.get(&TableIndex::Index(1), &TableIndex::Index(1)) {
           Ok(Value::Bool(value)) => {
-            let button = MyButton::new(text.to_string()).frame(frame).color(color);
+            let mut button = MyButton::new(text.to_string());
+            button.frame = frame;
+            button.color = color;
+            button.frame_stroke = frame_stroke;
+            button.hovered_frame = hovered_frame;
+            button.clicked_frame = clicked_frame;
             if container.add(button).clicked() {
               self.changes.push(Change::Set((value_table_brrw.id,vec![(TableIndex::Index(1),TableIndex::Index(1),Value::Bool(!value))])));
             }
@@ -1161,7 +1197,7 @@ impl eframe::App for MechApp {
 
     // Draw frame
     let mut frame = Frame::default();
-    frame.fill = Color32::from_rgb(0x13,0x12,0x18);
+    frame.fill = get_color(U128::new(0x17151E));
     egui::CentralPanel::default()
       .frame(frame)
       .show(ctx, |ui| {

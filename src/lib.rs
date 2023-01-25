@@ -6,6 +6,22 @@ use eframe::egui::style::{Margin,WidgetVisuals};
 pub mod button;
 pub mod tabs;
 
+pub struct FrameStroke{pub left: Stroke, pub right: Stroke, pub top: Stroke, pub bottom: Stroke, pub color: Color32}
+
+impl FrameStroke{
+
+  pub fn new(width: f32, color: Color32) -> Self {
+    Self {
+      left: Stroke::new(width, color),
+      right: Stroke::new(width, color),
+      top: Stroke::new(width, color),
+      bottom: Stroke::new(width, color),
+      color,
+    }
+  }
+
+}
+
 /// This is the entry-point for all the web-assembly.
 /// This is called once from the HTML.
 /// It loads the app, installs some callbacks, then returns.

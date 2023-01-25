@@ -1,18 +1,20 @@
 use eframe::egui::*;
 use eframe::egui::style::{Margin,WidgetVisuals};
 
+use crate::FrameStroke;
 
 pub struct MyButton {
-    text: WidgetText,
-    color: Color32,
-    hovered_color: Color32,
-    clicked_color: Color32,
-    wrap: Option<bool>,
-    sense: Sense,
-    min_size: Vec2,
-    frame: Frame,
-    hovered_frame: Frame,
-    clicked_frame: Frame,
+    pub text: WidgetText,
+    pub color: Color32,
+    pub hovered_color: Color32,
+    pub clicked_color: Color32,
+    pub wrap: Option<bool>,
+    pub sense: Sense,
+    pub min_size: Vec2,
+    pub frame: Frame,
+    pub hovered_frame: Frame,
+    pub clicked_frame: Frame,
+    pub frame_stroke: FrameStroke,
   }
   
   impl MyButton {
@@ -24,49 +26,14 @@ pub struct MyButton {
         min_size: Vec2::ZERO,
         frame: Frame::default().fill(Color32::GRAY),
         color: Color32::DARK_GRAY,
+        frame_stroke: FrameStroke::new(1.0,Color32::TRANSPARENT),
         clicked_color: Color32::GRAY,
         clicked_frame: Frame::default().fill(Color32::DARK_GRAY),
         hovered_color: Color32::DARK_GRAY,
         hovered_frame: Frame::default().fill(Color32::LIGHT_GRAY),
       }
     }
-  
-    #[inline]
-    pub fn wrap(mut self, wrap: bool) -> Self {
-      self.wrap = Some(wrap);
-      self
-    }
-  
-    pub fn frame(mut self, frame: Frame) -> Self {
-      self.frame = frame;
-      self
-    }
-  
-    pub fn hovered_frame(mut self, frame: Frame) -> Self {
-      self.frame = frame;
-      self
-    }
-  
-    pub fn hovered_color(mut self, color: Color32) -> Self {
-      self.hovered_color = color;
-      self
-    }
-  
-    pub fn color(mut self, color: Color32) -> Self {
-      self.color = color;
-      self
-    }
-  
-    pub fn sense(mut self, sense: Sense) -> Self {
-      self.sense = sense;
-      self
-    }
-  
-    pub fn min_size(mut self, min_size: Vec2) -> Self {
-      self.min_size = min_size;
-      self
-    }
-  
+    
   }
   
   impl Widget for MyButton {
@@ -82,6 +49,7 @@ pub struct MyButton {
         hovered_color,
         clicked_color,
         clicked_frame,
+        frame_stroke,
       } = self;
   
       let mut text_wrap_width = ui.available_width() - (frame.inner_margin.left + frame.inner_margin.right);
@@ -90,6 +58,8 @@ pub struct MyButton {
   
       let button_padding = Vec2::new(frame.inner_margin.left + frame.inner_margin.right, frame.inner_margin.top + frame.inner_margin.bottom);
       desired_size += button_padding;
+      let button_stroke = Vec2::new(frame_stroke.left.width + frame_stroke.right.width, frame_stroke.top.width + frame_stroke.bottom.width);
+      //desired_size += button_stroke;
       desired_size = desired_size.at_least(min_size);
   
       let (rect, response) = ui.allocate_at_least(desired_size, sense);
@@ -103,13 +73,22 @@ pub struct MyButton {
         (frame,color)
       };
   
+      let mut frame = frame;
+
       if ui.is_rect_visible(rect) {
         let mut visuals: WidgetVisuals = ui.style().interact(&response).clone();
         visuals.fg_stroke.color = text_color;
+        let bg_rect = Rect{min: Pos2{x: rect.min.x - frame_stroke.left.width, y: rect.min.y - frame_stroke.top.width}, max: Pos2{x: rect.max.x + frame_stroke.right.width, y: rect.max.y + frame_stroke.bottom.width}};
         ui.painter().rect(
-          rect.expand(visuals.expansion),
+          bg_rect.expand(0.0),
           frame.rounding,
-          frame.fill,
+          frame_stroke.color,
+          frame.stroke,
+        );
+        ui.painter().rect(
+          rect.expand(0.0),
+          frame.rounding,
+          frame.fill,         
           frame.stroke,
         );
         let text_pos = ui.layout()
