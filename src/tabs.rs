@@ -4,6 +4,8 @@ use std::rc::Rc;
 use std::cell::RefCell;
 use mech_core::*;
 
+use crate::FrameStroke;
+
 pub struct MyButtonTabs {
     pub labels: Vec<WidgetText>,
     pub color: Color32,
@@ -22,6 +24,8 @@ pub struct MyButtonTabs {
     pub active_hovered_color: Color32,
     pub active_clicked_color: Color32,
     pub active_ix: Rc<RefCell<Value>>,
+    pub frame_stroke: FrameStroke,
+    pub active_frame_stroke: FrameStroke,
   }
   
   impl MyButtonTabs {
@@ -44,6 +48,8 @@ pub struct MyButtonTabs {
         active_hovered_color: Color32::DARK_BLUE,
         active_hovered: Frame::default().fill(Color32::LIGHT_BLUE),
         active_ix,
+        frame_stroke: FrameStroke::new(0.0,Color32::TRANSPARENT),
+        active_frame_stroke: FrameStroke::new(0.0,Color32::TRANSPARENT),
       }
     }
   
@@ -69,6 +75,8 @@ pub struct MyButtonTabs {
         active_hovered_color,
         active_clicked_color,
         active_ix,
+        frame_stroke,
+        active_frame_stroke,
       } = self;
   
       let mut desired_size: Vec2 = Vec2{x: 0.0, y: 0.0};
@@ -101,22 +109,29 @@ pub struct MyButtonTabs {
         let hovered = if let Some(hovered_pos) = ui.input().pointer.hover_pos() { tab_rect.contains(hovered_pos) } else { false };
         let primary_down = ui.input().pointer.primary_down();
         let vix = Value::U8(U8::new(ix as u8));
-        let (frame,text_color) = if hovered & primary_down {
+        let (frame,text_color,frame_stroke) = if hovered & primary_down {
           if *active_ixx != vix {
             *active_ixx = vix;
             response.mark_changed();
           }
-          (clicked_frame, clicked_color)
+          (clicked_frame, clicked_color,frame_stroke)
         } else if hovered {
-          (hovered_frame, hovered_color)
+          (hovered_frame, hovered_color,frame_stroke)
         } else {
-          if *active_ixx == vix {(active_frame, active_color)} else {(frame,color)}
+          if *active_ixx == vix {(active_frame, active_color,active_frame_stroke)} else {(frame,color,frame_stroke)}
         };
 
         let mut text_pos = Pos2::new(0.0,0.0);
         if ui.is_rect_visible(rect) {
           let mut visuals: WidgetVisuals = ui.style().interact(&response).clone();
           visuals.fg_stroke.color = text_color;
+          let frame_rect = Rect{min: Pos2{x: tab_rect.min.x - frame_stroke.left.width, y: tab_rect.min.y - frame_stroke.top.width}, max: Pos2{x: tab_rect.max.x + frame_stroke.right.width, y: tab_rect.max.y + frame_stroke.bottom.width}};
+          ui.painter().rect(
+            frame_rect.expand(0.0),
+            frame.rounding,
+            frame_stroke.color,
+            frame.stroke,
+          );
           ui.painter().rect(
             tab_rect,
             frame.rounding,
