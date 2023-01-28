@@ -6,6 +6,7 @@ use eframe::egui::style::{Margin,WidgetVisuals};
 pub mod button;
 pub mod tabs;
 
+#[derive(Copy, Clone, Debug)]
 pub struct FrameStroke{pub left: Stroke, pub right: Stroke, pub top: Stroke, pub bottom: Stroke, pub color: Color32}
 
 impl FrameStroke{

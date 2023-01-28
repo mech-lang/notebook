@@ -151,6 +151,7 @@ lazy_static! {
   static ref HOVER__FILL: u64 = hash_str("hover-fill");
   static ref VISIBLE: u64 = hash_str("visible");
   static ref RESIZABLE: u64 = hash_str("resizable");
+  static ref ACTIVE__STROKE: u64 = hash_str("active-stroke");
 }
 
 pub struct MechApp {
@@ -652,6 +653,53 @@ impl MechApp {
   }
 
   
+  pub fn get_active_frame_stroke(&mut self, parameters_table: &Result<Value,MechError>) -> FrameStroke {
+
+
+
+    let mut frame_stroke = FrameStroke{left: Stroke::NONE, right: Stroke::NONE, top: Stroke::NONE, bottom: Stroke::NONE, color: Color32::TRANSPARENT};
+    if let Ok(Value::Reference(parameters_table_id)) = parameters_table {
+      match self.core.get_table_by_id(*parameters_table_id.unwrap()) {
+        Ok(parameters_table) => {
+          let parameters_table_brrw = parameters_table.borrow();
+          let k = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*ACTIVE__STROKE));
+          if let Ok(Value::Reference(table_id)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*ACTIVE__STROKE)) {
+            match self.core.get_table_by_id(*table_id.unwrap()) {
+              Ok(table) => {
+                let table_brrw = table.borrow();
+                if let Ok(Value::F32(value)) = table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*WIDTH)) {
+                  frame_stroke.left = Stroke{width: value.unwrap(), color: Color32::TRANSPARENT};
+                  frame_stroke.right = Stroke{width: value.unwrap(), color: Color32::TRANSPARENT};
+                  frame_stroke.top = Stroke{width: value.unwrap(), color: Color32::TRANSPARENT};
+                  frame_stroke.bottom = Stroke{width: value.unwrap(), color: Color32::TRANSPARENT};
+                } else {
+                  if let Ok(Value::F32(value)) = table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*LEFT)) {
+                    frame_stroke.left = Stroke{width: value.unwrap(), color: Color32::TRANSPARENT};
+                  }
+                  if let Ok(Value::F32(value)) = table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*RIGHT)) {
+                    frame_stroke.right = Stroke{width: value.unwrap(), color: Color32::TRANSPARENT};
+                  } 
+                  if let Ok(Value::F32(value)) = table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*TOP)) {
+                    frame_stroke.top = Stroke{width: value.unwrap(), color: Color32::TRANSPARENT};
+                  } 
+                  if let Ok(Value::F32(value)) = table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*BOTTOM)) {
+                    frame_stroke.bottom = Stroke{width: value.unwrap(), color: Color32::TRANSPARENT};
+                  }          
+                }
+                let color: Color32 = if let Ok(Value::U128(color)) = table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*COLOR)) {
+                  get_color(color)
+                } else { Color32::TRANSPARENT };
+                frame_stroke.color = color;
+              }
+              _ => (),
+            }
+          }
+        }
+        _ => (),
+      }
+    }
+    frame_stroke
+  }
 
   pub fn get_frame(&mut self, parameters_table: &Result<Value,MechError>) -> (Frame,FrameStroke) {
     let mut frame = Frame::default();
@@ -973,9 +1021,11 @@ impl MechApp {
         let labels = labels_table_brrw.get_col_raw(0)?;
 
         let (frame,frame_stroke) = self.get_frame(&parameters_table);
+        let active_frame_stroke = self.get_active_frame_stroke(&parameters_table);
         let mut color = Color32::WHITE;
         let mut active_frame = frame.clone();
-        let mut hover_frame = frame.clone();
+        let mut hovered_frame = frame.clone();
+        let mut clicked_frame = frame.clone();
         if let Ok(Value::Reference(parameters_table_id)) = parameters_table {
           match self.core.get_table_by_id(*parameters_table_id.unwrap()) {
             Ok(parameters_table) => {
@@ -987,7 +1037,10 @@ impl MechApp {
                 active_frame.fill = get_color(u128_color);
               }
               if let Ok(Value::U128(u128_color)) = parameters_table_brrw.get(&TableIndex::Index(1),&TableIndex::Alias(*HOVER__FILL)) { 
-                hover_frame.fill = get_color(u128_color);
+                hovered_frame.fill = get_color(u128_color);
+              }
+              if let Ok(Value::U128(u128_color)) = parameters_table_brrw.get(&TableIndex::Index(1),&TableIndex::Alias(*CLICKED__FILL)) { 
+                clicked_frame.fill = get_color(u128_color);
               }
             }
             _ => (),
@@ -999,7 +1052,10 @@ impl MechApp {
             let mut tabs = MyButtonTabs::new(active_tab,labels_strings);
             tabs.frame = frame;
             tabs.active_frame = active_frame;
-            tabs.hovered_frame = hover_frame;
+            tabs.hovered_frame = hovered_frame;
+            tabs.clicked_frame = clicked_frame;
+            tabs.frame_stroke = frame_stroke;
+            tabs.active_frame_stroke = active_frame_stroke;
             tabs.color = color;
             container.add(tabs);
             let value = at.borrow();
