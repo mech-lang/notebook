@@ -78,9 +78,9 @@ pub struct MyButton {
       if ui.is_rect_visible(rect) {
         let mut visuals: WidgetVisuals = ui.style().interact(&response).clone();
         visuals.fg_stroke.color = text_color;
-        let bg_rect = Rect{min: Pos2{x: rect.min.x - frame_stroke.left.width, y: rect.min.y - frame_stroke.top.width}, max: Pos2{x: rect.max.x + frame_stroke.right.width, y: rect.max.y + frame_stroke.bottom.width}};
+        let frame_rect = Rect{min: Pos2{x: rect.min.x - frame_stroke.left.width, y: rect.min.y - frame_stroke.top.width}, max: Pos2{x: rect.max.x + frame_stroke.right.width, y: rect.max.y + frame_stroke.bottom.width}};
         ui.painter().rect(
-          bg_rect.expand(0.0),
+          frame_rect.expand(0.0),
           frame.rounding,
           frame_stroke.color,
           frame.stroke,
