@@ -64,7 +64,7 @@ Panel contents
     "Docs"
   ]
   #left-contents = [[kind: "button" clicked: switches text: panels parameters: [padding: 10]]
-                    [kind: "open-file" clicked: [#open-file-button] file: [#opened-file] text: "Open File" parameters: [padding: 10]]]
+                    [kind: "open-file" clicked: [#open-file-button] file: [#opened-file] text: "Open" parameters: [padding: 10]]]
 
 Testing frames
   #test = [
@@ -88,7 +88,7 @@ The code area and output
 #code-output-contents = ["Hello"]
 
 Init with code area and output
-  #app-contents = [[#code-area]; [#code-output]]
+  #app-contents = []
 
 Here's the docs contents
   #docs-contents = [
@@ -134,7 +134,7 @@ Code contents
 When the code button is clicked, show the code editor
   ~ #code-button
   #code-area.contains := [[#code-contents]]
-  #app-area.contains := [[#app-contents]]
+  #app-area.contains := [[#code-area]; [#code-output]]
 
 Keep docs content in sync with file contents
   #code = #loaded-files.contents{#active-tab-ix}
@@ -163,33 +163,33 @@ The panels
   #top-panel = [
     kind: "panel-top" 
     contains: [
-      [kind: "panel-left" contains: [kind: "tabs" active: [#active-tab-ix] labels: [#loaded-files.name], parameters: [padding: [left: 10 right: 10 top: 5 bottom: 5], margin: 10, active-fill: 0x39344A, hover-fill: 0xB8B4CA]]]
-      [kind: "panel-left" contains: [kind: "button" clicked: [#add-file-button] text: "+", parameters: [padding: 5, margin: 10, active-fill: 0x39344A, hover-fill: 0xB8B4CA]]]
+      [kind: "panel-left" contains: [kind: "tabs" active: [#active-tab-ix] labels: [#loaded-files.name], parameters: [padding: [left: 10 right: 10 top: 5 bottom: 5], margin: 10, fill: 0x17151E, active-fill: 0x39344A, clicked-fill: 0x39344A hover-fill: 0xB8B4CA, stroke: [bottom: 2, color: 0x5A5476], active-stroke: [bottom: 2, color: 0xA5DDCB]]]]
+      [kind: "panel-left" contains: [kind: "button" clicked: [#add-file-button] text: "+", parameters: [padding: [left: 10 right: 10 top: 5 bottom: 5], margin: 10, active-fill: 0x39344A, hover-fill: 0xB8B4CA]]]
     ]
     parameters: [padding: 0] 
   ]
+Bottom
   #bottom-panel = [
     kind: "panel-bottom" 
     contains: [
-      [kind: "panel-left" contains: [kind: "tabs" active: [#active-core-ix] labels: [#core-names], parameters: [padding: [left: 10 right: 10 top: 5 bottom: 5], margin: 10, active-fill: 0xCC6563, hover-fill: 0xDE9E9D]]]
-      [kind: "panel-left" contains: [kind: "button" clicked: [#add-core-button] text: "+", parameters: [padding: 5, margin: 10 active-fill: 0xCC6563, hover-fill: 0xDE9E9D]]]
+      [kind: "panel-left" contains: [kind: "tabs" active: [#active-core-ix] labels: [#core-names], parameters: [padding: [left: 10 right: 10 top: 5 bottom: 5], margin: 10, active-fill: 0xCC6563, active-stroke: [top: 2, color: 0xDE9E9D], active-stroke: [top: 2, color: 0xDE9E9D], clicked-fill: 0x60201F hover-fill: 0xDE9E9D]]]
+      [kind: "panel-left" contains: [kind: "button" clicked: [#add-core-button] text: "+", parameters: [padding: [left: 10 right: 10 top: 5 bottom: 5], margin: 10 active-fill: 0xCC6563, hover-fill: 0xDE9E9D]]]
     ]
     parameters: [fill: 0xC0403D, padding: 0, height: 25] 
   ]
   #left-panel = [
     kind: "panel-left" 
     contains: [#left-contents] 
-    parameters: [width: 100, padding: 10] 
+    parameters: [width: 100, padding: [top: 40, left: 10, right: 10] ] 
   ]
   #app-area = [
     kind: "panel-center" 
-    contains: [#app-contents]
-    parameters: [margin: 2, padding: [top: 33 left: 40 right: 20 bottom: 20]]
+    contains: [[#top-panel]; [#app-contents]]
+    parameters: [margin: 0, padding: 0]
   ]
 
 Add a gui application
   #app = [
-    [#top-panel]
     [#grid]
     [#bottom-panel]
     [#left-panel]
