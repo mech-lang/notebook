@@ -32,6 +32,8 @@ use std::fs;
 use std::fs::File;
 use std::rc::Rc;
 use std::cell::RefCell;
+use std::sync::Arc;
+use std::sync::Mutex;
 
 use std::io::Cursor;
 use image::io::Reader as ImageReader;
@@ -165,6 +167,7 @@ pub struct MechApp {
   changes: Vec<Change>,
   windows: HashSet<String>,
   mech_client: RunLoop,
+  log: Arc<Mutex<Vec<String>>>,
 }
 
 //static LONG_STRING: &'static str = include_str!(concat!(env!("OUT_DIR"), "/hello.rs"));
@@ -207,6 +210,7 @@ impl MechApp {
       windows: HashSet::new(),
       value_store: HashMap::new(),
       changes: vec![],
+      log: Arc::new(Mutex::new(Vec::new())),
     }
   }
   
@@ -1090,7 +1094,7 @@ impl MechApp {
 
   pub fn render_debug(&mut self, table: &Table, row: usize, container: &mut egui::Ui) -> Result<(),MechError> {
     egui::ScrollArea::vertical().show(container, |ui| {
-      ui.label(format!("{:?}", self.core));
+      ui.label(format!("{:?}","Hello"));
     });
     Ok(())
   }  
@@ -1230,6 +1234,40 @@ impl eframe::App for MechApp {
             }
           }
         }
+      }
+
+      // Get messages from client threads
+      {
+        let thread_receiver = self.mech_client.incoming.clone();
+        let log = self.log.clone();
+        let thread = std::thread::Builder::new().name("Mech Receiving Thread".to_string()).spawn(move || {
+          let formatted_name = "";
+          match thread_receiver.recv() {
+            (Ok(ClientMessage::Ready)) => {
+              println!("{} Ready", formatted_name);
+            },
+            (Ok(ClientMessage::String(message))) => {
+              log.lock().unwrap().push(message.to_string());
+              println!("{} {}", formatted_name, message);
+            },
+            (Ok(ClientMessage::Transaction(txn))) => {
+              println!("{} Transaction: {:?}", formatted_name, txn);
+            },
+            Ok(ClientMessage::Error(err)) => {
+              println!("{} {} An Error Has Occurred: {:?}", formatted_name, "[Error]", err);
+            }
+            q => {
+              println!("*else: {:?}", q);
+            },
+          };
+        });
+      }
+
+      match self.log.lock() {
+        Ok(x) => {
+          println!("{:#?}",x);
+        }
+        x => (),
       }
 
       //ui.ctx().request_repaint();
