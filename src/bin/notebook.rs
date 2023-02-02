@@ -1287,6 +1287,10 @@ impl eframe::App for MechApp {
         _ => (),
       }
 
+      self.changes.push(Change::Set((hash_str("io/pointer"),vec![
+        (TableIndex::Index(1),TableIndex::Index(3),Value::Bool(ui.input().pointer.primary_down()))
+      ])));
+
       self.core.process_transaction(&self.changes);
       self.changes.clear();
     });
@@ -1352,11 +1356,14 @@ pub fn load_mech() -> Result<mech_core::Core,MechError> {
   let mut code = r#"
 #time/timer = [|period<ms> ticks<u64>|]
 #mech/compiler = [|code<string>| "hi"]
-#io/pointer = [|x<f32> y<f32>| 0 0]"#.to_string();
+#io/pointer = [|x<f32> y<f32> primary-down<bool>| 0 0 ✗]
+#io/keyboard = [|space enter|
+                 ✗     ✗]"#.to_string();
   code += r#"
 #mech/tables = [|name<string>|
                 "time/timer"
                 "io/pointer"
+                "io/keyboard"
                 "mech/tables"
                 "mech/compiler""#;
   for (table,row,col) in &mech_core.output {
