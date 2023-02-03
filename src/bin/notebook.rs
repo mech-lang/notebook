@@ -1249,24 +1249,33 @@ impl eframe::App for MechApp {
 
       // Compile new code...
       {
-
-        let code_table = self.core.get_table("mech/compiler").unwrap();
+        let code_table = self.core.get_table("notebook/compiler").unwrap();
         let code_table_brrw = code_table.borrow();
         if let Value::String(code_string) = code_table_brrw.get(&TableIndex::Index(1),&TableIndex::Index(1)).unwrap() {
           if code_string.to_string() != "" {
             let mut compiler = Compiler::new();
             match compiler.compile_str(&code_string.to_string()) {
               Ok(sections) => {
+                /*let current_core = 
                 self.core.load_sections(sections);
                 self.core.schedule_blocks();
-                self.changes.push(Change::Set((hash_str("mech/compiler"),vec![
+                self.changes.push(Change::Set((hash_str("notebook/compiler"),vec![
                   (TableIndex::Index(1),TableIndex::Index(1),Value::String(MechString::from_string("".to_string())))
-                ])));
+                ])));*/
               }
               Err(_) => (), // No blocks compiled
             }
           }
         }
+      }
+
+      // Set active core
+      {
+        let table = self.core.get_table("active-core-ix").unwrap();
+        let table_brrw = table.borrow();
+        if let Value::U8(active_core_ix) = table_brrw.get(&TableIndex::Index(1),&TableIndex::Index(1)).unwrap() {
+          self.active_core_ix = active_core_ix.unwrap() as u64;
+        }        
       }
 
       match self.log.lock() {
@@ -1323,14 +1332,14 @@ pub fn load_mech_from_path(program_path: &str) -> Result<mech_core::Core,MechErr
       };
       let mut code = r#"
 #time/timer = [|period<ms> ticks<u64>|]
-#mech/compiler = [|code<string>| "hi"]
+#notebook/compiler = [|code<string>| "hi"]
 #io/pointer = [|x<f32> y<f32>| 0 0]"#.to_string();
         
         code += r#"
 #mech/tables = ["time/timer"
                 "io/pointer"
                 "mech/tables"
-                "mech/compiler""#;
+                "notebook/compiler""#;
       for name in mech_core.table_names() {
         code += &format!("\n{:?}",name);     
       }
@@ -1361,7 +1370,7 @@ pub fn load_mech() -> Result<mech_core::Core,MechError> {
   
   let mut code = r#"
 #time/timer = [|period<ms> ticks<u64>|]
-#mech/compiler = [|code<string>| "hi"]
+#notebook/compiler = [|code<string>| "hi"]
 #io/pointer = [|x<f32> y<f32> primary-down<bool>| 0 0 ✗]
 #io/keyboard = [|space enter|
                  ✗     ✗]"#.to_string();
@@ -1371,7 +1380,7 @@ pub fn load_mech() -> Result<mech_core::Core,MechError> {
                 "io/pointer"
                 "io/keyboard"
                 "mech/tables"
-                "mech/compiler""#;
+                "notebook/compiler""#;
   for (table,row,col) in &mech_core.output {
     let table = match mech_core.dictionary.borrow().get(table.unwrap()) {
       Some(name) => {code += &format!("\n{:?}",name.to_string());}
