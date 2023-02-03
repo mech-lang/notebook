@@ -160,13 +160,14 @@ pub struct MechApp {
   ticks: f32,
   frame: usize,
   code: String,
+  active_core_ix: u64,
   core: mech_core::Core,
   maestro_thread: Option<JoinHandle<()>>,
   shapes: Vec<epaint::Shape>,
   value_store: HashMap<u64,Rc<RefCell<Value>>>,
   changes: Vec<Change>,
   windows: HashSet<String>,
-  mech_client: RunLoop,
+  mech_clients: Vec<RunLoop>,
   log: Arc<Mutex<Vec<String>>>,
 }
 
@@ -198,19 +199,51 @@ impl MechApp {
       }
       None => (),
     };
+  
+    let log = Arc::new(Mutex::new(Vec::new()));
 
+    // Get messages from client threads
+    {
+      let thread_receiver = mech_client.incoming.clone();
+      let llog = log.clone();
+      let thread = std::thread::Builder::new().name("Mech Receiving Thread".to_string()).spawn(move || {
+        let formatted_name = "";
+        loop {
+          match thread_receiver.recv() {
+            (Ok(ClientMessage::Ready)) => {
+              println!("{} Ready", formatted_name);
+            },
+            (Ok(ClientMessage::String(message))) => {
+              llog.lock().unwrap().push(message.to_string());
+              println!("{} {}", formatted_name, message);
+            },
+            (Ok(ClientMessage::Transaction(txn))) => {
+              println!("{} Transaction: {:?}", formatted_name, txn);
+            },
+            Ok(ClientMessage::Error(err)) => {
+              println!("{} {} An Error Has Occurred: {:?}", formatted_name, "[Error]", err);
+            }
+            q => {
+              println!("*else: {:?}", q);
+            },
+          };
+        }
+      });
+    }
+    
     Self {
       frame: 0,
       ticks: 0.0,
+      active_core_ix: 1,
       code: "".to_string(),
-      mech_client,
+      mech_clients: vec![mech_client],
       core,
       maestro_thread: None,
       shapes,
       windows: HashSet::new(),
       value_store: HashMap::new(),
       changes: vec![],
-      log: Arc::new(Mutex::new(Vec::new())),
+      log,
     }
   }
   
@@ -1234,33 +1267,6 @@ impl eframe::App for MechApp {
             }
           }
         }
-      }
-
-      // Get messages from client threads
-      {
-        let thread_receiver = self.mech_client.incoming.clone();
-        let log = self.log.clone();
-        let thread = std::thread::Builder::new().name("Mech Receiving Thread".to_string()).spawn(move || {
-          let formatted_name = "";
-          match thread_receiver.recv() {
-            (Ok(ClientMessage::Ready)) => {
-              println!("{} Ready", formatted_name);
-            },
-            (Ok(ClientMessage::String(message))) => {
-              log.lock().unwrap().push(message.to_string());
-              println!("{} {}", formatted_name, message);
-            },
-            (Ok(ClientMessage::Transaction(txn))) => {
-              println!("{} Transaction: {:?}", formatted_name, txn);
-            },
-            Ok(ClientMessage::Error(err)) => {
-              println!("{} {} An Error Has Occurred: {:?}", formatted_name, "[Error]", err);
-            }
-            q => {
-              println!("*else: {:?}", q);
-            },
-          };
-        });
       }
 
       match self.log.lock() {
