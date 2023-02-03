@@ -87,8 +87,12 @@ The code area and output
   
 #code-output-contents = ["Hello"]
 
+#code = "Hello"
+
 Init with code area and output
-  #app-contents = []
+  #app-contents = [
+    [#code-contents]
+  ]
 
 Here's the docs contents
   #docs-contents = [
@@ -120,7 +124,7 @@ Tables panels
 When the compile button is clicked, take the contents of the code area
 and compile it.
   ~ #compile-button
-  #mech/compiler := [code: #code]
+  #notebook/compiler := [code: #code]
   #code-output-contents := #code
 
 Code contents
@@ -137,7 +141,7 @@ When the code button is clicked, show the code editor
   #app-area.contains := [[#code-area]; [#code-output]]
 
 Keep docs content in sync with file contents
-  #code = #loaded-files.contents{#active-tab-ix}
+  #active-code = #loaded-files.contents{#active-tab-ix}
 
 Add a blank file when the add-file button is clicked
   ~ #add-file-button
