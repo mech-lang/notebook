@@ -5,6 +5,26 @@ use eframe::egui::style::{Margin,WidgetVisuals};
 
 pub mod button;
 pub mod tabs;
+//pub mod code_box;
+
+#[derive(Copy, Clone, Debug)]
+pub struct Style{
+  pub default: (Frame,Color32,FrameStroke),
+  pub hovered: (Frame,Color32,FrameStroke),
+  pub clicked: (Frame,Color32,FrameStroke),
+}
+
+impl Style{
+
+  pub fn default() -> Self {
+    Self {
+      default: (Frame::default(), Color32::GRAY, FrameStroke::default()),
+      hovered: (Frame::default(), Color32::LIGHT_GRAY, FrameStroke::default()),
+      clicked: (Frame::default(), Color32::DARK_GRAY, FrameStroke::default()),
+    }
+  }
+
+}
 
 #[derive(Copy, Clone, Debug)]
 pub struct FrameStroke{pub left: Stroke, pub right: Stroke, pub top: Stroke, pub bottom: Stroke, pub color: Color32}
@@ -19,6 +39,10 @@ impl FrameStroke{
       bottom: Stroke::new(width, color),
       color,
     }
+  }
+
+  pub fn default() -> Self {
+    Self::new(0.0, Color32::TRANSPARENT)
   }
 
 }
