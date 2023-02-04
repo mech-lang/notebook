@@ -23,7 +23,7 @@ block
   #loaded-files += #opened-file
 
 The dot grid
-  x = (1:300) * 16 + 115
+  x = (1:300) * 16 + 55
   y = (1:200) * 16 + #top-panel-height + 15
   indices = set/cartesian(a: x, b: y)
   #grid = [
@@ -58,13 +58,13 @@ Panel contents
     [#docs-button]
   ]
   panels = [
-    "Code"
-    "Tables"
-    "Inspect"
-    "Docs"
+    "Co"
+    "Ta"
+    "In"
+    "Do"
   ]
-  #left-contents = [[kind: "button" clicked: switches text: panels parameters: [padding: 10]]
-                    [kind: "open-file" clicked: [#open-file-button] file: [#opened-file] text: "Open" parameters: [padding: 10]]]
+  #left-contents = [[kind: "button" clicked: switches text: panels parameters: [padding: 10 rounding: 3 hover-fill: 0xB27E9B fill: 0x7F4C68 stroke: [top: 2, color: 0xCEAFC0]]]
+                    [kind: "open-file" clicked: [#open-file-button] file: [#opened-file] text: "Op" parameters: [padding: 10 hover-fill: 0xB27E9B fill: 0x7F4C68 stroke: [top: 2, color: 0xCEAFC0]]]]
 
 Testing frames
   #test = [
@@ -129,9 +129,8 @@ and compile it.
 
 Code contents
   #code-contents = [
-    [kind: "button" clicked: [#compile-button] text: "Compile!", parameters: [padding: 10 hover-fill: 0xB27E9B fill: 0x7F4C68 stroke: [top: 2, color: 0xCEAFC0]]]
     [kind: "scroll-area"
-     contains: [kind: "code" text: [#code]]
+     contains: [kind: "code" text: [#code] parameters: [margin: 0, padding: 40]]
     ]
   ]
 
@@ -184,11 +183,11 @@ Bottom
   #left-panel = [
     kind: "panel-left" 
     contains: [#left-contents] 
-    parameters: [width: 100, padding: [top: 40, left: 10, right: 10] ] 
+    parameters: [width: 40, padding: [top: 40, left: 10, right: 10] ] 
   ]
   #app-area = [
     kind: "panel-center" 
-    contains: [[#top-panel]; [#app-contents]]
+    contains: [[#tables-panel-contents];  [#docs-contents]; [#top-panel]; [#app-contents]]
     parameters: [margin: 0, padding: 0]
   ]
 
@@ -197,7 +196,5 @@ Add a gui application
     [#grid]
     [#bottom-panel]
     [#left-panel]
-    [#tables-panel-contents]
-    [#docs-contents]
     [#app-area]
   ]
