@@ -9,7 +9,7 @@ use egui_extras::{StripBuilder, Size};
 
 use mech_notebook::button::MyButton;
 use mech_notebook::tabs::MyButtonTabs;
-use mech_notebook::FrameStroke;
+use mech_notebook::{FrameStroke,Style};
 
 use native_dialog::{FileDialog, MessageDialog, MessageType};
 
@@ -955,12 +955,20 @@ impl MechApp {
         let file_table_brrw = file_table.borrow();
         let (frame,frame_stroke) = self.get_frame(&parameters_table);
         let mut color = Color32::WHITE;
+        let mut clicked_frame = frame.clone();
+        let mut hovered_frame = frame.clone();
         if let Ok(Value::Reference(parameters_table_id)) = parameters_table {
           match self.core.get_table_by_id(*parameters_table_id.unwrap()) {
             Ok(parameters_table) => {
               let parameters_table_brrw = parameters_table.borrow();
               if let Ok(Value::U128(u128_color)) = parameters_table_brrw.get(&TableIndex::Index(1),&TableIndex::Alias(*COLOR)) { 
                 color = get_color(u128_color);
+              }
+              if let Ok(Value::U128(u128_color)) = parameters_table_brrw.get(&TableIndex::Index(1),&TableIndex::Alias(*CLICKED__FILL)) { 
+                clicked_frame.fill = get_color(u128_color);
+              }
+              if let Ok(Value::U128(u128_color)) = parameters_table_brrw.get(&TableIndex::Index(1),&TableIndex::Alias(*HOVER__FILL)) { 
+                hovered_frame.fill = get_color(u128_color);
               }
             }
             _ => (),
@@ -969,8 +977,11 @@ impl MechApp {
         match (value_table_brrw.get(&TableIndex::Index(1), &TableIndex::Index(1)),file_table_brrw.get(&TableIndex::Index(1), &TableIndex::Index(1))) {
           (Ok(Value::Bool(value)),Ok(Value::String(file))) => {
             let mut button = MyButton::new(text.to_string());
-            button.frame = frame;
-            button.color = color;
+            let mut style = Style::default();
+            style.default = (frame,color,frame_stroke);
+            style.clicked = (clicked_frame,color,frame_stroke);
+            style.hovered = (hovered_frame,color,frame_stroke);
+            button.style = style;
             if container.add(button).clicked() {
               match FileDialog::new()
                   .set_location("~/Desktop")
@@ -1091,11 +1102,11 @@ impl MechApp {
         match value_table_brrw.get(&TableIndex::Index(1), &TableIndex::Index(1)) {
           Ok(Value::Bool(value)) => {
             let mut button = MyButton::new(text.to_string());
-            button.frame = frame;
-            button.color = color;
-            button.frame_stroke = frame_stroke;
-            button.hovered_frame = hovered_frame;
-            button.clicked_frame = clicked_frame;
+            let mut style = Style::default();
+            style.default = (frame,color,frame_stroke);
+            style.clicked = (clicked_frame,color,frame_stroke);
+            style.hovered = (hovered_frame,color,frame_stroke);
+            button.style = style;
             if container.add(button).clicked() {
               self.changes.push(Change::Set((value_table_brrw.id,vec![(TableIndex::Index(1),TableIndex::Index(1),Value::Bool(!value))])));
             }
@@ -1276,7 +1287,6 @@ impl eframe::App for MechApp {
           if let Value::String(code_string) = code_table_brrw.get(&TableIndex::Index(1),&TableIndex::Index(1)).unwrap() {
             let code_string = code_string.to_string();
             if code_string != "" {
-              println!("{:?}", code_string);
               let outgoing = self.mech_clients[self.active_core_ix as usize - 1].outgoing.clone();
               outgoing.send(RunLoopMessage::Code((1,MechCode::String(code_string))));
               self.changes.push(Change::Set((hash_str("notebook/compiler"),vec![
@@ -1293,6 +1303,34 @@ impl eframe::App for MechApp {
           if let Value::U8(active_core_ix) = table_brrw.get(&TableIndex::Index(1),&TableIndex::Index(1)).unwrap() {
             self.active_core_ix = active_core_ix.unwrap() as u64;
           }        
+        }
+
+        // Start new cores
+        {
+          let table = self.core.get_table("core-names").unwrap();
+          let table_brrw = table.borrow();
+          if table_brrw.rows > self.mech_clients.len() {
+            let mut runner = ProgramRunner::new("Notebook");
+            let mech_client = runner.run().unwrap();
+            let address: String = "127.0.0.1".to_string();
+            let port: String = "0".to_string();
+            let mech_socket_address = mech_client.socket_address.clone();
+            let mut core_socket_thread;
+            let formatted_address = format!("{}:{}",address,port);
+            let mech_client_channel = mech_client.outgoing.clone();   
+            match mech_socket_address {
+              Some(mech_socket_address) => {
+                core_socket_thread = start_maestro(
+                  mech_socket_address, 
+                  formatted_address, 
+                  "127.0.0.1:3235".to_string(), 
+                  "127.0.0.1:3236".to_string(), 
+                  mech_client_channel);
+              }
+              None => (),
+            };
+            self.mech_clients.push(mech_client);
+          }     
         }
 
         match self.log.lock() {
@@ -1342,7 +1380,10 @@ pub fn load_mech_from_path(program_path: &str) -> Result<mech_core::Core,MechErr
       let mut compiler = Compiler::new(); 
       let core = match compiler.compile_str(&code) {
         Ok(sections) => {
-          mech_core.load_sections(sections);
+          let load_result = mech_core.load_sections(sections);
+          for (_,_,errors) in load_result {
+            println!("{:?}", errors);
+          }
         }
         Err(x) => {
           return Err(MechError{msg: "".to_string(), id: 87491, kind: MechErrorKind::GenericError(format!("{:?}",x))})
@@ -1365,7 +1406,10 @@ pub fn load_mech_from_path(program_path: &str) -> Result<mech_core::Core,MechErr
       
       let mut compiler = Compiler::new();
       let sections = compiler.compile_str(&code).unwrap();
-      mech_core.load_sections(sections);
+      let load_result = mech_core.load_sections(sections);
+      for (_,_,errors) in load_result {
+        println!("{:?}", errors);
+      }
       mech_core.schedule_blocks()?;
       Ok(mech_core)
     },
