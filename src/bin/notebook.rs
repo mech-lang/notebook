@@ -160,6 +160,7 @@ pub struct MechApp {
   ticks: f32,
   frame: usize,
   code: String,
+  compile: bool,
   active_core_ix: u64,
   core: mech_core::Core,
   maestro_thread: Option<JoinHandle<()>>,
@@ -224,7 +225,7 @@ impl MechApp {
               println!("{} {} An Error Has Occurred: {:?}", formatted_name, "[Error]", err);
             }
             q => {
-              println!("*else: {:?}", q);
+              //println!("*else: {:?}", q);
             },
           };
         }
@@ -233,6 +234,7 @@ impl MechApp {
     
     Self {
       frame: 0,
+      compile: false,
       ticks: 0.0,
       active_core_ix: 1,
       code: "".to_string(),
@@ -356,22 +358,26 @@ impl MechApp {
   }
 
   pub fn render_code(&mut self, table: &Table, row: usize, container: &mut egui::Ui) -> Result<(),MechError> {
-    match (table.get(&TableIndex::Index(row), &TableIndex::Alias(*TEXT))) {
-      Ok(Value::Reference(code_table_id)) => {
+    match (table.get(&TableIndex::Index(row), &TableIndex::Alias(*TEXT)),
+           table.get(&TableIndex::Index(row), &TableIndex::Alias(*PARAMETERS))) {
+      (Ok(Value::Reference(code_table_id)),parameters_table) => {        
         let code_table = self.core.get_table_by_id(*code_table_id.unwrap()).unwrap();
         let code_table_brrw = code_table.borrow();
+        let (frame,frame_stroke) = self.get_frame(&parameters_table);
         match code_table_brrw.get(&TableIndex::Index(1), &TableIndex::Index(1)) {
           Ok(Value::String(code)) => {
             self.code = code.to_string();
             container.visuals_mut().extreme_bg_color = Color32::TRANSPARENT;
-            let frame = Frame::default().fill(Color32::TRANSPARENT);
-            let response = container.add_sized(container.available_size(), TextEdit::multiline(&mut self.code)
-              .font(FontId{size: 16.0, family: FontFamily::Monospace})
-              .frame(true)
-            );
-            if response.changed() {
-              self.changes.push(Change::Set((code_table_brrw.id,vec![(TableIndex::Index(1),TableIndex::Index(1),Value::String(MechString::from_string(self.code.clone())))])));
-            }
+            frame.show(container, |ui| {
+                let response = ui.add_sized(Vec2{x: 100.0, y: 100.0}, 
+                  TextEdit::multiline(&mut self.code)
+                    .font(FontId{size: 16.0, family: FontFamily::Monospace})
+                    .frame(true)
+                );
+                if response.changed() {
+                  self.changes.push(Change::Set((code_table_brrw.id,vec![(TableIndex::Index(1),TableIndex::Index(1),Value::String(MechString::from_string(self.code.clone())))])));
+                }
+              });
           }
           x => {return Err(MechError{msg: "".to_string(), id: 6496, kind: MechErrorKind::GenericError(format!("{:?}", x))});},
         }
@@ -1247,68 +1253,80 @@ impl eframe::App for MechApp {
           self.core = core;
         }
 
-      // Compile new code...
-      {
-        let code_table = self.core.get_table("notebook/compiler").unwrap();
-        let code_table_brrw = code_table.borrow();
-        if let Value::String(code_string) = code_table_brrw.get(&TableIndex::Index(1),&TableIndex::Index(1)).unwrap() {
-          if code_string.to_string() != "" {
-            let mut compiler = Compiler::new();
-            match compiler.compile_str(&code_string.to_string()) {
-              Ok(sections) => {
-                /*let current_core = 
-                self.core.load_sections(sections);
-                self.core.schedule_blocks();
-                self.changes.push(Change::Set((hash_str("notebook/compiler"),vec![
-                  (TableIndex::Index(1),TableIndex::Index(1),Value::String(MechString::from_string("".to_string())))
-                ])));*/
+        for event in &ui.input().events {
+          match event {
+            Event::Key{key: egui::Key::Enter, pressed, modifiers} => {
+              if modifiers.ctrl && self.compile == false {
+                self.compile = true;
+                self.changes.push(Change::Set((hash_str("compile-button"),vec![
+                  (TableIndex::Index(1),TableIndex::Index(1),Value::Bool(true))
+                ])));
+              } else if *pressed == false {
+                self.compile = false;
               }
-              Err(_) => (), // No blocks compiled
+            }
+            _ => (),
+          }
+        }
+
+        // Compile new code...
+        {
+          let code_table = self.core.get_table("notebook/compiler").unwrap();
+          let code_table_brrw = code_table.borrow();
+          if let Value::String(code_string) = code_table_brrw.get(&TableIndex::Index(1),&TableIndex::Index(1)).unwrap() {
+            let code_string = code_string.to_string();
+            if code_string != "" {
+              println!("{:?}", code_string);
+              let outgoing = self.mech_clients[self.active_core_ix as usize - 1].outgoing.clone();
+              outgoing.send(RunLoopMessage::Code((1,MechCode::String(code_string))));
+              self.changes.push(Change::Set((hash_str("notebook/compiler"),vec![
+                (TableIndex::Index(1),TableIndex::Index(1),Value::String(MechString::from_string("".to_string())))
+              ])));
             }
           }
         }
-      }
 
-      // Set active core
-      {
-        let table = self.core.get_table("active-core-ix").unwrap();
-        let table_brrw = table.borrow();
-        if let Value::U8(active_core_ix) = table_brrw.get(&TableIndex::Index(1),&TableIndex::Index(1)).unwrap() {
-          self.active_core_ix = active_core_ix.unwrap() as u64;
-        }        
-      }
-
-      match self.log.lock() {
-        Ok(x) => {
-          println!("{:#?}",x);
+        // Set active core
+        {
+          let table = self.core.get_table("active-core-ix").unwrap();
+          let table_brrw = table.borrow();
+          if let Value::U8(active_core_ix) = table_brrw.get(&TableIndex::Index(1),&TableIndex::Index(1)).unwrap() {
+            self.active_core_ix = active_core_ix.unwrap() as u64;
+          }        
         }
-        x => (),
-      }
 
-      //ui.ctx().request_repaint();
-      self.render_app(ui);
-
-      // Update IO
-      let time = ui.input().time;
-      self.frame += 1;
-      self.changes.push(Change::Set((hash_str("time/timer"),vec![(TableIndex::Index(1),TableIndex::Index(2),Value::U64(U64::new(self.frame as u64)))])));
-      match ui.input().pointer.hover_pos() {
-        Some(pos) => {
-          self.changes.push(Change::Set((hash_str("io/pointer"),vec![
-            (TableIndex::Index(1),TableIndex::Index(1),Value::F32(F32::new(pos.x))),
-            (TableIndex::Index(1),TableIndex::Index(2),Value::F32(F32::new(pos.y)))
-          ])));
+        match self.log.lock() {
+          Ok(x) => {
+            //println!("{:#?}",x);
+          }
+          x => (),
         }
-        _ => (),
+
+        //ui.ctx().request_repaint();
+        self.render_app(ui);
+
+        // Update IO
+        let time = ui.input().time;
+        self.frame += 1;
+        self.changes.push(Change::Set((hash_str("time/timer"),vec![(TableIndex::Index(1),TableIndex::Index(2),Value::U64(U64::new(self.frame as u64)))])));
+        match ui.input().pointer.hover_pos() {
+          Some(pos) => {
+            self.changes.push(Change::Set((hash_str("io/pointer"),vec![
+              (TableIndex::Index(1),TableIndex::Index(1),Value::F32(F32::new(pos.x))),
+              (TableIndex::Index(1),TableIndex::Index(2),Value::F32(F32::new(pos.y)))
+            ])));
+          }
+          _ => (),
+        }
+
+        self.changes.push(Change::Set((hash_str("io/pointer"),vec![
+          (TableIndex::Index(1),TableIndex::Index(3),Value::Bool(ui.input().pointer.primary_down()))
+        ])));
+
+        self.core.process_transaction(&self.changes);
+        self.changes.clear();
       }
-
-      self.changes.push(Change::Set((hash_str("io/pointer"),vec![
-        (TableIndex::Index(1),TableIndex::Index(3),Value::Bool(ui.input().pointer.primary_down()))
-      ])));
-
-      self.core.process_transaction(&self.changes);
-      self.changes.clear();
-    });
+    );
   }
 
   fn warm_up_enabled(&self) -> bool {
