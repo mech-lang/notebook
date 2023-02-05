@@ -7,7 +7,6 @@ Start a timer for animations
 #code-button = false
 #tables-button = false
 #docs-button = false
-#inspect-button = false
 #timeline-button = false
 #settings-button = false
 #compile-button = false
@@ -105,6 +104,17 @@ Here's the docs contents
     parameters: [min-width: 400, resizable: true, padding: 40, fill: 0x39344A visible: #docs-button]
   ]
 
+Here's the docs contents
+  #inspect-contents = [
+    kind: "panel-right"
+    contains: [
+      [kind: "panel-top" contains: [kind: "label" text: "Bouncing Balls" parameters: [color: 0x9DC3E6, size: 16]] parameters: [margin: [bottom: 2]]]
+      [kind: "panel-top" contains: [kind: "label" text: "===============" parameters: [color: 0x9DC3E6, size: 16]] parameters: [margin: [bottom: 10]]]
+      [kind: "panel-top" contains: [kind: "label" text: "This program is a forward kinematic simulation of three balls bouncing in a bounded arena. Each of the balls are accelerated by simulated gravity and are repelled by the bounds of the arena." parameters: [color: 0xE3DDEB, size: 16]] parameters: [margin: [bottom: 2]]]
+    ]
+    parameters: [min-width: 400, resizable: true, padding: 40, fill: 0x39344A visible: #inspect-button]
+  ]
+
 This creates a table of booleans switches which will be used to open and close an assoicated window
   x = [false #mech/tables]
   #table-toggles >- x
@@ -187,7 +197,7 @@ Bottom
   ]
   #app-area = [
     kind: "panel-center" 
-    contains: [[#tables-panel-contents];  [#docs-contents]; [#top-panel]; [#app-contents]]
+    contains: [[#tables-panel-contents];  [#docs-contents]; [#inspect-contents]; [#top-panel]; [#app-contents]]
     parameters: [margin: 0, padding: 0]
   ]
 
