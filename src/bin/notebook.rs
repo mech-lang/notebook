@@ -500,8 +500,10 @@ impl MechApp {
     match (table.get(&TableIndex::Index(row), &TableIndex::Alias(*CONTAINS)),
             table.get(&TableIndex::Index(row), &TableIndex::Alias(*PARAMETERS))) {
       (contained,parameters_table) => {
-        let mut panel = egui::SidePanel::right(humanize(&table.id)).resizable(false).show_separator_line(false);
         let (frame,frame_stroke) = self.get_frame(&parameters_table);
+        let mut visible = true;
+        let mut panel = egui::SidePanel::right(humanize(&table.id)).resizable(false).show_separator_line(false);
+        
         if let Ok(Value::Reference(parameters_table_id)) = parameters_table {
           match self.core.get_table_by_id(*parameters_table_id.unwrap()) {
             Ok(parameters_table) => {
@@ -515,15 +517,23 @@ impl MechApp {
               if let Ok(Value::F32(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*WIDTH)) {
                 panel = panel.exact_width(value.into());
               }
+              if let Ok(Value::Bool(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*VISIBLE)) {
+                visible = value;
+              }
+              if let Ok(Value::Bool(value)) = parameters_table_brrw.get(&TableIndex::Index(1), &TableIndex::Alias(*RESIZABLE)) {
+                panel = panel.resizable(value.into());
+              }
             }
             _ => (),
           }
         }
-        panel.frame(frame).show_inside(container, |ui| {
-          if let Ok(contained) = contained {
-            self.render_value(contained, ui);
-          }
-        });
+        if visible {
+          panel.frame(frame).show_inside(container, |ui| {
+            if let Ok(contained) = contained {
+              self.render_value(contained, ui);
+            }
+          });
+        }
       }
     }
     Ok(())
