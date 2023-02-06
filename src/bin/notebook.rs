@@ -1253,7 +1253,9 @@ impl eframe::App for MechApp {
       egui::Window::new(table_id.clone()).show(ctx, |ui| {
         let table = self.core.get_table(&table_id).unwrap();
         let table_brrw = table.borrow();
-        self.make_element(&table_brrw,ui);
+        egui::ScrollArea::vertical().show(ui, |ui| {
+          self.make_element(&table_brrw,ui);
+        });
       });
     }
 
