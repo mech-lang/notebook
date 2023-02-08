@@ -86,7 +86,6 @@ The code area and output
   
 #code-output-contents = ["Hello"]
 
-#code = "Hello"
 
 Init with code area and output
   #app-contents = [
@@ -150,7 +149,7 @@ When the code button is clicked, show the code editor
   #app-area.contains := [[#code-area]; [#code-output]]
 
 Keep docs content in sync with file contents
-  #active-code = #loaded-files.contents{#active-tab-ix}
+  #code = #loaded-files.contents{#active-tab-ix}
 
 Add a blank file when the add-file button is clicked
   ~ #add-file-button
