@@ -103,13 +103,14 @@ Here's the docs contents
     parameters: [min-width: 400, resizable: true, padding: 40, fill: 0x39344A visible: #docs-button]
   ]
 
+
+#slider-value = 10
+
 Here's the docs contents
   #inspect-contents = [
     kind: "panel-right"
     contains: [
-      [kind: "panel-top" contains: [kind: "label" text: "Bouncing Balls" parameters: [color: 0x9DC3E6, size: 16]] parameters: [margin: [bottom: 2]]]
-      [kind: "panel-top" contains: [kind: "label" text: "===============" parameters: [color: 0x9DC3E6, size: 16]] parameters: [margin: [bottom: 10]]]
-      [kind: "panel-top" contains: [kind: "label" text: "This program is a forward kinematic simulation of three balls bouncing in a bounded arena. Each of the balls are accelerated by simulated gravity and are repelled by the bounds of the arena." parameters: [color: 0xE3DDEB, size: 16]] parameters: [margin: [bottom: 2]]]
+      [kind: "slider" min: 0 max: 10 value: [#slider-value]]
     ]
     parameters: [min-width: 400, resizable: true, padding: 40, fill: 0x39344A visible: #inspect-button]
   ]
