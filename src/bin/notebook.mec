@@ -103,7 +103,6 @@ Here's the docs contents
     parameters: [min-width: 400, resizable: true, padding: 40, fill: 0x39344A visible: #docs-button]
   ]
 
-
 #slider-value = 10
 
 Here's the docs contents
@@ -150,7 +149,8 @@ When the code button is clicked, show the code editor
   #app-area.contains := [[#code-area]; [#code-output]]
 
 Keep docs content in sync with file contents
-  #code = #loaded-files.contents{#active-tab-ix}
+  ~ #active-tab-ix
+  #code := #loaded-files.contents{#active-tab-ix}
 
 Add a blank file when the add-file button is clicked
   ~ #add-file-button
