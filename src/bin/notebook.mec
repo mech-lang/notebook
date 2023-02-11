@@ -148,6 +148,8 @@ When the code button is clicked, show the code editor
   #code-area.contains := [[#code-contents]]
   #app-area.contains := [[#code-area]; [#code-output]]
 
+#code = ""
+#active-tab-ix = 1<u8>
 Keep docs content in sync with file contents
   ~ #active-tab-ix
   #code := #loaded-files.contents{#active-tab-ix}
@@ -167,7 +169,6 @@ Add a blank file when the add-file button is clicked
 
 #top-panel-height = 25
 #bottom-panel-height = 25
-#active-tab-ix = 1<u8>
 #add-file-button = false
 #active-core-ix = 1<u8>
 #add-core-button = false
