@@ -372,7 +372,7 @@ impl MechApp {
                 let response = ui.add_sized(Vec2{x: 100.0, y: 100.0}, 
                   TextEdit::multiline(&mut self.code)
                     .font(FontId{size: 16.0, family: FontFamily::Monospace})
-                    .frame(true)
+                    .frame(false)
                 );
                 if response.changed() {
                   self.changes.push(Change::Set((code_table_brrw.id,vec![(TableIndex::Index(1),TableIndex::Index(1),Value::String(MechString::from_string(self.code.clone())))])));
