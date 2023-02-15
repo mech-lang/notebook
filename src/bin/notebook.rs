@@ -1059,7 +1059,7 @@ impl MechApp {
           }
         }
         match (value_table_brrw.get(&TableIndex::Index(1), &TableIndex::Index(1)),labels) {
-          (Ok(Value::U8(value)),Column::String(labels_vector)) => {
+          (Ok(Value::U8(old_value)),Column::String(labels_vector)) => {
             let labels_strings: Vec<String> = labels_vector.borrow().iter().map(|s| s.to_string()).collect::<Vec<String>>();
             let mut tabs = MyButtonTabs::new(active_tab,labels_strings);
             tabs.frame = frame;
@@ -1070,8 +1070,10 @@ impl MechApp {
             tabs.active_frame_stroke = active_frame_stroke;
             tabs.color = color;
             container.add(tabs);
-            let value = at.borrow();
-            self.changes.push(Change::Set((value_table_brrw.id,vec![(TableIndex::Index(1),TableIndex::Index(1),value.clone())])));
+            let new_value = at.borrow();
+            if Value::U8(old_value) != *new_value {
+              self.changes.push(Change::Set((value_table_brrw.id,vec![(TableIndex::Index(1),TableIndex::Index(1),new_value.clone())])));
+            }
           }
           x => {return Err(MechError{msg: "".to_string(), id: 6497, kind: MechErrorKind::GenericError(format!("{:?}", x))});},
         }
@@ -1372,7 +1374,6 @@ impl eframe::App for MechApp {
         self.changes.push(Change::Set((hash_str("io/pointer"),vec![
           (TableIndex::Index(1),TableIndex::Index(3),Value::Bool(ui.input().pointer.primary_down()))
         ])));
-
         self.core.process_transaction(&self.changes);
         self.changes.clear();
       }
