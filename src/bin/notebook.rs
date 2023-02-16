@@ -1347,12 +1347,12 @@ impl eframe::App for MechApp {
           }     
         }
 
-        match self.log.lock() {
+        /*match self.log.lock() {
           Ok(x) => {
-            //println!("{:#?}",x);
+            println!("{:#?}",x);
           }
           x => (),
-        }
+        }*/
 
         //ui.ctx().request_repaint();
         self.render_app(ui);

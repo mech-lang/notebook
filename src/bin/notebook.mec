@@ -14,16 +14,16 @@ Start a timer for animations
 #open-file-button = false
 
 #opened-file = [name: "untitled.mec" contents: ""]
-
 #loaded-files = [|name<string> contents<string>|]
+#notebook/compiler = [code: ""]
 
 block
   ~ #opened-file.name
   #loaded-files += #opened-file
 
 The dot grid
-  x = (1:300) * 16 + 55
-  y = (1:200) * 16 + #top-panel-height + 15
+  x = (1:300) * 18 + 55
+  y = (1:200) * 18 + #top-panel-height + 15
   indices = set/cartesian(a: x, b: y)
   #grid = [
     kind: "canvas"
@@ -133,8 +133,7 @@ Tables panels
 When the compile button is clicked, take the contents of the code area
 and compile it.
   ~ #compile-button
-  #notebook/compiler := [code: #code]
-  #code-output-contents := #code
+  #notebook/compiler := #code
 
 Code contents
   #code-contents = [
@@ -153,6 +152,10 @@ When the code button is clicked, show the code editor
 Keep docs content in sync with file contents
   ~ #active-tab-ix
   #code := #loaded-files.contents{#active-tab-ix}
+
+Update file when active code is changed
+  ~ #code
+  #loaded-files.contents{#active-tab-ix} := #code
 
 Add a blank file when the add-file button is clicked
   ~ #add-file-button
