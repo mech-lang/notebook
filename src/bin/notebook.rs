@@ -995,6 +995,7 @@ impl MechApp {
             if container.add(button).clicked() {
               match FileDialog::new()
                   .set_location("~/Desktop")
+                  .add_filter("Mech source file", &["🤖"])
                   .add_filter("Mech source file", &["mec"])
                   .add_filter("Mech blocks file", &["blx"])
                   .show_open_single_file() {
