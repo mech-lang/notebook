@@ -1,6 +1,6 @@
 [package]
 name = "mech-notebook"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Corey Montella <corey@mech-lang.org>"]
 description = "Gui notebook interface for the Mech programming language."
 documentation = "http://docs.mech-lang.org"
@@ -17,14 +17,13 @@ gitlab = { repository = "mech-lang/notebook", branch = "main" }
 maintenance = { status = "actively-developed" }
 
 [dependencies]
-mech-core = "0.1"
-mech-utilities = "0.1"
-mech-syntax = "0.1"
-mech-gui = "0.1"
+mech = {path = "../mech"}
+
 
 lazy_static = "1.4.0"
 eframe = { version = "0.20.1"}
 egui_extras = { version = "0.20.0"}
+
 image = { version = "0.24.3", default-features = false, features = [
   "ico",
   "jpeg",
@@ -33,6 +32,7 @@ image = { version = "0.24.3", default-features = false, features = [
 
 tracing-subscriber = "0.3"
 native-dialog = "0.6.3"
+
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 console_error_panic_hook = "0.1.7"

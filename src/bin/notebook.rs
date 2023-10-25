@@ -13,16 +13,13 @@ use mech_notebook::{FrameStroke,Style};
 
 use native_dialog::{FileDialog, MessageDialog, MessageType};
 
-extern crate mech_utilities;
-extern crate mech_syntax;
-extern crate mech_core;
-extern crate mech_program;
+extern crate mech;
 
-use mech_utilities::*;
-use mech_program::*;
+use mech::utilities::*;
+use mech::program::*;
 use crate::epaint::Shadow;
-use mech_core::*;
-use mech_syntax::compiler::Compiler;
+use mech::core::*;
+use mech::syntax::compiler::Compiler;
 use std::thread::JoinHandle;
 extern crate image;
 use std::path::Path;
@@ -162,7 +159,7 @@ pub struct MechApp {
   code: String,
   compile: bool,
   active_core_ix: u64,
-  core: mech_core::Core,
+  core: mech::core::Core,
   maestro_thread: Option<JoinHandle<()>>,
   shapes: Vec<epaint::Shape>,
   value_store: HashMap<u64,Rc<RefCell<Value>>>,
@@ -175,13 +172,13 @@ pub struct MechApp {
 //static LONG_STRING: &'static str = include_str!(concat!(env!("OUT_DIR"), "/hello.rs"));
 
 impl MechApp {
-  pub fn new(cc: &eframe::CreationContext<'_>, core: mech_core::Core) -> Self {
+  pub fn new(cc: &eframe::CreationContext<'_>, core: mech::core::Core) -> Self {
     //let code = LONG_STRING;
     //let code = include_str!("notebook.mec");
 
     let mut shapes = vec![epaint::Shape::Noop; 100000];
 
-    let mut runner = ProgramRunner::new("Notebook");
+    let mut runner = ProgramRunner::new("Notebook", None);
     let mech_client = runner.run().unwrap();
     let address: String = "127.0.0.1".to_string();
     let port: String = "0".to_string();
@@ -1263,10 +1260,10 @@ impl eframe::App for MechApp {
     }
 
     // Set font
-    let mut fonts = FontDefinitions::default();
-    fonts.font_data.insert("FiraCode-Regular".to_owned(),FontData::from_static(include_bytes!("../../../assets/fonts/FiraCode-Regular.ttf")));
-    fonts.families.get_mut(&FontFamily::Proportional).unwrap().insert(0, "FiraCode-Regular".to_owned());
-    ctx.set_fonts(fonts);
+    //let mut fonts = FontDefinitions::default();
+    //fonts.font_data.insert("FiraCode-Regular".to_owned(),FontData::from_static(include_bytes!("../../../assets/fonts/FiraCode-Regular.ttf")));
+    //fonts.families.get_mut(&FontFamily::Proportional).unwrap().insert(0, "FiraCode-Regular".to_owned());
+    //ctx.set_fonts(fonts);
 
     // Draw frame
     let mut frame = Frame::default();
@@ -1325,7 +1322,7 @@ impl eframe::App for MechApp {
           let table = self.core.get_table("core-names").unwrap();
           let table_brrw = table.borrow();
           if table_brrw.rows > self.mech_clients.len() {
-            let mut runner = ProgramRunner::new("Notebook");
+            let mut runner = ProgramRunner::new("Notebook", None);
             let mech_client = runner.run().unwrap();
             let address: String = "127.0.0.1".to_string();
             let port: String = "0".to_string();
@@ -1387,14 +1384,14 @@ impl eframe::App for MechApp {
 
 }
 
-pub fn load_mech_from_path(program_path: &str) -> Result<mech_core::Core,MechError> {
+pub fn load_mech_from_path(program_path: &str) -> Result<mech::core::Core,MechError> {
   match fs::read_to_string(program_path) {
     Ok(code) => {
-      let mut mech_core = mech_core::Core::new();
+      let mut mcore = mech::core::Core::new();
       let mut compiler = Compiler::new(); 
       let core = match compiler.compile_str(&code) {
         Ok(sections) => {
-          let load_result = mech_core.load_sections(sections);
+          let load_result = mcore.load_sections(sections);
           for (_,_,errors) in load_result {
             println!("{:?}", errors);
           }
@@ -1413,31 +1410,31 @@ pub fn load_mech_from_path(program_path: &str) -> Result<mech_core::Core,MechErr
                 "io/pointer"
                 "mech/tables"
                 "notebook/compiler""#;
-      for name in mech_core.table_names() {
+      for name in mcore.table_names() {
         code += &format!("\n{:?}",name);     
       }
       code += "]";
       
       let mut compiler = Compiler::new();
       let sections = compiler.compile_str(&code).unwrap();
-      let load_result = mech_core.load_sections(sections);
+      let load_result = mcore.load_sections(sections);
       for (_,_,errors) in load_result {
         println!("{:?}", errors);
       }
-      mech_core.schedule_blocks()?;
-      Ok(mech_core)
+      mcore.schedule_blocks()?;
+      Ok(mcore)
     },
     Err(err) => Err(MechError{msg: "".to_string(), id: 87491, kind: MechErrorKind::GenericError(format!("{:?}",err))}),
   }
 }
 
-pub fn load_mech() -> Result<mech_core::Core,MechError> {
+pub fn load_mech() -> Result<mech::core::Core,MechError> {
   let code_string = include_str!(r#"notebook.mec"#);
-  let mut mech_core = mech_core::Core::new();
+  let mut mcore = mech::core::Core::new();
   let mut compiler = Compiler::new(); 
   match compiler.compile_str(&code_string) {
     Ok(sections) => {
-      mech_core.load_sections(sections);
+      mcore.load_sections(sections);
     }
     Err(x) => {
       
@@ -1457,8 +1454,8 @@ pub fn load_mech() -> Result<mech_core::Core,MechError> {
                 "io/keyboard"
                 "mech/tables"
                 "notebook/compiler""#;
-  for (table,row,col) in &mech_core.output {
-    let table = match mech_core.dictionary.borrow().get(table.unwrap()) {
+  for (table,row,col) in &mcore.output {
+    let table = match mcore.dictionary.borrow().get(table.unwrap()) {
       Some(name) => {code += &format!("\n{:?}",name.to_string());}
       None => (),
     };
@@ -1466,9 +1463,9 @@ pub fn load_mech() -> Result<mech_core::Core,MechError> {
   code += "]";
   let mut compiler = Compiler::new();
   let sections = compiler.compile_str(&code).unwrap();
-  mech_core.load_sections(sections);
-  mech_core.schedule_blocks();
-  Ok(mech_core)
+  mcore.load_sections(sections);
+  mcore.schedule_blocks();
+  Ok(mcore)
 }
 
 pub fn load_icon() -> eframe::IconData {

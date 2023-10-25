@@ -2,7 +2,7 @@ use eframe::egui::*;
 use eframe::egui::style::{Margin,WidgetVisuals};
 use std::rc::Rc;
 use std::cell::RefCell;
-use mech_core::*;
+use mech::core::*;
 
 use crate::FrameStroke;
 
