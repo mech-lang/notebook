@@ -1271,27 +1271,29 @@ impl eframe::App for MechApp {
     egui::CentralPanel::default()
       .frame(frame)
       .show(ctx, |ui| {
-        if ui.input().keys_down.contains(&egui::Key::F5) {
+        if ui.input(|i| i.keys_down.contains(&egui::Key::F5)) {
           let core = load_mech_from_path(r#"C:\Users\cmont\mech\mech\notebook\src\bin\notebook.mec"#).unwrap();
           self.core = core;
         }
 
-        for event in &ui.input().events {
-          match event {
-            Event::Key{key: egui::Key::Enter, pressed, modifiers} => {
-              if modifiers.ctrl && self.compile == false {
-                self.compile = true;
-                self.changes.push(Change::Set((hash_str("compile-button"),vec![
-                  (TableIndex::Index(1),TableIndex::Index(1),Value::Bool(true))
-                ])));
-              } else if *pressed == false {
-                self.compile = false;
+        ui.input(|i| {
+          for event in &i.events {
+            match event {
+              Event::Key{key: egui::Key::Enter, pressed, modifiers, repeat} => {
+                if modifiers.ctrl && self.compile == false {
+                  self.compile = true;
+                  self.changes.push(Change::Set((hash_str("compile-button"),vec![
+                    (TableIndex::Index(1),TableIndex::Index(1),Value::Bool(true))
+                  ])));
+                } else if *pressed == false {
+                  self.compile = false;
+                }
               }
+              _ => (),
             }
-            _ => (),
           }
-        }
-
+        });
+        
         // Compile new code...
         {
           let code_table = self.core.get_table("notebook/compiler").unwrap();
@@ -1356,10 +1358,10 @@ impl eframe::App for MechApp {
         self.render_app(ui);
 
         // Update IO
-        let time = ui.input().time;
+        let time = ui.input(|i| i.time);
         self.frame += 1;
         self.changes.push(Change::Set((hash_str("time/timer"),vec![(TableIndex::Index(1),TableIndex::Index(2),Value::U64(U64::new(self.frame as u64)))])));
-        match ui.input().pointer.hover_pos() {
+        match ui.input(|i| i.pointer.hover_pos()) {
           Some(pos) => {
             self.changes.push(Change::Set((hash_str("io/pointer"),vec![
               (TableIndex::Index(1),TableIndex::Index(1),Value::F32(F32::new(pos.x))),
@@ -1370,7 +1372,7 @@ impl eframe::App for MechApp {
         }
 
         self.changes.push(Change::Set((hash_str("io/pointer"),vec![
-          (TableIndex::Index(1),TableIndex::Index(3),Value::Bool(ui.input().pointer.primary_down()))
+          (TableIndex::Index(1),TableIndex::Index(3),Value::Bool(ui.input(|i| i.pointer.primary_down())))
         ])));
         self.core.process_transaction(&self.changes);
         self.changes.clear();
@@ -1475,14 +1477,14 @@ pub fn load_icon() -> eframe::IconData {
 
 fn main() {
   //let input = std::env::args().nth(1).unwrap();
-  let mut native_options = eframe::NativeOptions::default();
+  /*let mut native_options = eframe::NativeOptions::default();
   let icon = load_icon();
   let core = load_mech().unwrap();
-  native_options.icon_data = Some(icon);
+  //native_options.icon_data = Some(icon);
   native_options.min_window_size = Some(Vec2{x: 500.0, y: 400.0});
   native_options.initial_window_size = Some(Vec2{x: 1280.0, y: 720.0});
   eframe::run_native("Mech Notebook", native_options, Box::new(|cc| 
-    Box::new(MechApp::new(cc,core))));
+    Box::new(MechApp::new(cc,core))));*/
 }
 
 

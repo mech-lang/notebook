@@ -3,6 +3,8 @@ use eframe::wasm_bindgen::{self, prelude::*};
 use eframe::egui::*;
 use eframe::egui::style::{Margin,WidgetVisuals};
 
+mod app;
+pub use app::TemplateApp;
 pub mod button;
 pub mod tabs;
 //pub mod code_box;

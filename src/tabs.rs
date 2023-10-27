@@ -106,8 +106,12 @@ pub struct MyButtonTabs {
         response.widget_info(|| WidgetInfo::labeled(WidgetType::Button, l.text()));
         let tab_size = desired_tab_sizes[ix - 1];
         tab_rect = Rect::from_min_size(Pos2{x: tab_rect.max.x, y: tab_rect.min.y}, tab_size);
-        let hovered = if let Some(hovered_pos) = ui.input().pointer.hover_pos() { tab_rect.contains(hovered_pos) } else { false };
-        let primary_down = ui.input().pointer.primary_down();
+        let hovered = if let Some(hovered_pos) = ui.input(|i| i.pointer.hover_pos()) { 
+          tab_rect.contains(hovered_pos) 
+        } else { 
+          false 
+        };
+        let primary_down = ui.input(|i| i.pointer.primary_down());
         let vix = Value::U8(U8::new(ix as u8));
         let (frame,text_color,frame_stroke) = if hovered & primary_down {
           if *active_ixx != vix {
