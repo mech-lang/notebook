@@ -7,9 +7,9 @@ use eframe::egui::{containers::*, *};
 use egui::style::Margin;
 use egui_extras::{StripBuilder, Size};
 
-use mech_notebook::button::MyButton;
-use mech_notebook::tabs::MyButtonTabs;
-use mech_notebook::{FrameStroke,Style};
+use mech_gui::button::MyButton;
+use mech_gui::tabs::MyButtonTabs;
+use mech_gui::{FrameStroke,Style};
 
 use native_dialog::{FileDialog, MessageDialog, MessageType};
 

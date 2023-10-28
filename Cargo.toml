@@ -18,6 +18,12 @@ gitlab = { repository = "mech-lang/notebook", branch = "main" }
 maintenance = { status = "actively-developed" }
 
 [dependencies]
+mech-core = {path = "../mech/src/core"}
+mech-syntax = {path = "../mech/src/syntax"}
+mech-program = {path = "../mech/src/program"}
+mech-utilities = {path = "../mech/src/utilities"}
+mech-gui = {path = "../machines/gui"}
+
 egui = "0.23.0"
 egui_extras = { version = "0.23.0"}
 eframe = { version = "0.23.0"}
