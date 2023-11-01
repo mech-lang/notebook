@@ -16,8 +16,6 @@ fn main() -> eframe::Result<()> {
     native_options.icon_data = Some(icon);
     native_options.min_window_size = Some(Vec2{x: 500.0, y: 400.0});
     native_options.initial_window_size = Some(Vec2{x: 1280.0, y: 720.0});
-    //eframe::run_native("Mech Notebook", native_options, Box::new(|cc| 
-    //  Box::new(MechApp::new(cc,core))));
     eframe::run_native(
         "Mech Notebook",
         native_options,
