@@ -25,7 +25,7 @@ pub fn load_mech_from_path(program_path: &str) -> Result<mech_core::Core,MechErr
           }
         }
         Err(x) => {
-          return Err(MechError{msg: "".to_string(), id: 87491, kind: MechErrorKind::GenericError(format!("{:?}",x))})
+          return Err(MechError{tokens: vec![], msg: "".to_string(), id: 87491, kind: MechErrorKind::GenericError(format!("{:?}",x))})
         }
       };
       let mut code = r#"
@@ -52,7 +52,7 @@ pub fn load_mech_from_path(program_path: &str) -> Result<mech_core::Core,MechErr
       mcore.schedule_blocks()?;
       Ok(mcore)
     },
-    Err(err) => Err(MechError{msg: "".to_string(), id: 87491, kind: MechErrorKind::GenericError(format!("{:?}",err))}),
+    Err(err) => Err(MechError{tokens: vec![], msg: "".to_string(), id: 87491, kind: MechErrorKind::GenericError(format!("{:?}",err))}),
   }
 }
 
