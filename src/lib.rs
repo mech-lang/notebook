@@ -1,18 +1,16 @@
+#![feature(stdarch_x86_avx512)]
 #[cfg(target_arch = "wasm32")]
 use eframe::wasm_bindgen::{self, prelude::*};
 use eframe::egui::*;
-use eframe::egui::style::{Margin,WidgetVisuals};
 
 pub mod icon;
 
-use mech_utilities::*;
-use mech_program::*;
 use mech_core::*;
-use mech_syntax::compiler::Compiler;
+use mech_syntax::*;
 
 use std::fs;
 
-pub fn load_mech_from_path(program_path: &str) -> Result<mech_core::Core,MechError> {
+/*pub fn load_mech_from_path(program_path: &str) -> Result<mech_core::Core,MechError> {
   match fs::read_to_string(program_path) {
     Ok(code) => {
       let mut mcore = mech_core::Core::new();
@@ -54,9 +52,9 @@ pub fn load_mech_from_path(program_path: &str) -> Result<mech_core::Core,MechErr
     },
     Err(err) => Err(MechError{tokens: vec![], msg: "".to_string(), id: 87491, kind: MechErrorKind::GenericError(format!("{:?}",err))}),
   }
-}
+}*/
 
-pub fn load_mech() -> Result<mech_core::Core,MechError> {
+/*pub fn load_mech() -> Result<mech_core::Core,MechError> {
   let code_string = include_str!(r#"bin/notebook.mec"#);
   let mut mcore = mech_core::Core::new();
   let mut compiler = Compiler::new(); 
@@ -94,4 +92,4 @@ pub fn load_mech() -> Result<mech_core::Core,MechError> {
   mcore.load_sections(sections);
   mcore.schedule_blocks();
   Ok(mcore)
-}
+}*/

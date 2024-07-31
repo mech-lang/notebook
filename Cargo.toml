@@ -1,6 +1,6 @@
 [package]
 name = "mech-notebook"
-version = "0.2.0"
+version = "0.2.4"
 authors = ["Corey Montella <corey@mech-lang.org>"]
 description = "Gui notebook interface for the Mech programming language."
 documentation = "http://docs.mech-lang.org"
@@ -11,41 +11,22 @@ categories = ["science::robotics", "science", "game-engines", "web-programming"]
 license = "Apache-2.0"
 readme = "README.md"
 edition = "2021"
-rust-version = "1.74"
+rust-version = "1.80"
 
 [dependencies]
-mech-core = {path = "../mech/src/core"}
-mech-syntax = {path = "../mech/src/syntax"}
-mech-program = {path = "../mech/src/program"}
-mech-utilities = {path = "../mech/src/utilities"}
-mech-gui = {path = "../machines/gui"}
-egui = "0.23.0"
-egui_extras = { version = "0.23.0"}
-eframe = { version = "0.23.0"}
-log = "0.4"
+#mech = "0.2.4"
+mech-core = "0.2.4"
+mech-syntax = "0.2.4"
+egui = "0.28.1"
+#egui_extras = { version = "0.28.1"}
+eframe = "0.28.1"
 
-# You only need serde if you want app persistence:
-serde = { version = "1", features = ["derive"] }
-
-# native:
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
-env_logger = "0.10"
-
-# web:
-[target.'cfg(target_arch = "wasm32")'.dependencies]
-wasm-bindgen-futures = "0.4"
-
-
-[profile.release]
-opt-level = 2 # fast and small wasm
-
-# Optimize all dependencies even in debug builds:
-[profile.dev.package."*"]
-opt-level = 2
+env_logger = "0.11.5"
 
 [build-dependencies]
 winres = "0.1.12"
 
 [package.metadata.winres]
 OriginalFilename = "MECH.EXE"
-LegalCopyright = "Copyright © 2023"
+LegalCopyright = "Copyright © 2024"
