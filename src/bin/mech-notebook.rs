@@ -8,6 +8,8 @@ use mech_core::interpreter::*;
 use mech_notebook::*;
 use std::sync::Arc;
 
+const VERSION: &str = env!("CARGO_PKG_VERSION");
+
 fn main() -> eframe::Result {
   env_logger::init(); // Log to stderr (if you run with `RUST_LOG=debug`).
 
@@ -25,7 +27,7 @@ fn main() -> eframe::Result {
   let mut text_edit_focus_id = egui::Id::new("terminal_input");
   let mut intrp = Interpreter::new();
   let mut scroll_to_bottom = false;
-  terminal_output.push_str("Mech v0.2.16\n");
+  terminal_output.push_str(&format!("Mech v{}\n",VERSION));
 
   eframe::run_simple_native("Mech Terminal", options, move |ctx, _frame| {
 
