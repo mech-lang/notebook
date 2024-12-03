@@ -1,6 +1,6 @@
 [package]
 name = "mech-notebook"
-version = "0.1.0"
+version = "0.2.22"
 authors = ["Corey Montella <corey@mech-lang.org>"]
 description = "Gui notebook interface for the Mech programming language."
 documentation = "http://docs.mech-lang.org"
@@ -11,36 +11,22 @@ categories = ["science::robotics", "science", "game-engines", "web-programming"]
 license = "Apache-2.0"
 readme = "README.md"
 edition = "2021"
-
-[badges]
-gitlab = { repository = "mech-lang/notebook", branch = "main" }
-maintenance = { status = "actively-developed" }
+rust-version = "1.80"
 
 [dependencies]
-mech-core = "0.1"
-mech-utilities = "0.1"
-mech-syntax = "0.1"
-mech-gui = "0.1"
+mech-core = "0.2.22"
+mech-syntax = "0.2.22"
+mech-interpreter = "0.2.22"
+egui = "0.29.1"
+#egui_extras = { version = "0.28.1"}
+eframe = "0.29.1"
 
-lazy_static = "1.4.0"
-eframe = { version = "0.20.1"}
-image = { version = "0.24.3", default-features = false, features = [
-  "ico",
-  "jpeg",
-  "png",
-] }
-
-tracing-subscriber = "0.3"
-
-[target.'cfg(target_arch = "wasm32")'.dependencies]
-console_error_panic_hook = "0.1.7"
-tracing-wasm = "0.2.1"
-
-[workspace]
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+env_logger = "0.11.5"
 
 [build-dependencies]
 winres = "0.1.12"
 
 [package.metadata.winres]
 OriginalFilename = "MECH.EXE"
-LegalCopyright = "Copyright © 2023"
+LegalCopyright = "Copyright © 2024"
