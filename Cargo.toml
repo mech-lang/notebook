@@ -16,9 +16,10 @@ rust-version = "1.80"
 [dependencies]
 mech-core = "0.2.22"
 mech-syntax = "0.2.22"
-egui = "0.28.1"
+mech-interpreter = "0.2.22"
+egui = "0.29.1"
 #egui_extras = { version = "0.28.1"}
-eframe = "0.28.1"
+eframe = "0.29.1"
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 env_logger = "0.11.5"

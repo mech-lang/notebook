@@ -4,7 +4,7 @@
 use eframe::egui::*;
 use mech_core::*;
 use mech_syntax::parser;
-use mech_core::interpreter::*;
+use mech_interpreter::*;
 use mech_notebook::*;
 use std::sync::Arc;
 
