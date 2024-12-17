@@ -23,7 +23,7 @@ use std::fs;
           }
         }
         Err(x) => {
-          return Err(MechError{tokens: vec![], msg: "".to_string(), id: 87491, kind: MechErrorKind::GenericError(format!("{:?}",x))})
+          return Err(MechError{file: file!().to_string(), tokens: vec![], msg: "".to_string(), id: 87491, kind: MechErrorKind::GenericError(format!("{:?}",x))})
         }
       };
       let mut code = r#"
@@ -50,7 +50,7 @@ use std::fs;
       mcore.schedule_blocks()?;
       Ok(mcore)
     },
-    Err(err) => Err(MechError{tokens: vec![], msg: "".to_string(), id: 87491, kind: MechErrorKind::GenericError(format!("{:?}",err))}),
+    Err(err) => Err(MechError{file: file!().to_string(), tokens: vec![], msg: "".to_string(), id: 87491, kind: MechErrorKind::GenericError(format!("{:?}",err))}),
   }
 }*/
 
