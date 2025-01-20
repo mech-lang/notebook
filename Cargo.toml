@@ -15,8 +15,9 @@ rust-version = "1.84"
 
 [dependencies]
 mech-core = "0.2.30"
-mech-syntax = "0.2.27"
-mech-interpreter = "0.2.27"
+mech-syntax = "0.2.30"
+mech-interpreter = "0.2.30"
+mech = "0.2.30"
 egui = "0.29.1"
 #egui_extras = { version = "0.28.1"}
 eframe = "0.29.1"
@@ -29,4 +30,4 @@ winres = "0.1.12"
 
 [package.metadata.winres]
 OriginalFilename = "MECH.EXE"
-LegalCopyright = "Copyright © 2024"
+LegalCopyright = "Copyright © 2025"
