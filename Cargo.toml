@@ -14,16 +14,9 @@ edition = "2021"
 rust-version = "1.84"
 
 [dependencies]
-mech-core = "0.2.31"
-mech-syntax = "0.2.30"
-mech-interpreter = "0.2.30"
-mech = "0.2.30"
+mech = {version="0.2.31"}
 egui = "0.29.1"
-#egui_extras = { version = "0.28.1"}
 eframe = "0.29.1"
-
-[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
-env_logger = "0.11.5"
 
 [build-dependencies]
 winres = "0.1.12"
