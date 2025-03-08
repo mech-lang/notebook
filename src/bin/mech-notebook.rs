@@ -34,7 +34,7 @@ fn main() -> eframe::Result {
 
 
     let mut fonts = FontDefinitions::default();
-    fonts.font_data.insert("FiraCode-Regular".to_owned(),FontData::from_static(include_bytes!("../../fonts/FiraCode-Regular.ttf")));
+    fonts.font_data.insert("FiraCode-Regular".to_owned(),Arc::new(FontData::from_static(include_bytes!("../../fonts/FiraCode-Regular.ttf"))));
     fonts.families.get_mut(&FontFamily::Proportional).unwrap().insert(0, "FiraCode-Regular".to_owned());
     ctx.set_fonts(fonts);
 
