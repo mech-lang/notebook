@@ -20,7 +20,8 @@ fn main() -> eframe::Result {
   let mut terminal_output = String::new();
   let mut text_edit_focus_id = egui::Id::new("terminal_input");
 
-  let mut intrp = Interpreter::new();
+  let id = hash_str("mech-notebook");
+  let mut intrp = Interpreter::new(id);
   let mut repl = MechRepl::from(intrp);
 
   let mut scroll_to_bottom = false;
