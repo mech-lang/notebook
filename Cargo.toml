@@ -1,6 +1,6 @@
 [package]
 name = "mech-notebook"
-version = "0.2.22"
+version = "0.2.40"
 authors = ["Corey Montella <corey@mech-lang.org>"]
 description = "Gui notebook interface for the Mech programming language."
 documentation = "http://docs.mech-lang.org"
@@ -11,22 +11,16 @@ categories = ["science::robotics", "science", "game-engines", "web-programming"]
 license = "Apache-2.0"
 readme = "README.md"
 edition = "2021"
-rust-version = "1.80"
+rust-version = "1.84"
 
 [dependencies]
-mech-core = "0.2.22"
-mech-syntax = "0.2.22"
-mech-interpreter = "0.2.22"
-egui = "0.29.1"
-#egui_extras = { version = "0.28.1"}
-eframe = "0.29.1"
-
-[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
-env_logger = "0.11.5"
+mech = {version="0.2.40"}
+egui = "0.31.1"
+eframe = "0.31.1"
 
 [build-dependencies]
 winres = "0.1.12"
 
 [package.metadata.winres]
 OriginalFilename = "MECH.EXE"
-LegalCopyright = "Copyright © 2024"
+LegalCopyright = "Copyright © 2025"

@@ -2,33 +2,30 @@
 #![allow(rustdoc::missing_crate_level_docs)] // it's an example
 
 use eframe::egui::*;
-use mech_core::*;
-use mech_syntax::parser;
-use mech_interpreter::*;
+use mech::*;
 use mech_notebook::*;
 use std::sync::Arc;
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 fn main() -> eframe::Result {
-  env_logger::init(); // Log to stderr (if you run with `RUST_LOG=debug`).
-
   let icon = icon::load_icon();
 
-
   let options = eframe::NativeOptions {
-      viewport: egui::ViewportBuilder::default().with_inner_size([1024.0, 768.0]).with_icon(Arc::new(icon)),
-      ..Default::default()
+    viewport: egui::ViewportBuilder::default().with_inner_size([1024.0, 768.0]).with_icon(Arc::new(icon)),
+    ..Default::default()
   };
 
-  // Our application state:
-  let mut terminal_input = String::new();
+  let mut input = String::new();
   let mut terminal_output = String::new();
   let mut text_edit_focus_id = egui::Id::new("terminal_input");
-  let mut intrp = Interpreter::new();
+
+  let id = hash_str("mech-notebook");
+  let mut intrp = Interpreter::new(id);
+  let mut repl = MechRepl::from(intrp);
+
   let mut scroll_to_bottom = false;
   terminal_output.push_str(&format!("Mech v{}\n",VERSION));
-
   eframe::run_simple_native("Mech Terminal", options, move |ctx, _frame| {
 
     let mut visuals = egui::Visuals::dark();
@@ -38,7 +35,7 @@ fn main() -> eframe::Result {
 
 
     let mut fonts = FontDefinitions::default();
-    fonts.font_data.insert("FiraCode-Regular".to_owned(),FontData::from_static(include_bytes!("../../fonts/FiraCode-Regular.ttf")));
+    fonts.font_data.insert("FiraCode-Regular".to_owned(),Arc::new(FontData::from_static(include_bytes!("../../fonts/FiraCode-Regular.ttf"))));
     fonts.families.get_mut(&FontFamily::Proportional).unwrap().insert(0, "FiraCode-Regular".to_owned());
     ctx.set_fonts(fonts);
 
@@ -60,28 +57,40 @@ fn main() -> eframe::Result {
       ui.horizontal(|ui| {
         ui.label(">:");
         let response = ui.add(
-          egui::TextEdit::singleline(&mut terminal_input)
+          egui::TextEdit::singleline(&mut input)
             .id(text_edit_focus_id)
             .frame(false)
         );
-
         if response.lost_focus() && ctx.input(|i| i.key_pressed(egui::Key::Enter)) {
-          terminal_output.push_str(&format!(">: {}\n", terminal_input));
-          match parser::parse(&terminal_input) {
-            Ok(tree) => { 
-              let result = intrp.interpret(&tree);
-              let out_str = match result {
-                Ok(r) => format!("{}\n",r.pretty_print()),
-                Err(err) => format!("{:?}", err),
-              };
-              terminal_output.push_str(&out_str);
-              scroll_to_bottom = true;
+          terminal_output.push_str(&format!(">: {}\n", input));
+          if input.chars().nth(0) == Some(':') {
+            match MechRepl::parse_repl_command(&input.as_str()) {
+              Ok((_, repl_command)) => {
+                match repl.execute_repl_command(repl_command) {
+                  Ok(output) => {
+                    terminal_output.push_str(&format!("{}\n", output));
+                  }
+                  Err(err) => {
+                    terminal_output.push_str(&format!("{:?}\n", err));
+                  }
+                }
+              }
+              _ => todo!(),
             }
-            Err(err) => {
-              
+          } else if input.trim() == "" {
+            //continue;
+          } else {
+            let cmd = ReplCommand::Code(vec![("repl".to_string(),MechSourceCode::String(input.clone()))]);
+            match repl.execute_repl_command(cmd) {
+              Ok(output) => {
+                terminal_output.push_str(&format!("{}\n", output));
+              }
+              Err(err) => {
+                terminal_output.push_str(&format!("{:?}\n", err));
+              }
             }
           }
-          terminal_input.clear();
+          input.clear();
         }
         response.request_focus();
       });
